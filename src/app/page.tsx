@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import StatStrip from "@/components/StatStrip";
 import DomainSelection from "@/components/DomainSelection";
+import AchievementSlider from "@/components/AchievementSlider";
 import Footer from "@/components/Footer";
 
 export default function HomePage() {
@@ -21,6 +22,9 @@ export default function HomePage() {
 
         {/* Spatial Domain Capability Matrix */}
         <DomainSelection />
+
+        {/* Horizontal Scrolling Student Achievements Section */}
+        <AchievementSlider />
       </main>
 
       {/* Footer with Recruiter Placement Desk */}
