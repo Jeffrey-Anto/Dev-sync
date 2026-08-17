@@ -5,7 +5,7 @@ import AuroraMeshBackground from "./AuroraMeshBackground";
 import FluidWaveBackground from "./FluidWaveBackground";
 import FloatingBlobsBackground from "./FloatingBlobsBackground";
 
-export type DynamicBackgroundVariant = "aurora" | "waves" | "blobs" | "hybrid";
+export type DynamicBackgroundVariant = "all" | "hybrid" | "aurora" | "waves" | "blobs";
 
 export interface DynamicBackgroundProps {
   variant?: DynamicBackgroundVariant;
@@ -20,13 +20,14 @@ export interface DynamicBackgroundProps {
  * DynamicBackground - A high-performance, non-intrusive ambient background component.
  * 
  * Supports:
+ * - "all": Rich combination of Aurora glow + Fluid Waves + Floating Glass Blobs
  * - "aurora": Drifting, luminous mesh gradients with deep Gaussian diffusion
  * - "waves": Interactive multi-harmonic canvas fluid waves with cursor ripples
  * - "blobs": Floating organic morphing gradient blobs with glassmorphism support
  * - "hybrid": Layered composition of aurora ambiance + subtle fluid waves
  */
 export default function DynamicBackground({
-  variant = "aurora",
+  variant = "all",
   intensity = "medium",
   interactive = true,
   showGrid = true,
@@ -37,22 +38,22 @@ export default function DynamicBackground({
     <div className={`relative w-full overflow-hidden ${className}`}>
       {/* Background Layer Container (z-0, non-blocking) */}
       <div className="absolute inset-0 pointer-events-none z-0 select-none overflow-hidden">
-        {/* 1. Aurora Mesh */}
-        {(variant === "aurora" || variant === "hybrid") && (
+        {/* 1. Aurora Mesh (Deep Ambiance) */}
+        {(variant === "all" || variant === "aurora" || variant === "hybrid") && (
           <AuroraMeshBackground intensity={intensity} interactive={interactive} />
         )}
 
-        {/* 2. Fluid Wave Canvas */}
-        {(variant === "waves" || variant === "hybrid") && (
-          <FluidWaveBackground
-            interactive={interactive}
-            opacity={variant === "hybrid" ? 0.45 : 0.75}
-          />
+        {/* 2. Floating Morph Blobs (Midground Organic Movement) */}
+        {(variant === "all" || variant === "blobs") && (
+          <FloatingBlobsBackground interactive={interactive} />
         )}
 
-        {/* 3. Floating Morph Blobs */}
-        {variant === "blobs" && (
-          <FloatingBlobsBackground interactive={interactive} />
+        {/* 3. Fluid Wave Canvas (Interactive Foreground Water Ripple) */}
+        {(variant === "all" || variant === "waves" || variant === "hybrid") && (
+          <FluidWaveBackground
+            interactive={interactive}
+            opacity={variant === "all" || variant === "hybrid" ? 0.45 : 0.75}
+          />
         )}
 
         {/* Optional Subtle Tech Matrix Grid Overlay */}

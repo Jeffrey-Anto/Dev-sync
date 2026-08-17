@@ -5,30 +5,33 @@ import StatStrip from "@/components/StatStrip";
 import DomainSelection from "@/components/DomainSelection";
 import AchievementSlider from "@/components/AchievementSlider";
 import Footer from "@/components/Footer";
+import { DynamicBackground } from "@/components/backgrounds";
 
 export default function HomePage() {
   return (
-    <div className="relative min-h-screen bg-[#050608] text-slate-100 flex flex-col">
-      {/* Navigation */}
-      <Navbar />
+    <DynamicBackground variant="all" intensity="subtle" showGrid={true}>
+      <div className="relative min-h-screen text-slate-100 flex flex-col">
+        {/* Navigation */}
+        <Navbar />
 
-      {/* Main Content Sections */}
-      <main className="flex-grow">
-        {/* Full-viewport 3D Hero */}
-        <HeroSection />
+        {/* Main Content Sections */}
+        <main className="flex-grow">
+          {/* Full-viewport 3D Hero */}
+          <HeroSection />
 
-        {/* Animated Counting-Up Stat Strip */}
-        <StatStrip />
+          {/* Animated Counting-Up Stat Strip */}
+          <StatStrip />
 
-        {/* Spatial Domain Capability Matrix */}
-        <DomainSelection />
+          {/* Spatial Domain Capability Matrix */}
+          <DomainSelection />
 
-        {/* Horizontal Scrolling Student Achievements Section */}
-        <AchievementSlider />
-      </main>
+          {/* Horizontal Scrolling Student Achievements Section */}
+          <AchievementSlider />
+        </main>
 
-      {/* Footer with Recruiter Placement Desk */}
-      <Footer />
-    </div>
+        {/* Footer with Recruiter Placement Desk */}
+        <Footer />
+      </div>
+    </DynamicBackground>
   );
 }

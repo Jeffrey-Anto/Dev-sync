@@ -20,6 +20,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { COHORT_STATS } from "@/data/domains";
+import { AuroraMeshBackground } from "@/components/backgrounds";
 
 interface AchievementMilestone {
   year: string;
@@ -97,7 +98,10 @@ const certificationBreakdown = [
 
 export default function AchievementsPage() {
   return (
-    <div className="min-h-screen bg-[#050608] text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between">
+    <div className="relative min-h-screen bg-[#050608] text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between overflow-hidden">
+      {/* Ambient Aurora Background */}
+      <AuroraMeshBackground intensity="subtle" />
+
       {/* Global Navigation */}
       <Navbar />
 

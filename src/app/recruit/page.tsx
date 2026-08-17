@@ -22,6 +22,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { COHORT_STATS, DOMAINS } from "@/data/domains";
 import { getAggregatedTechStack } from "@/utils/techAggregation";
+import { FloatingBlobsBackground } from "@/components/backgrounds";
 
 export default function RecruiterContactPage() {
   const totalTechs = getAggregatedTechStack().length;
@@ -77,7 +78,10 @@ export default function RecruiterContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050608] text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between">
+    <div className="relative min-h-screen bg-[#050608] text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between overflow-hidden">
+      {/* Floating Organic Blobs behind glassmorphic form */}
+      <FloatingBlobsBackground />
+
       {/* Global Navigation */}
       <Navbar />
 

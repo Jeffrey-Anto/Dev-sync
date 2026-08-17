@@ -27,10 +27,11 @@ export default function FluidWaveBackground({
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const ctx = canvas.getContext("2d");
+    const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
     let animationFrameId: number;
+    let isVisible = true;
     let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
     let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
 
@@ -40,7 +41,7 @@ export default function FluidWaveBackground({
       height = canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
     };
 
-    window.addEventListener("resize", handleResize);
+    window.addEventListener("resize", handleResize, { passive: true });
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!interactive || !canvas) return;
@@ -54,12 +55,34 @@ export default function FluidWaveBackground({
       mouseRef.current.active = false;
     };
 
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    window.addEventListener("mouseleave", handleMouseLeave, { passive: true });
+
+    // Pause RAF when not in viewport or tab hidden
+    const observer = new IntersectionObserver(([entry]) => {
+      isVisible = entry.isIntersecting;
+      if (isVisible) {
+        cancelAnimationFrame(animationFrameId);
+        render();
+      }
+    });
+    observer.observe(canvas);
+
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        isVisible = false;
+        cancelAnimationFrame(animationFrameId);
+      } else {
+        isVisible = true;
+        render();
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     let time = 0;
 
     const render = () => {
+      if (!isVisible) return;
       time += speed;
 
       // Smooth mouse interpolation
@@ -100,7 +123,7 @@ export default function FluidWaveBackground({
         ctx.moveTo(0, height);
         ctx.lineTo(0, wave.baseY);
 
-        const step = 8;
+        const step = 10;
         for (let x = 0; x <= width; x += step) {
           // Compound sinusoidal waves
           let y =
@@ -135,6 +158,8 @@ export default function FluidWaveBackground({
     render();
 
     return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);

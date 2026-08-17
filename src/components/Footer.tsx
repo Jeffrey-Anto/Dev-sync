@@ -3,6 +3,7 @@
 import React from "react";
 import { Terminal, ShieldCheck, Mail, Calendar, CheckCircle2, ArrowUp } from "lucide-react";
 import { COHORT_STATS } from "@/data/domains";
+import { FluidWaveBackground } from "@/components/backgrounds";
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -11,6 +12,9 @@ export default function Footer() {
 
   return (
     <footer className="relative z-20 bg-[#040507] border-t border-white/10 pt-16 pb-12 overflow-hidden">
+      {/* Dynamic Fluid Wave Background with ripple response */}
+      <FluidWaveBackground opacity={0.35} interactive={true} />
+
       {/* Background Accent Grid */}
       <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
 
