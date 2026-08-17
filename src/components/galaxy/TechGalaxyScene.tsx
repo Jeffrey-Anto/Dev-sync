@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useMemo, useRef } from "react";
 import { useFrame } from "@react-three/fiber";
 import { OrbitControls, Html } from "@react-three/drei";
 import * as THREE from "three";
@@ -35,7 +35,7 @@ export default function TechGalaxyScene({
 }: TechGalaxySceneProps) {
   const groupRef = useRef<THREE.Group>(null!);
 
-  // Distribute nodes evenly on a sphere using Fibonacci spiral
+  // Distribute nodes evenly on a larger, spacious sphere using Fibonacci spiral
   const nodes: Node3D[] = useMemo(() => {
     const total = techList.length;
     const phi = Math.PI * (3 - Math.sqrt(5)); // Golden angle
@@ -45,23 +45,27 @@ export default function TechGalaxyScene({
       const radiusAtY = Math.sqrt(1 - y * y);
       const theta = phi * i;
 
-      const sphereRadius = 6.8 + (i % 3) * 0.8;
+      // Spacious sphere radius between 9.0 and 11.5
+      const sphereRadius = 9.2 + (i % 4) * 0.7;
       const x = Math.cos(theta) * radiusAtY * sphereRadius;
       const z = Math.sin(theta) * radiusAtY * sphereRadius;
       const py = y * sphereRadius;
 
       const pos = new THREE.Vector3(x, py, z);
+      // Normalized compact node sizes between 0.22 and 0.48
+      const nodeSize = 0.22 + (tech.size - 0.35) * 0.3;
+
       return {
         tech,
         position: pos.clone(),
         originalPos: pos.clone(),
         color: new THREE.Color(tech.color),
-        size: tech.size,
+        size: nodeSize,
       };
     });
   }, [techList]);
 
-  // Connections between nodes that share domains
+  // Delicate constellation connections between nodes sharing domains
   const lineGeo = useMemo(() => {
     const points: number[] = [];
     const colors: number[] = [];
@@ -71,17 +75,16 @@ export default function TechGalaxyScene({
         const n1 = nodes[i];
         const n2 = nodes[j];
 
-        // Check if they share at least one domain
         const sharedDomain = n1.tech.domainIds.some((id) =>
           n2.tech.domainIds.includes(id)
         );
 
-        if (sharedDomain && n1.position.distanceTo(n2.position) < 5.8) {
+        if (sharedDomain && n1.position.distanceTo(n2.position) < 4.8) {
           points.push(n1.position.x, n1.position.y, n1.position.z);
           points.push(n2.position.x, n2.position.y, n2.position.z);
 
-          colors.push(n1.color.r * 0.4, n1.color.g * 0.4, n1.color.b * 0.4);
-          colors.push(n2.color.r * 0.4, n2.color.g * 0.4, n2.color.b * 0.4);
+          colors.push(n1.color.r * 0.25, n1.color.g * 0.25, n1.color.b * 0.25);
+          colors.push(n2.color.r * 0.25, n2.color.g * 0.25, n2.color.b * 0.25);
         }
       }
     }
@@ -92,37 +95,37 @@ export default function TechGalaxyScene({
     return geo;
   }, [nodes]);
 
-  // Ambient gentle drift
+  // Ambient slow rotation drift
   useFrame((state) => {
     const t = state.clock.getElapsedTime();
     if (groupRef.current) {
-      groupRef.current.rotation.y = t * 0.04;
+      groupRef.current.rotation.y = t * 0.025;
     }
   });
 
   return (
     <>
-      <ambientLight intensity={0.8} />
-      <pointLight position={[15, 15, 15]} intensity={1.5} color="#A5B4FC" />
-      <pointLight position={[-15, -15, -15]} intensity={1.2} color="#38BDF8" />
+      <ambientLight intensity={0.7} />
+      <pointLight position={[20, 20, 20]} intensity={1.8} color="#A5B4FC" />
+      <pointLight position={[-20, -20, -20]} intensity={1.4} color="#38BDF8" />
 
       <OrbitControls
         enableDamping
         dampingFactor={0.05}
-        minDistance={4}
-        maxDistance={22}
-        rotateSpeed={0.6}
-        zoomSpeed={0.8}
+        minDistance={6}
+        maxDistance={32}
+        rotateSpeed={0.5}
+        zoomSpeed={0.7}
         autoRotate={false}
       />
 
-      <group ref={groupRef}>
-        {/* Constellation Filament Edges */}
+      <group ref={groupRef} position={[0, -0.4, 0]}>
+        {/* Delicate Constellation Filament Edges */}
         <lineSegments geometry={lineGeo}>
           <lineBasicMaterial
             vertexColors
             transparent
-            opacity={0.35}
+            opacity={0.22}
             blending={THREE.AdditiveBlending}
             depthWrite={false}
           />
@@ -133,25 +136,28 @@ export default function TechGalaxyScene({
           const isSelected = selectedTech?.name === node.tech.name;
           const isHovered = hoveredTech?.name === node.tech.name;
 
-          // Search & Filter matching logic
+          const hasSearch = searchQuery.trim().length > 0;
           const matchesSearch =
-            searchQuery.trim() === "" ||
+            !hasSearch ||
             node.tech.name.toLowerCase().includes(searchQuery.toLowerCase());
           const matchesCategory =
             selectedCategory === "All" || node.tech.category === selectedCategory;
 
           const isDimmed = !matchesSearch || !matchesCategory;
-          const isHighlighted = isSelected || isHovered || (!isDimmed && searchQuery.trim() !== "");
+          const isHighlighted = isSelected || isHovered || (!isDimmed && hasSearch);
 
-          const scale = isHighlighted ? node.size * 1.5 : isDimmed ? node.size * 0.6 : node.size;
-          const opacity = isDimmed ? 0.2 : isHighlighted ? 1 : 0.85;
+          // ONLY display text label if hovered, selected, or actively searched!
+          const showLabel = isHovered || isSelected || (hasSearch && matchesSearch && matchesCategory);
+
+          const scale = isHighlighted ? node.size * 1.8 : isDimmed ? node.size * 0.5 : node.size;
+          const opacity = isDimmed ? 0.15 : isHighlighted ? 1 : 0.85;
 
           return (
             <group
               key={index}
               position={[node.position.x, node.position.y, node.position.z]}
             >
-              {/* Central Sphere Node */}
+              {/* Central Sphere Star */}
               <mesh
                 scale={scale}
                 onClick={(e) => {
@@ -168,11 +174,11 @@ export default function TechGalaxyScene({
                   onHoverTech(null);
                 }}
               >
-                <sphereGeometry args={[0.4, 24, 24]} />
+                <sphereGeometry args={[0.4, 20, 20]} />
                 <meshStandardMaterial
                   color={node.tech.color}
                   emissive={node.tech.color}
-                  emissiveIntensity={isHighlighted ? 0.9 : isDimmed ? 0.1 : 0.4}
+                  emissiveIntensity={isHighlighted ? 1.0 : isDimmed ? 0.05 : 0.4}
                   roughness={0.2}
                   metalness={0.8}
                   transparent
@@ -182,41 +188,42 @@ export default function TechGalaxyScene({
 
               {/* Glowing Outer Halo for Highlighted Nodes */}
               {isHighlighted && (
-                <mesh scale={scale * 1.6}>
+                <mesh scale={scale * 1.8}>
                   <sphereGeometry args={[0.4, 16, 16]} />
                   <meshBasicMaterial
                     color={node.tech.color}
                     transparent
-                    opacity={0.3}
+                    opacity={0.35}
                     blending={THREE.AdditiveBlending}
                   />
                 </mesh>
               )}
 
-              {/* Floating 3D Text Label */}
-              {!isDimmed && (
+              {/* Clean Floating Label (Only Rendered When Hovered/Selected/Searched) */}
+              {showLabel && (
                 <Html
                   position={[0, scale * 0.5 + 0.35, 0]}
                   center
-                  distanceFactor={11}
-                  className="pointer-events-none select-none"
+                  distanceFactor={14}
+                  className="pointer-events-none select-none z-50"
                 >
                   <div
-                    className={`px-2 py-0.5 rounded-md font-mono text-[10px] whitespace-nowrap transition-all duration-300 ${
-                      isHighlighted
-                        ? "bg-slate-900/90 text-white font-bold border border-white/40 shadow-lg scale-110"
-                        : "bg-black/60 text-slate-300 border border-white/10"
-                    }`}
+                    className="px-2.5 py-1 rounded-lg font-mono text-[11px] font-bold whitespace-nowrap bg-[#080b14]/95 text-white border shadow-2xl backdrop-blur-md flex items-center gap-1.5 transition-all"
                     style={{
-                      boxShadow: isHighlighted ? `0 0 15px ${node.tech.color}` : "none",
+                      borderColor: node.tech.color,
+                      boxShadow: `0 0 20px ${node.tech.color}60`,
                     }}
                   >
-                    {node.tech.name}
-                    {isHighlighted && (
-                      <span className="ml-1 text-[9px] text-cyan-300">
-                        ({node.tech.studentCount})
-                      </span>
-                    )}
+                    <span>{node.tech.name}</span>
+                    <span
+                      className="text-[9px] px-1.5 py-0.2 rounded font-semibold"
+                      style={{
+                        backgroundColor: `${node.tech.color}30`,
+                        color: node.tech.color,
+                      }}
+                    >
+                      {node.tech.studentCount}
+                    </span>
                   </div>
                 </Html>
               )}
