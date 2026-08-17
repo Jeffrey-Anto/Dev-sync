@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Sliders, Eye, X, Check, Activity, Waves, Orbit, Layers, Disc } from "lucide-react";
+import { Sparkles, Sliders, Eye, X, Check, Activity, Waves, Orbit, Layers, Disc, Network, Cpu } from "lucide-react";
 import { DynamicBackgroundVariant } from "./DynamicBackground";
 
 interface BackgroundControllerProps {
@@ -33,7 +33,7 @@ export default function BackgroundController({
       id: "all",
       name: "Cosmic Master",
       icon: <Layers className="w-4 h-4 text-indigo-400" />,
-      desc: "Aurora nebula + Constellations + Fluid waves",
+      desc: "Aurora + Constellations + Neural pulses + Circuit flow",
     },
     {
       id: "aurora",
@@ -58,6 +58,18 @@ export default function BackgroundController({
       name: "Organic Orbs",
       icon: <Disc className="w-4 h-4 text-violet-400" />,
       desc: "Morphing glassmorphic ambient orbs",
+    },
+    {
+      id: "neural",
+      name: "Neural Synapse",
+      icon: <Network className="w-4 h-4 text-fuchsia-400" />,
+      desc: "Traveling AI signal pulses across a brain-wave net",
+    },
+    {
+      id: "circuit",
+      name: "Circuit Flow",
+      icon: <Cpu className="w-4 h-4 text-cyan-400" />,
+      desc: "PCB traces alive with glowing electrons",
     },
   ];
 

@@ -5,9 +5,19 @@ import AuroraMeshBackground from "./AuroraMeshBackground";
 import FluidWaveBackground from "./FluidWaveBackground";
 import FloatingBlobsBackground from "./FloatingBlobsBackground";
 import ConstellationBackground from "./ConstellationBackground";
+import NeuralPulseBackground from "./NeuralPulseBackground";
+import CircuitTraceBackground from "./CircuitTraceBackground";
 import BackgroundController from "./BackgroundController";
 
-export type DynamicBackgroundVariant = "all" | "hybrid" | "aurora" | "constellation" | "waves" | "blobs";
+export type DynamicBackgroundVariant =
+  | "all"
+  | "hybrid"
+  | "aurora"
+  | "constellation"
+  | "waves"
+  | "blobs"
+  | "neural"
+  | "circuit";
 
 export interface DynamicBackgroundProps {
   variant?: DynamicBackgroundVariant;
@@ -115,6 +125,24 @@ export default function DynamicBackground({
             interactive={interactive}
             intensity={intensity}
             opacity={variant === "all" || variant === "hybrid" ? 0.6 : 0.9}
+          />
+        )}
+
+        {/* 4b. Neural Synapse Network (Traveling AI signal pulses) */}
+        {(variant === "all" || variant === "neural") && (
+          <NeuralPulseBackground
+            interactive={interactive}
+            intensity={intensity}
+            opacity={variant === "all" ? 0.6 : 0.9}
+          />
+        )}
+
+        {/* 4c. Circuit Trace Board (Flowing electrons along PCB traces) */}
+        {(variant === "all" || variant === "circuit") && (
+          <CircuitTraceBackground
+            interactive={interactive}
+            intensity={intensity}
+            opacity={variant === "all" ? 0.5 : 0.85}
           />
         )}
 

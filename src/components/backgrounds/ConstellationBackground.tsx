@@ -41,17 +41,19 @@ export default function ConstellationBackground({
 
     let animationFrameId: number;
     let isVisible = true;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    let width = 0;
+    let height = 0;
 
     const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      const parent = canvas.parentElement;
+      if (!parent) return;
+      width = canvas.width = parent.clientWidth || window.innerWidth;
+      height = canvas.height = parent.clientHeight || window.innerHeight;
       initParticles();
     };
 
-    window.addEventListener("resize", handleResize, { passive: true });
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(canvas.parentElement as Element);
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!interactive) return;
@@ -201,11 +203,12 @@ export default function ConstellationBackground({
       animationFrameId = requestAnimationFrame(render);
     };
 
+    handleResize();
     render();
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
       cancelAnimationFrame(animationFrameId);

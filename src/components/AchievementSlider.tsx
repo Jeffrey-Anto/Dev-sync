@@ -15,6 +15,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 import { STUDENT_ACHIEVEMENTS, StudentAchievement } from "@/data/achievements";
+import { ConstellationBackground } from "@/components/backgrounds";
 
 export default function AchievementSlider() {
   const sliderRef = useRef<HTMLDivElement>(null);
@@ -103,6 +104,7 @@ export default function AchievementSlider() {
       className="relative z-20 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#040507] overflow-hidden border-t border-white/10"
     >
       {/* Background Ambience */}
+      <ConstellationBackground opacity={0.6} />
       <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
       <div className="absolute top-0 right-1/4 w-[600px] h-[350px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none" />
       <div className="absolute bottom-0 left-1/4 w-[600px] h-[350px] bg-cyan-500/5 rounded-full blur-[140px] pointer-events-none" />

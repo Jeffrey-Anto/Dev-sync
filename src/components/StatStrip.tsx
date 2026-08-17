@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import { Users, LayoutGrid, Rocket, Server, Award, Code2 } from "lucide-react";
 import { COHORT_STATS } from "@/data/domains";
+import { FluidWaveBackground } from "@/components/backgrounds";
 
 interface CounterProps {
   from?: number;
@@ -118,8 +119,9 @@ export default function StatStrip() {
   ];
 
   return (
-    <section id="stats" className="relative z-20 py-16 bg-[#07090e]/90 border-y border-white/10">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="stats" className="relative z-20 py-16 bg-[#07090e]/90 border-y border-white/10 overflow-hidden">
+      <FluidWaveBackground opacity={0.5} intensity="subtle" />
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-10">
           <span className="text-xs font-mono tracking-widest text-indigo-400 uppercase bg-indigo-500/10 px-3 py-1 rounded-full border border-indigo-500/20">
             AGGREGATE PERFORMANCE TELEMETRY

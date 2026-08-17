@@ -21,6 +21,7 @@ import {
   Palette,
 } from "lucide-react";
 import { DOMAINS, Domain } from "@/data/domains";
+import { NeuralPulseBackground } from "@/components/backgrounds";
 
 // Map icon names to Lucide components
 const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
@@ -84,6 +85,7 @@ export default function DomainSelection() {
       className="relative z-20 min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#050608] overflow-hidden flex flex-col justify-center select-none"
     >
       {/* Dynamic Background Grid & Ambient Glow */}
+      <NeuralPulseBackground opacity={0.65} />
       <div className="absolute inset-0 tech-grid-bg opacity-40 pointer-events-none" />
       <div className="absolute inset-0 bg-radial from-indigo-950/20 via-transparent to-[#050608] pointer-events-none" />
 

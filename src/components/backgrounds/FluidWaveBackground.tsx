@@ -37,20 +37,18 @@ export default function FluidWaveBackground({
     let isVisible = true;
 
     const updateDimensions = () => {
-      if (!canvas) return;
+      const parent = canvas.parentElement;
+      if (!parent) return;
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = window.innerWidth * dpr;
-      canvas.height = window.innerHeight * dpr;
+      canvas.width = (parent.clientWidth || window.innerWidth) * dpr;
+      canvas.height = (parent.clientHeight || window.innerHeight) * dpr;
       ctx.scale(dpr, dpr);
     };
 
     updateDimensions();
 
-    const handleResize = () => {
-      updateDimensions();
-    };
-
-    window.addEventListener("resize", handleResize, { passive: true });
+    const resizeObserver = new ResizeObserver(updateDimensions);
+    resizeObserver.observe(canvas.parentElement as Element);
 
     const handleMouseMove = (e: MouseEvent) => {
       if (!interactive) return;
@@ -84,8 +82,8 @@ export default function FluidWaveBackground({
       if (!isVisible) return;
       time += speed;
 
-      const w = window.innerWidth;
-      const h = window.innerHeight;
+      const w = canvas.width / (window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio || 1);
+      const h = canvas.height / (window.devicePixelRatio > 2 ? 2 : window.devicePixelRatio || 1);
 
       // Mouse position smoothing with lerp
       if (mouseRef.current.active) {
@@ -182,7 +180,7 @@ export default function FluidWaveBackground({
 
     return () => {
       document.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("resize", handleResize);
+      resizeObserver.disconnect();
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
       cancelAnimationFrame(animationFrameId);

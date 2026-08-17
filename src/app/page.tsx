@@ -9,29 +9,28 @@ import { DynamicBackground } from "@/components/backgrounds";
 
 export default function HomePage() {
   return (
-    <DynamicBackground variant="all" intensity="medium" showGrid={true}>
-      <div className="relative min-h-screen text-slate-100 flex flex-col">
-        {/* Navigation */}
-        <Navbar />
+    <div className="relative min-h-screen text-slate-100 flex flex-col">
+      {/* Navigation */}
+      <Navbar />
 
-        {/* Main Content Sections */}
-        <main className="flex-grow">
-          {/* Full-viewport 3D Hero */}
+      {/* Main Content Sections */}
+      <main className="flex-grow">
+        {/* Full-viewport 3D Hero — Aurora nebula backdrop */}
+        <DynamicBackground variant="aurora" intensity="medium" showGrid={true} showController={false}>
           <HeroSection />
+        </DynamicBackground>
 
-          {/* Animated Counting-Up Stat Strip */}
-          <StatStrip />
+        {/* Animated Counting-Up Stat Strip */}
+        <StatStrip />
 
-          {/* Spatial Domain Capability Matrix */}
-          <DomainSelection />
+        {/* Spatial Domain Capability Matrix */}
+        <DomainSelection />
 
-          {/* Horizontal Scrolling Student Achievements Section */}
-          <AchievementSlider />
-        </main>
+        {/* Horizontal Scrolling Student Achievements */}
+        <AchievementSlider />
 
-        {/* Footer with Recruiter Placement Desk */}
         <Footer />
-      </div>
-    </DynamicBackground>
+      </main>
+    </div>
   );
 }
