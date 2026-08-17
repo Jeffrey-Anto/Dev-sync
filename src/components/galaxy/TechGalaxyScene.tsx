@@ -194,32 +194,32 @@ export default function TechGalaxyScene({
               )}
 
               {/* Floating 3D Text Label */}
-              <Html
-                position={[0, scale * 0.5 + 0.35, 0]}
-                center
-                distanceFactor={11}
-                className="pointer-events-none select-none"
-              >
-                <div
-                  className={`px-2 py-0.5 rounded-md font-mono text-[10px] whitespace-nowrap transition-all duration-300 ${
-                    isHighlighted
-                      ? "bg-slate-900/90 text-white font-bold border border-white/40 shadow-lg scale-110"
-                      : isDimmed
-                      ? "opacity-20 text-slate-500"
-                      : "bg-black/60 text-slate-300 border border-white/10"
-                  }`}
-                  style={{
-                    boxShadow: isHighlighted ? `0 0 15px ${node.tech.color}` : "none",
-                  }}
+              {!isDimmed && (
+                <Html
+                  position={[0, scale * 0.5 + 0.35, 0]}
+                  center
+                  distanceFactor={11}
+                  className="pointer-events-none select-none"
                 >
-                  {node.tech.name}
-                  {isHighlighted && (
-                    <span className="ml-1 text-[9px] text-cyan-300">
-                      ({node.tech.studentCount})
-                    </span>
-                  )}
-                </div>
-              </Html>
+                  <div
+                    className={`px-2 py-0.5 rounded-md font-mono text-[10px] whitespace-nowrap transition-all duration-300 ${
+                      isHighlighted
+                        ? "bg-slate-900/90 text-white font-bold border border-white/40 shadow-lg scale-110"
+                        : "bg-black/60 text-slate-300 border border-white/10"
+                    }`}
+                    style={{
+                      boxShadow: isHighlighted ? `0 0 15px ${node.tech.color}` : "none",
+                    }}
+                  >
+                    {node.tech.name}
+                    {isHighlighted && (
+                      <span className="ml-1 text-[9px] text-cyan-300">
+                        ({node.tech.studentCount})
+                      </span>
+                    )}
+                  </div>
+                </Html>
+              )}
             </group>
           );
         })}

@@ -8,14 +8,26 @@ export default function WebDevTheme() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
+    let frame = 0;
+    let latestX = 0;
+    let latestY = 0;
     const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({
-        x: (e.clientX / window.innerWidth - 0.5) * 20,
-        y: (e.clientY / window.innerHeight - 0.5) * 20,
+      latestX = e.clientX;
+      latestY = e.clientY;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        setMousePos({
+          x: (latestX / window.innerWidth - 0.5) * 20,
+          y: (latestY / window.innerHeight - 0.5) * 20,
+        });
       });
     };
     window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
+    return () => {
+      window.removeEventListener("mousemove", handleMouseMove);
+      if (frame) cancelAnimationFrame(frame);
+    };
   }, []);
 
   return (

@@ -9,6 +9,12 @@ interface NodeGraphProps {
   connectionDistance?: number;
 }
 
+// Reused scratch colors to avoid per-frame allocations in the O(n²) connection loop
+const LINE_COLOR_NEAR = new THREE.Color("#818CF8"); // Indigo
+const LINE_COLOR_FAR = new THREE.Color("#06B6D4");  // Cyan
+const scratchC1 = new THREE.Color();
+const scratchC2 = new THREE.Color();
+
 export function TechnicalNodeGraph({ count = 90, connectionDistance = 3.2 }: NodeGraphProps) {
   const { mouse } = useThree();
 
@@ -105,9 +111,6 @@ export function TechnicalNodeGraph({ count = 90, connectionDistance = 3.2 }: Nod
     let lineIdx = 0;
     let lineColorsIdx = 0;
 
-    const colorNear = new THREE.Color("#818CF8"); // Indigo
-    const colorFar = new THREE.Color("#06B6D4");  // Cyan
-
     for (let i = 0; i < count; i++) {
       for (let j = i + 1; j < count; j++) {
         const i3 = i * 3;
@@ -130,16 +133,18 @@ export function TechnicalNodeGraph({ count = 90, connectionDistance = 3.2 }: Nod
           linePositions[lineIdx++] = currentPos[j3 + 2];
 
           // Gradient color along line
-          const c1 = colorNear.clone().lerp(colorFar, (currentPos[i3] + 8) / 16);
-          const c2 = colorFar.clone().lerp(colorNear, (currentPos[j3] + 8) / 16);
+          const t1 = (currentPos[i3] + 8) / 16;
+          const t2 = (currentPos[j3] + 8) / 16;
+          scratchC1.copy(LINE_COLOR_NEAR).lerp(LINE_COLOR_FAR, t1);
+          scratchC2.copy(LINE_COLOR_FAR).lerp(LINE_COLOR_NEAR, t2);
 
-          lineColors[lineColorsIdx++] = c1.r * alpha * 0.85;
-          lineColors[lineColorsIdx++] = c1.g * alpha * 0.85;
-          lineColors[lineColorsIdx++] = c1.b * alpha * 0.85;
+          lineColors[lineColorsIdx++] = scratchC1.r * alpha * 0.85;
+          lineColors[lineColorsIdx++] = scratchC1.g * alpha * 0.85;
+          lineColors[lineColorsIdx++] = scratchC1.b * alpha * 0.85;
 
-          lineColors[lineColorsIdx++] = c2.r * alpha * 0.85;
-          lineColors[lineColorsIdx++] = c2.g * alpha * 0.85;
-          lineColors[lineColorsIdx++] = c2.b * alpha * 0.85;
+          lineColors[lineColorsIdx++] = scratchC2.r * alpha * 0.85;
+          lineColors[lineColorsIdx++] = scratchC2.g * alpha * 0.85;
+          lineColors[lineColorsIdx++] = scratchC2.b * alpha * 0.85;
         }
       }
     }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { Suspense, useEffect, useState } from "react";
+import React, { Suspense, useEffect, useRef, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import HeroScene from "./HeroScene";
 
@@ -11,6 +11,8 @@ interface SceneCanvasProps {
 export default function SceneCanvas({ className = "w-full h-full" }: SceneCanvasProps) {
   const [mounted, setMounted] = useState(false);
   const [dpr, setDpr] = useState(1);
+  const [inView, setInView] = useState(true);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setMounted(true);
@@ -18,6 +20,16 @@ export default function SceneCanvas({ className = "w-full h-full" }: SceneCanvas
     const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
     setDpr(pixelRatio);
   }, []);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(([entry]) => {
+      setInView(entry.isIntersecting);
+    });
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [mounted]);
 
   if (!mounted) {
     return (
@@ -28,8 +40,9 @@ export default function SceneCanvas({ className = "w-full h-full" }: SceneCanvas
   }
 
   return (
-    <div className={className}>
+    <div ref={containerRef} className={className}>
       <Canvas
+        frameloop={inView ? "always" : "never"}
         camera={{ position: [0, 0, 7], fov: 50, near: 0.1, far: 50 }}
         dpr={dpr}
         gl={{
