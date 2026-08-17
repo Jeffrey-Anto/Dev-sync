@@ -3,8 +3,10 @@
 import React from "react";
 import { motion, Variants } from "framer-motion";
 import { ChevronDown, ShieldCheck, Cpu, ArrowRight, Layers } from "lucide-react";
-import SceneCanvas from "./canvas/SceneCanvas";
+import dynamic from "next/dynamic";
 import { COHORT_STATS } from "@/data/domains";
+
+const SceneCanvas = dynamic(() => import("./canvas/SceneCanvas"), { ssr: false });
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },

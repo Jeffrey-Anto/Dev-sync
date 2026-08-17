@@ -15,6 +15,10 @@ const LINE_COLOR_FAR = new THREE.Color("#06B6D4");  // Cyan
 const scratchC1 = new THREE.Color();
 const scratchC2 = new THREE.Color();
 
+// THREE.Clock is deprecated in three r185; use performance-based elapsed time instead
+const startTime = performance.now();
+const elapsedTime = () => (performance.now() - startTime) / 1000;
+
 export function TechnicalNodeGraph({ count = 90, connectionDistance = 3.2 }: NodeGraphProps) {
   const { mouse } = useThree();
 
@@ -81,8 +85,8 @@ export function TechnicalNodeGraph({ count = 90, connectionDistance = 3.2 }: Nod
     }));
   }, []);
 
-  useFrame((state, delta) => {
-    const time = state.clock.getElapsedTime();
+  useFrame(() => {
+    const time = elapsedTime();
     const posAttr = pointsRef.current?.geometry.attributes.position;
     if (!posAttr) return;
 
@@ -234,8 +238,8 @@ export function GeometricCore() {
   const wireRef = useRef<THREE.LineSegments>(null!);
   const ringRef = useRef<THREE.Group>(null!);
 
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
+  useFrame(() => {
+    const t = elapsedTime();
     if (meshRef.current) {
       meshRef.current.rotation.x = t * 0.12;
       meshRef.current.rotation.y = t * 0.16;
@@ -311,8 +315,8 @@ export function GeometricCore() {
 export function CameraRig() {
   const { camera, mouse } = useThree();
 
-  useFrame((state, delta) => {
-    const t = state.clock.getElapsedTime();
+  useFrame((_, delta) => {
+    const t = elapsedTime();
 
     // Target position with mouse parallax + subtle ambient figure-8 drift
     const targetX = mouse.x * 1.5 + Math.sin(t * 0.25) * 0.4;
