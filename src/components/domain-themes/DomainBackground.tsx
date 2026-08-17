@@ -6,6 +6,7 @@ const WebDevTheme = lazy(() => import("./WebDevTheme"));
 const AiMlTheme = lazy(() => import("./AiMlTheme"));
 const CloudDevOpsTheme = lazy(() => import("./CloudDevOpsTheme"));
 const EmbeddedIotTheme = lazy(() => import("./EmbeddedIotTheme"));
+const UiUxTheme = lazy(() => import("./UiUxTheme"));
 const MobileDevTheme = lazy(() => import("./MobileDevTheme"));
 const CybersecurityTheme = lazy(() => import("./CybersecurityTheme"));
 
@@ -22,8 +23,9 @@ export default function DomainBackground({ domainId }: DomainBackgroundProps) {
         return <AiMlTheme />;
       case "cloud-devops":
         return <CloudDevOpsTheme />;
+      case "ui-ux":
       case "embedded-iot":
-        return <EmbeddedIotTheme />;
+        return <UiUxTheme />;
       case "mobile-dev":
         return <MobileDevTheme />;
       case "cybersecurity":

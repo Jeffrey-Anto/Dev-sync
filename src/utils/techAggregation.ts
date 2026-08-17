@@ -30,7 +30,7 @@ export function getAggregatedTechStack(): AggregatedTech[] {
     if (["python", "typescript", "rust", "go", "c/c++", "c", "c++", "kotlin", "swift", "dart"].includes(lower)) {
       return "Language";
     }
-    if (["next.js", "react native", "flutter", "fastapi", "graphql", "tailwind css", "jetpack compose", "yjs"].includes(lower)) {
+    if (["next.js", "react native", "flutter", "fastapi", "graphql", "tailwind css", "jetpack compose", "yjs", "figma", "design systems", "storybook", "wcag 2.1", "rive", "radix ui", "figma tokens"].includes(lower)) {
       return "Framework";
     }
     if (["kubernetes", "docker", "terraform", "aws", "github actions", "prometheus", "grafana", "argocd", "helm", "aws eks"].includes(lower)) {

@@ -18,6 +18,7 @@ import {
   ChevronLeft,
   ChevronRight,
   Compass,
+  Palette,
 } from "lucide-react";
 import { DOMAINS, Domain } from "@/data/domains";
 
@@ -27,6 +28,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; style?: 
   BrainCircuit,
   CloudCog,
   Cpu,
+  Palette,
   Smartphone,
   ShieldAlert,
 };

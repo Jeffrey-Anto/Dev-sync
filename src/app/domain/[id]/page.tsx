@@ -14,6 +14,7 @@ import {
   Cpu,
   Smartphone,
   ShieldAlert,
+  Palette,
   Users,
   FolderGit2,
   Layers,
@@ -30,6 +31,7 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; style?: 
   BrainCircuit,
   CloudCog,
   Cpu,
+  Palette,
   Smartphone,
   ShieldAlert,
 };
