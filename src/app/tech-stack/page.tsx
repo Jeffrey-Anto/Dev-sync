@@ -1,120 +1,173 @@
 "use client";
 
-import React, { useState, useMemo, Suspense } from "react";
-import { Canvas } from "@react-three/fiber";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import React, { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import {
   Search,
-  Layers,
-  Users,
-  FolderGit2,
-  X,
-  ExternalLink,
-  RotateCw,
   Sparkles,
-  Info,
-  ChevronRight,
+  RotateCw,
+  X,
+  Layers,
+  Cpu,
+  Globe,
   Terminal,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import TechGalaxyScene from "@/components/galaxy/TechGalaxyScene";
-import { getAggregatedTechStack, AggregatedTech } from "@/utils/techAggregation";
-import { DOMAINS, PROJECTS } from "@/data/domains";
+import { IconCloud } from "@/registry/magicui/icon-cloud";
 
-const categories = [
-  "All",
-  "Language",
-  "Framework",
-  "Cloud & DevOps",
-  "AI & ML",
-  "Systems & Embedded",
-  "Security & Data",
+const allSlugs = [
+  // Core Languages & Foundations
+  "typescript",
+  "javascript",
+  "dart",
+  "java",
+  "python",
+  "rust",
+  "go",
+  "cplusplus",
+  "c",
+  "html5",
+  "css3",
+
+  // Modern Frameworks & Libraries
+  "react",
+  "flutter",
+  "android",
+  "nodedotjs",
+  "express",
+  "nextdotjs",
+  "fastapi",
+  "tailwindcss",
+  "framer",
+  "graphql",
+
+  // Cloud, DevOps & Platforms
+  "docker",
+  "kubernetes",
+  "terraform",
+  "amazonaws",
+  "helm",
+  "prometheus",
+  "grafana",
+  "nginx",
+  "vercel",
+  "firebase",
+
+  // Databases & Backend Architecture
+  "postgresql",
+  "mongodb",
+  "redis",
+  "prisma",
+
+  // AI, Deep Learning & Computer Vision
+  "pytorch",
+  "huggingface",
+  "opencv",
+
+  // QA, Testing & Static Analysis
+  "testinglibrary",
+  "jest",
+  "cypress",
+  "sonarqube",
+  "postman",
+
+  // Version Control, Collaboration & IDEs
+  "git",
+  "github",
+  "gitlab",
+  "jira",
+  "visualstudiocode",
+  "androidstudio",
+
+  // UI/UX Design, Security & Edge Hardware
+  "figma",
+  "storybook",
+  "kalilinux",
+  "wireshark",
+  "raspberrypi",
+  "espressif",
 ];
 
-export default function TechStackGalaxyPage() {
-  const techList = useMemo(() => getAggregatedTechStack(), []);
+const categoryFilters = [
+  { label: "All Technologies", key: "all" },
+  { label: "Languages", key: "languages", slugs: ["typescript", "javascript", "dart", "java", "python", "rust", "go", "cplusplus", "c", "html5", "css3"] },
+  { label: "Frameworks & Web", key: "frameworks", slugs: ["react", "flutter", "android", "nodedotjs", "express", "nextdotjs", "fastapi", "tailwindcss", "framer", "graphql"] },
+  { label: "Cloud & DevOps", key: "cloud", slugs: ["docker", "kubernetes", "terraform", "amazonaws", "helm", "prometheus", "grafana", "nginx", "vercel", "firebase"] },
+  { label: "Databases & Data", key: "data", slugs: ["postgresql", "mongodb", "redis", "prisma"] },
+  { label: "AI & ML", key: "aiml", slugs: ["pytorch", "huggingface", "opencv"] },
+  { label: "Design & Security", key: "tools", slugs: ["figma", "storybook", "kalilinux", "wireshark", "raspberrypi", "espressif", "visualstudiocode", "git", "github"] },
+];
 
+export default function TechStackPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("All");
-  const [selectedTech, setSelectedTech] = useState<AggregatedTech | null>(null);
-  const [hoveredTech, setHoveredTech] = useState<AggregatedTech | null>(null);
+  const [selectedFilter, setSelectedFilter] = useState("all");
 
-  // Active tech to display in panel is selectedTech or hoveredTech fallback
-  const activeTech = selectedTech || hoveredTech;
+  // Filter slugs based on active category & search query
+  const filteredSlugs = useMemo(() => {
+    let result = allSlugs;
 
-  // Filtered tech count
-  const matchingCount = useMemo(() => {
-    return techList.filter((tech) => {
-      const matchSearch =
-        searchQuery.trim() === "" ||
-        tech.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const matchCat =
-        selectedCategory === "All" || tech.category === selectedCategory;
-      return matchSearch && matchCat;
-    }).length;
-  }, [techList, searchQuery, selectedCategory]);
+    if (selectedFilter !== "all") {
+      const activeCat = categoryFilters.find((c) => c.key === selectedFilter);
+      if (activeCat && activeCat.slugs) {
+        result = result.filter((slug) => activeCat.slugs.includes(slug));
+      }
+    }
+
+    if (searchQuery.trim()) {
+      const q = searchQuery.toLowerCase().trim();
+      result = result.filter((slug) => slug.toLowerCase().includes(q));
+    }
+
+    return result.length > 0 ? result : allSlugs;
+  }, [selectedFilter, searchQuery]);
+
+  const images = useMemo(() => {
+    return filteredSlugs.map(
+      (slug) => `https://cdn.simpleicons.org/${slug}/${slug}`
+    );
+  }, [filteredSlugs]);
 
   return (
-    <div className="relative w-full h-screen bg-[#050608] text-white overflow-hidden flex flex-col justify-between">
+    <div className="relative w-full h-screen bg-[#040508] text-white overflow-hidden flex flex-col justify-between">
       {/* Global Navigation */}
       <Navbar />
 
-      {/* 3D WebGL Galaxy Canvas */}
-      <div className="absolute inset-0 z-0">
-        <Canvas
-          camera={{ position: [0, 0, 14], fov: 45, near: 0.1, far: 100 }}
-          dpr={[1, 2]}
-          gl={{ antialias: true, alpha: true }}
-        >
-          <Suspense fallback={null}>
-            <TechGalaxyScene
-              techList={techList}
-              searchQuery={searchQuery}
-              selectedCategory={selectedCategory}
-              selectedTech={selectedTech}
-              onSelectTech={(tech) => setSelectedTech(tech)}
-              hoveredTech={hoveredTech}
-              onHoverTech={(tech) => setHoveredTech(tech)}
-            />
-          </Suspense>
-        </Canvas>
-      </div>
-
-      {/* Grid Overlay */}
+      {/* Dynamic Background Tech Grids & Soft Radial Ambient Glow */}
       <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/3 left-1/3 w-[450px] h-[450px] bg-cyan-500/10 rounded-full blur-[130px] pointer-events-none" />
 
-      {/* Header UI Controls & Search Overlay */}
-      <div className="relative z-10 pt-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full pointer-events-none">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      {/* Floating Header UI Controls & Search */}
+      <div className="relative z-20 pt-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto w-full pointer-events-none">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-slate-950/70 border border-white/10 rounded-2xl p-4 sm:p-5 backdrop-blur-xl pointer-events-auto shadow-2xl">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-xs font-mono text-indigo-300 mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-full bg-indigo-500/15 border border-indigo-500/30 text-[11px] font-mono text-indigo-300 mb-1.5">
+              <Sparkles className="w-3 h-3 text-cyan-400" />
               <span>COHORT SKILL GALAXY // 3D TOPOLOGY</span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
               Technology Stack Universe
             </h1>
-            <p className="text-xs sm:text-sm text-slate-400 font-mono mt-1">
-              {techList.length} Technologies Mastered Across 60 Engineers · Node scale proportional to cohort proficiency
+            <p className="text-xs text-slate-400 font-mono">
+              {allSlugs.length} verified technologies mastered across 60 engineers · Interactive 3D Icon Cloud
             </p>
           </div>
 
           {/* Search Input */}
-          <div className="pointer-events-auto flex items-center gap-2 max-w-md w-full">
+          <div className="flex items-center gap-2 max-w-sm w-full">
             <div className="relative flex-grow">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search technology (e.g., PyTorch, Rust, Docker)..."
-                className="w-full pl-10 pr-10 py-2.5 rounded-xl bg-slate-900/80 border border-white/15 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all backdrop-blur-md"
+                placeholder="Filter technology (e.g., Python, Docker, Figma)..."
+                className="w-full pl-9 pr-8 py-2 rounded-xl bg-slate-900/90 border border-white/15 text-xs font-mono text-white placeholder-slate-500 focus:outline-none focus:border-indigo-400 focus:ring-1 focus:ring-indigo-400 transition-all"
               />
               {searchQuery && (
                 <button
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
                 >
                   <X className="w-3.5 h-3.5" />
                 </button>
@@ -123,137 +176,46 @@ export default function TechStackGalaxyPage() {
           </div>
         </div>
 
-        {/* Category Filter Pills */}
-        <div className="pointer-events-auto flex flex-wrap items-center gap-1.5 mt-4">
-          {categories.map((cat) => (
+        {/* Category Filter Pills Bar */}
+        <div className="pointer-events-auto flex flex-wrap items-center gap-1.5 mt-3">
+          {categoryFilters.map((cat) => (
             <button
-              key={cat}
-              onClick={() => setSelectedCategory(cat)}
+              key={cat.key}
+              onClick={() => setSelectedFilter(cat.key)}
               className={`px-3 py-1 rounded-lg text-xs font-mono transition-all cursor-pointer ${
-                selectedCategory === cat
+                selectedFilter === cat.key
                   ? "bg-indigo-600 text-white font-semibold shadow-[0_0_15px_rgba(99,102,241,0.4)] border border-indigo-400"
-                  : "bg-black/50 text-slate-400 border border-white/10 hover:text-white hover:border-white/20"
+                  : "bg-black/60 text-slate-400 border border-white/10 hover:text-white hover:border-white/20 backdrop-blur-md"
               }`}
             >
-              {cat}
+              {cat.label}
             </button>
           ))}
           <span className="text-[11px] font-mono text-slate-500 ml-2">
-            Showing {matchingCount} of {techList.length} nodes
+            Showing {filteredSlugs.length} icons
           </span>
         </div>
       </div>
 
-      {/* Orbit Controls Hint / Recruiter Tooltip */}
-      <div className="relative z-10 pb-6 px-4 sm:px-8 max-w-7xl mx-auto w-full flex items-center justify-between pointer-events-none text-xs font-mono text-slate-400">
-        <div className="flex items-center gap-2 bg-black/60 px-3.5 py-1.5 rounded-xl border border-white/10 backdrop-blur-md">
-          <RotateCw className="w-3.5 h-3.5 text-indigo-400 animate-spin" style={{ animationDuration: "12s" }} />
-          <span>DRAG TO ORBIT · SCROLL TO ZOOM · CLICK NODE FOR DEEP DIVE</span>
-        </div>
-
-        <div className="hidden sm:flex items-center gap-2 bg-black/60 px-3.5 py-1.5 rounded-xl border border-white/10 backdrop-blur-md">
-          <span className="w-2 h-2 rounded-full bg-emerald-400" />
-          <span>ANONYMIZED COHORT TELEMETRY</span>
+      {/* 3D Interactive IconCloud Spherical Centerpiece */}
+      <div className="relative z-10 flex-grow flex items-center justify-center w-full px-4 max-h-[62vh]">
+        <div className="relative flex size-full max-w-3xl items-center justify-center overflow-hidden">
+          <IconCloud images={images} />
         </div>
       </div>
 
-      {/* Sliding Detailed Info Panel (Right Side) */}
-      <AnimatePresence>
-        {activeTech && (
-          <motion.div
-            initial={{ opacity: 0, x: 100 }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: 100 }}
-            transition={{ type: "spring", damping: 25, stiffness: 280 }}
-            className="fixed top-24 right-4 sm:right-8 z-30 w-80 sm:w-96 rounded-3xl bg-[#0d101a]/90 border border-white/15 p-6 shadow-2xl backdrop-blur-xl text-white pointer-events-auto"
-            style={{
-              boxShadow: `0 20px 50px -15px ${activeTech.color}40`,
-            }}
-          >
-            {/* Panel Header */}
-            <div className="flex items-start justify-between border-b border-white/10 pb-4 mb-4">
-              <div>
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-white/5 border border-white/10 text-slate-300">
-                  {activeTech.category}
-                </span>
-                <h3 className="text-2xl font-extrabold text-white mt-1 tracking-tight">
-                  {activeTech.name}
-                </h3>
-              </div>
+      {/* Interactive Drag & Recruiter Telemetry Cue */}
+      <div className="relative z-20 pb-5 px-4 sm:px-8 max-w-7xl mx-auto w-full flex items-center justify-between pointer-events-none text-xs font-mono text-slate-400">
+        <div className="flex items-center gap-2 bg-black/60 px-3.5 py-1.5 rounded-xl border border-white/10 backdrop-blur-md pointer-events-auto">
+          <RotateCw className="w-3.5 h-3.5 text-indigo-400 animate-spin" style={{ animationDuration: "12s" }} />
+          <span>DRAG SPHERE TO ROTATE · HOVER TO TILT · 3D ICON CLOUD</span>
+        </div>
 
-              {selectedTech && (
-                <button
-                  onClick={() => setSelectedTech(null)}
-                  className="w-7 h-7 rounded-full bg-slate-900 border border-white/10 flex items-center justify-center text-slate-400 hover:text-white"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-
-            {/* Proficiency Meter */}
-            <div className="mb-4">
-              <div className="flex items-center justify-between text-xs font-mono mb-1.5">
-                <span className="text-slate-400 flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5 text-indigo-400" />
-                  Cohort Proficiency:
-                </span>
-                <strong className="text-white font-bold">
-                  {activeTech.studentCount} / 60 Engineers
-                </strong>
-              </div>
-              <div className="h-2 w-full bg-black/60 rounded-full overflow-hidden border border-white/10">
-                <div
-                  className="h-full rounded-full transition-all duration-500"
-                  style={{
-                    width: `${(activeTech.studentCount / 60) * 100}%`,
-                    backgroundColor: activeTech.color,
-                    boxShadow: `0 0 10px ${activeTech.color}`,
-                  }}
-                />
-              </div>
-            </div>
-
-            {/* Associated Domains */}
-            <div className="mb-4">
-              <span className="text-[11px] font-mono text-slate-400 block mb-2">
-                ACTIVE IN DOMAINS:
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {activeTech.domainIds.map((domainId, idx) => {
-                  const domain = DOMAINS.find((d) => d.id === domainId);
-                  if (!domain) return null;
-                  return (
-                    <Link
-                      key={idx}
-                      href={`/domain/${domain.id}`}
-                      className="group flex items-center gap-1 text-[11px] font-mono px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 hover:border-white/30 text-slate-200 hover:text-white transition-all"
-                    >
-                      <span
-                        className="w-1.5 h-1.5 rounded-full"
-                        style={{ backgroundColor: domain.colorTheme.primary }}
-                      />
-                      <span>{domain.shortName}</span>
-                      <ChevronRight className="w-3 h-3 text-slate-500 group-hover:translate-x-0.5 transition-transform" />
-                    </Link>
-                  );
-                })}
-              </div>
-            </div>
-
-            {/* Production Projects Tag */}
-            <div className="p-3 rounded-2xl bg-white/[0.02] border border-white/5 flex items-center justify-between text-xs font-mono text-slate-300">
-              <span className="flex items-center gap-1.5">
-                <FolderGit2 className="w-4 h-4 text-cyan-400" />
-                Deployed Projects:
-              </span>
-              <span className="font-bold text-white">
-                {activeTech.projectCount} System Repositories
-              </span>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        <div className="hidden sm:flex items-center gap-2 bg-black/60 px-3.5 py-1.5 rounded-xl border border-white/10 backdrop-blur-md">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>ANONYMIZED COHORT CAPABILITIES</span>
+        </div>
+      </div>
     </div>
   );
 }
