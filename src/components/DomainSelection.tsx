@@ -15,6 +15,9 @@ import {
   Users,
   FolderGit2,
   Terminal,
+  ChevronLeft,
+  ChevronRight,
+  Compass,
 } from "lucide-react";
 import { DOMAINS, Domain } from "@/data/domains";
 
@@ -30,25 +33,53 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; style?: 
 
 export default function DomainSelection() {
   const router = useRouter();
+  const [activeIndex, setActiveIndex] = useState(0);
   const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [hoveredDomainId, setHoveredDomainId] = useState<string | null>(null);
 
-  const handleDomainClick = (domain: Domain) => {
+  const total = DOMAINS.length;
+
+  const handleDomainClick = (domain: Domain, index: number) => {
     if (isTransitioning) return;
+
+    // If clicking a side card, bring it to the center
+    if (index !== activeIndex) {
+      setActiveIndex(index);
+      return;
+    }
+
+    // If clicking the active center card, trigger the cinematic transition
     setSelectedDomain(domain);
     setIsTransitioning(true);
 
-    // Trigger cinematic navigation after the zoom & scatter sequence finishes
     setTimeout(() => {
       router.push(`/domain/${domain.id}`);
     }, 850);
   };
 
+  const handlePrev = () => {
+    if (isTransitioning) return;
+    setActiveIndex((prev) => (prev - 1 + total) % total);
+  };
+
+  const handleNext = () => {
+    if (isTransitioning) return;
+    setActiveIndex((prev) => (prev + 1) % total);
+  };
+
+  // Helper to compute circular shortest distance offset (-2, -1, 0, 1, 2, 3)
+  const getCircularOffset = (index: number) => {
+    let offset = index - activeIndex;
+    if (offset > total / 2) offset -= total;
+    if (offset < -total / 2) offset += total;
+    return offset;
+  };
+
   return (
     <section
       id="domains"
-      className="relative z-20 min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#050608] overflow-hidden flex flex-col justify-center"
+      className="relative z-20 min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#050608] overflow-hidden flex flex-col justify-center select-none"
     >
       {/* Dynamic Background Grid & Ambient Glow */}
       <div className="absolute inset-0 tech-grid-bg opacity-40 pointer-events-none" />
@@ -99,7 +130,10 @@ export default function DomainSelection() {
               <div className="text-xs uppercase tracking-widest text-cyan-300 mb-2">
                 ENTERING SPECIALIZATION MATRIX //
               </div>
-              <div className="text-3xl sm:text-5xl font-black tracking-tight" style={{ color: selectedDomain.colorTheme.secondary }}>
+              <div
+                className="text-3xl sm:text-5xl font-black tracking-tight"
+                style={{ color: selectedDomain.colorTheme.secondary }}
+              >
                 {selectedDomain.name}
               </div>
               <div className="text-sm text-slate-300 mt-2 font-mono">
@@ -112,7 +146,7 @@ export default function DomainSelection() {
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 sm:mb-20">
+        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -120,8 +154,8 @@ export default function DomainSelection() {
             transition={{ duration: 0.6 }}
             className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-cyan-400 mb-4"
           >
-            <Terminal className="w-3.5 h-3.5 text-indigo-400" />
-            <span>CAPABILITY DISCOVERY MENU</span>
+            <Compass className="w-3.5 h-3.5 text-indigo-400" />
+            <span>3D CIRCULAR CAPABILITY ORBIT</span>
           </motion.div>
 
           <motion.h2
@@ -141,94 +175,126 @@ export default function DomainSelection() {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="text-sm sm:text-base text-slate-400 mt-3 font-mono"
           >
-            Minimal, confident capability architecture. Hover for telemetry. Click to initiate deep-dive exploration.
+            Click any surrounding card to bring it to center. Click the focused card to explore details.
           </motion.p>
         </div>
 
-        {/* Spatial 3D Staggered Cluster Layout */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 perspective-container">
+        {/* 3D Circular Deck / Coverflow Viewport */}
+        <div className="relative w-full h-[520px] sm:h-[540px] flex items-center justify-center perspective-[1400px]">
           {DOMAINS.map((domain, index) => {
             const Icon = iconMap[domain.icon] || Terminal;
+            const offset = getCircularOffset(index);
+            const isCenter = offset === 0;
             const isHovered = hoveredDomainId === domain.id;
             const isSelected = selectedDomain?.id === domain.id;
-            const isOther = isTransitioning && !isSelected;
-
-            // Scatter trajectory vector for other cards when one is clicked
-            const scatterX = (index % 3 - 1) * 350;
-            const scatterY = (Math.floor(index / 3) === 0 ? -1 : 1) * 350;
 
             return (
-              <DomainCard
+              <CircularDomainCard
                 key={domain.id}
                 domain={domain}
                 index={index}
+                offset={offset}
+                isCenter={isCenter}
                 Icon={Icon}
                 isHovered={isHovered}
                 isSelected={isSelected}
-                isOther={isOther}
-                scatterX={scatterX}
-                scatterY={scatterY}
                 isTransitioning={isTransitioning}
                 onHover={() => setHoveredDomainId(domain.id)}
                 onLeave={() => setHoveredDomainId(null)}
-                onClick={() => handleDomainClick(domain)}
+                onClick={() => handleDomainClick(domain, index)}
               />
             );
           })}
+
+          {/* Floating Left / Right Arrow Controls */}
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between px-2 sm:px-8 pointer-events-none z-40">
+            <button
+              onClick={handlePrev}
+              aria-label="Previous Domain"
+              className="pointer-events-auto p-3 rounded-full bg-slate-950/80 border border-white/15 text-slate-300 hover:text-white hover:border-white/30 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group"
+            >
+              <ChevronLeft className="w-6 h-6 group-hover:-translate-x-0.5 transition-transform" />
+            </button>
+
+            <button
+              onClick={handleNext}
+              aria-label="Next Domain"
+              className="pointer-events-auto p-3 rounded-full bg-slate-950/80 border border-white/15 text-slate-300 hover:text-white hover:border-white/30 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group"
+            >
+              <ChevronRight className="w-6 h-6 group-hover:translate-x-0.5 transition-transform" />
+            </button>
+          </div>
         </div>
 
-        {/* Recruiter Instruction Footer */}
+        {/* Orbit Pagination Indicators */}
+        <div className="flex items-center justify-center gap-2 mt-8">
+          {DOMAINS.map((domain, idx) => (
+            <button
+              key={domain.id}
+              onClick={() => setActiveIndex(idx)}
+              aria-label={`Select domain ${domain.name}`}
+              className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                activeIndex === idx
+                  ? "w-8 shadow-[0_0_12px_rgba(99,102,241,0.8)]"
+                  : "w-2 bg-slate-800 hover:bg-slate-600"
+              }`}
+              style={{
+                backgroundColor: activeIndex === idx ? domain.colorTheme.primary : undefined,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Recruiter Navigation Footer Cue */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6 }}
-          className="mt-16 text-center text-xs font-mono text-slate-500 flex items-center justify-center gap-2"
+          className="mt-10 text-center text-xs font-mono text-slate-500 flex items-center justify-center gap-2"
         >
           <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Interactive Spatial Cluster · Click any domain to enter verified cohort pipelines</span>
+          <span>Interactive 3D Carousel · Click centered card to deep-dive into verified pipelines</span>
         </motion.div>
       </div>
     </section>
   );
 }
 
-interface DomainCardProps {
+interface CircularDomainCardProps {
   domain: Domain;
   index: number;
+  offset: number;
+  isCenter: boolean;
   Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   isHovered: boolean;
   isSelected: boolean;
-  isOther: boolean;
-  scatterX: number;
-  scatterY: number;
   isTransitioning: boolean;
   onHover: () => void;
   onLeave: () => void;
   onClick: () => void;
 }
 
-function DomainCard({
+function CircularDomainCard({
   domain,
   index,
+  offset,
+  isCenter,
   Icon,
   isHovered,
   isSelected,
-  isOther,
-  scatterX,
-  scatterY,
   isTransitioning,
   onHover,
   onLeave,
   onClick,
-}: DomainCardProps) {
+}: CircularDomainCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
-  const [rotateY, setRotateY] = useState(0);
+  const [rotateYTilt, setRotateYTilt] = useState(0);
   const [spotlightPos, setSpotlightPos] = useState({ x: 50, y: 50 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || isTransitioning) return;
+    if (!cardRef.current || isTransitioning || !isCenter) return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -236,11 +302,11 @@ function DomainCard({
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotX = ((y - centerY) / centerY) * -10; // Max 10 deg tilt
-    const rotY = ((x - centerX) / centerX) * 10;
+    const rotX = ((y - centerY) / centerY) * -8;
+    const rotY = ((x - centerX) / centerX) * 8;
 
     setRotateX(rotX);
-    setRotateY(rotY);
+    setRotateYTilt(rotY);
     setSpotlightPos({
       x: (x / rect.width) * 100,
       y: (y / rect.height) * 100,
@@ -249,161 +315,286 @@ function DomainCard({
 
   const handleMouseLeave = () => {
     setRotateX(0);
-    setRotateY(0);
+    setRotateYTilt(0);
     onLeave();
   };
+
+  // 3D Spatial Circular Arc Transformation Coordinates
+  const getTransformStyles = () => {
+    if (isSelected) {
+      return {
+        x: 0,
+        y: 0,
+        z: 300,
+        scale: 1.6,
+        rotateY: 0,
+        opacity: 1,
+        zIndex: 50,
+      };
+    }
+
+    if (isTransitioning && !isSelected) {
+      return {
+        x: offset * 450,
+        y: offset === 0 ? 0 : 50,
+        z: -300,
+        scale: 0.4,
+        rotateY: offset * -25,
+        opacity: 0,
+        zIndex: 0,
+      };
+    }
+
+    switch (offset) {
+      case 0:
+        return {
+          x: 0,
+          y: 0,
+          z: 80,
+          scale: 1.05,
+          rotateY: 0,
+          opacity: 1,
+          zIndex: 30,
+        };
+      case -1:
+        return {
+          x: -310,
+          y: 0,
+          z: -80,
+          scale: 0.76,
+          rotateY: 22,
+          opacity: 0.55,
+          zIndex: 20,
+        };
+      case 1:
+        return {
+          x: 310,
+          y: 0,
+          z: -80,
+          scale: 0.76,
+          rotateY: -22,
+          opacity: 0.55,
+          zIndex: 20,
+        };
+      case -2:
+        return {
+          x: -560,
+          y: 0,
+          z: -220,
+          scale: 0.60,
+          rotateY: 36,
+          opacity: 0.22,
+          zIndex: 10,
+        };
+      case 2:
+        return {
+          x: 560,
+          y: 0,
+          z: -220,
+          scale: 0.60,
+          rotateY: -36,
+          opacity: 0.22,
+          zIndex: 10,
+        };
+      default:
+        return {
+          x: offset < 0 ? -780 : 780,
+          y: 0,
+          z: -380,
+          scale: 0.45,
+          rotateY: offset < 0 ? 45 : -45,
+          opacity: 0,
+          zIndex: 0,
+        };
+    }
+  };
+
+  const transform = getTransformStyles();
 
   return (
     <motion.div
       ref={cardRef}
-      initial={{ opacity: 0, y: 40 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      animate={
-        isSelected
-          ? {
-              scale: 1.8,
-              opacity: 1,
-              transition: { duration: 0.8, ease: "easeOut" },
-            }
-          : isOther
-          ? {
-              x: scatterX,
-              y: scatterY,
-              scale: 0.4,
-              opacity: 0,
-              filter: "blur(12px)",
-              transition: { duration: 0.6, ease: "easeIn" },
-            }
-          : {
-              x: 0,
-              y: 0,
-              scale: 1,
-              opacity: 1,
-              filter: "blur(0px)",
-            }
-      }
+      animate={{
+        x: transform.x,
+        y: transform.y,
+        scale: transform.scale,
+        rotateY: transform.rotateY,
+        opacity: transform.opacity,
+        zIndex: transform.zIndex,
+      }}
+      transition={{
+        type: "spring",
+        stiffness: 260,
+        damping: 26,
+      }}
       onMouseMove={handleMouseMove}
       onMouseEnter={onHover}
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
       style={{
         transformStyle: "preserve-3d",
-        transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+        position: "absolute",
       }}
-      className={`group relative cursor-pointer rounded-3xl transition-shadow duration-300 select-none ${
-        isHovered ? "z-30" : "z-10"
+      className={`w-[360px] sm:w-[420px] h-[460px] cursor-pointer rounded-3xl select-none transition-shadow duration-300 ${
+        isCenter ? "cursor-pointer" : "cursor-pointer hover:brightness-125"
       }`}
     >
-      {/* Outer Glow Outline */}
+      {/* Outer Glow Halo for Center or Hovered Card */}
       <div
-        className="absolute -inset-0.5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-md pointer-events-none"
+        className={`absolute -inset-1 rounded-3xl transition-opacity duration-500 blur-lg pointer-events-none ${
+          isCenter ? "opacity-100" : isHovered ? "opacity-80" : "opacity-30"
+        }`}
         style={{
-          background: `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, ${domain.colorTheme.primary}, transparent 70%)`,
+          background: isCenter
+            ? `radial-gradient(circle, ${domain.colorTheme.primary} 0%, rgba(${domain.colorTheme.rgb}, 0.5) 45%, transparent 75%)`
+            : `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, ${domain.colorTheme.primary}, transparent 70%)`,
         }}
       />
 
-      {/* Main Glass Card Surface */}
+      {/* Main Glass Card Surface with Saturated Colored Border */}
       <div
-        className="relative h-full rounded-3xl bg-[#0b0e17]/80 backdrop-blur-xl border border-white/10 p-7 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300 group-hover:border-white/25 group-hover:bg-[#0f1422]/90"
+        className={`relative h-full rounded-3xl backdrop-blur-2xl p-7 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
+          isCenter
+            ? "bg-[#070a12]/95"
+            : "bg-[#06080e]/90 hover:bg-[#090d18]/95"
+        }`}
         style={{
-          boxShadow: isHovered
-            ? `0 20px 40px -15px rgba(${domain.colorTheme.rgb}, 0.35), inset 0 0 20px rgba(${domain.colorTheme.rgb}, 0.15)`
-            : "0 10px 30px -10px rgba(0, 0, 0, 0.7)",
+          border: isCenter
+            ? `2px solid ${domain.colorTheme.primary}`
+            : isHovered
+            ? `1.5px solid rgba(${domain.colorTheme.rgb}, 0.7)`
+            : `1px solid rgba(${domain.colorTheme.rgb}, 0.35)`,
+          boxShadow: isCenter
+            ? `0 20px 60px -10px rgba(${domain.colorTheme.rgb}, 0.65), 0 0 35px rgba(${domain.colorTheme.rgb}, 0.35), inset 0 0 25px rgba(${domain.colorTheme.rgb}, 0.18)`
+            : isHovered
+            ? `0 15px 40px -10px rgba(${domain.colorTheme.rgb}, 0.5), 0 0 20px rgba(${domain.colorTheme.rgb}, 0.25)`
+            : `0 10px 30px -10px rgba(0, 0, 0, 0.8)`,
+          backgroundImage: `linear-gradient(180deg, rgba(${domain.colorTheme.rgb}, ${isCenter ? 0.16 : 0.08}) 0%, rgba(6, 8, 14, 0.95) 45%, #05070c 100%)`,
         }}
       >
-        {/* Dynamic Cursor Spotlight Reflection */}
+        {/* Dynamic Colored Spotlight Reflection */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+          className={`absolute inset-0 pointer-events-none transition-opacity duration-300 ${
+            isCenter ? "opacity-100" : isHovered ? "opacity-70" : "opacity-0"
+          }`}
           style={{
-            background: `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, rgba(255, 255, 255, 0.08) 0%, transparent 60%)`,
+            background: `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, rgba(${domain.colorTheme.rgb}, 0.25) 0%, transparent 60%)`,
           }}
         />
 
-        {/* Top Header: Domain Icon & Index */}
-        <div className="flex items-start justify-between mb-8">
-          <div
-            className="w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-300 group-hover:scale-110"
-            style={{
-              backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.15)`,
-              border: `1px solid rgba(${domain.colorTheme.rgb}, 0.4)`,
-              boxShadow: isHovered ? `0 0 25px ${domain.colorTheme.glow}` : "none",
-            }}
-          >
-            <Icon
-              className="w-7 h-7 transition-colors duration-300"
-              style={{ color: domain.colorTheme.secondary }}
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="font-mono text-xs text-slate-500 group-hover:text-slate-300 transition-colors">
-              DOM_0{index + 1}
-            </span>
+        {/* Top Header: Domain Category Badge & Index */}
+        <div>
+          <div className="flex items-start justify-between mb-6">
+            {/* Category Tag Pill */}
             <div
-              className="w-8 h-8 rounded-full bg-slate-900/80 border border-white/10 flex items-center justify-center text-slate-400 group-hover:text-white group-hover:border-white/30 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all"
+              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold tracking-wider uppercase"
+              style={{
+                backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.22)`,
+                border: `1px solid ${domain.colorTheme.primary}`,
+                color: domain.colorTheme.secondary,
+                boxShadow: isCenter ? `0 0 25px rgba(${domain.colorTheme.rgb}, 0.5)` : "none",
+              }}
             >
-              <ArrowUpRight className="w-4 h-4" />
+              <Icon className="w-4 h-4" style={{ color: domain.colorTheme.secondary }} />
+              <span>{domain.shortName.toUpperCase()}</span>
             </div>
-          </div>
-        </div>
 
-        {/* Center: Domain Name & Tagline */}
-        <div className="mb-6">
+            <span
+              className="font-mono text-xs font-bold tracking-wider"
+              style={{ color: isCenter ? domain.colorTheme.secondary : "rgba(148, 163, 184, 0.7)" }}
+            >
+              0{index + 1}
+            </span>
+          </div>
+
+          {/* Domain Title */}
           <h3
-            className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight leading-snug group-hover:text-glow-indigo transition-all"
+            className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug mb-3"
             style={{
-              textShadow: isHovered ? `0 0 20px ${domain.colorTheme.glow}` : "none",
+              textShadow: isCenter ? `0 0 30px ${domain.colorTheme.glow}` : "none",
             }}
           >
             {domain.name}
           </h3>
-          <p className="text-xs sm:text-sm text-slate-400 mt-3 leading-relaxed font-sans line-clamp-2">
+
+          {/* Tagline */}
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans line-clamp-3">
             {domain.tagline}
           </p>
         </div>
 
-        {/* Capability Metrics & Tech Tags */}
-        <div>
-          {/* Metrics Pill Line */}
-          <div className="flex items-center gap-4 py-3 border-t border-white/10 text-xs font-mono text-slate-300">
-            <div className="flex items-center gap-1.5">
-              <Users className="w-3.5 h-3.5 text-indigo-400" />
-              <span>
-                <strong className="text-white">{domain.studentCount}</strong> Engineers
-              </span>
-            </div>
-            <span className="text-slate-600">·</span>
-            <div className="flex items-center gap-1.5">
-              <FolderGit2 className="w-3.5 h-3.5 text-cyan-400" />
-              <span>
-                <strong className="text-white">{domain.projectCount}</strong> Systems
-              </span>
-            </div>
+        {/* Middle Feature Highlights List */}
+        <div className="space-y-2.5 py-3">
+          <div className="flex items-center gap-2.5 text-xs font-mono text-slate-200">
+            <span
+              className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
+              style={{
+                backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.25)`,
+                color: domain.colorTheme.secondary,
+                border: `1px solid ${domain.colorTheme.primary}`,
+                boxShadow: `0 0 10px rgba(${domain.colorTheme.rgb}, 0.4)`,
+              }}
+            >
+              ✓
+            </span>
+            <span>
+              <strong className="text-white">{domain.studentCount}</strong> Dedicated Undergraduates
+            </span>
           </div>
 
-          {/* Tech Stack Preview Badges */}
-          <div className="flex flex-wrap gap-1.5 pt-3">
-            {domain.techStack.slice(0, 4).map((tech, tIdx) => (
-              <span
-                key={tIdx}
-                className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/10 text-slate-300 group-hover:border-white/20 transition-colors"
-              >
-                {tech}
-              </span>
-            ))}
-            {domain.techStack.length > 4 && (
-              <span className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/[0.02] border border-white/5 text-slate-500">
-                +{domain.techStack.length - 4} more
-              </span>
-            )}
+          <div className="flex items-center gap-2.5 text-xs font-mono text-slate-200">
+            <span
+              className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
+              style={{
+                backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.25)`,
+                color: domain.colorTheme.secondary,
+                border: `1px solid ${domain.colorTheme.primary}`,
+                boxShadow: `0 0 10px rgba(${domain.colorTheme.rgb}, 0.4)`,
+              }}
+            >
+              ✓
+            </span>
+            <span>
+              <strong className="text-white">{domain.projectCount}</strong> Verified Production Systems
+            </span>
           </div>
         </div>
 
-        {/* Ambient Corner Accent */}
+        {/* Bottom Action Footer */}
         <div
-          className="absolute bottom-0 right-0 w-32 h-32 rounded-tl-full opacity-10 group-hover:opacity-25 transition-opacity duration-500 pointer-events-none"
+          className="pt-4 flex items-center justify-between font-mono text-xs"
+          style={{
+            borderTop: `1px solid rgba(${domain.colorTheme.rgb}, 0.25)`,
+          }}
+        >
+          <span className="text-slate-400">
+            {domain.techStack[0]} · {domain.techStack[1]}
+          </span>
+
+          {isCenter ? (
+            <div
+              className="flex items-center gap-1.5 font-bold tracking-wider uppercase transition-transform group-hover:scale-105"
+              style={{
+                color: domain.colorTheme.secondary,
+                textShadow: `0 0 15px ${domain.colorTheme.primary}`,
+              }}
+            >
+              <span>EXPLORE DETAILS</span>
+              <Sparkles className="w-3.5 h-3.5 animate-pulse" />
+            </div>
+          ) : (
+            <span
+              className="uppercase tracking-wider text-[11px] font-semibold transition-colors"
+              style={{ color: isHovered ? domain.colorTheme.secondary : "rgba(148, 163, 184, 0.6)" }}
+            >
+              CLICK TO FOCUS
+            </span>
+          )}
+        </div>
+
+        {/* Ambient Corner Flare */}
+        <div
+          className="absolute bottom-0 right-0 w-40 h-40 rounded-tl-full opacity-20 pointer-events-none blur-xl"
           style={{ backgroundColor: domain.colorTheme.primary }}
         />
       </div>
