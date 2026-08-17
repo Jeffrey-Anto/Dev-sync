@@ -4,25 +4,28 @@ import React, { useEffect, useRef } from "react";
 
 interface FluidWaveBackgroundProps {
   className?: string;
-  waveColor1?: string;
-  waveColor2?: string;
-  waveColor3?: string;
   speed?: number;
   interactive?: boolean;
   opacity?: number;
+  intensity?: "subtle" | "medium" | "vibrant";
 }
 
 export default function FluidWaveBackground({
   className = "",
-  waveColor1 = "rgba(99, 102, 241, 0.25)",   // Indigo
-  waveColor2 = "rgba(6, 182, 212, 0.20)",    // Cyan
-  waveColor3 = "rgba(168, 85, 247, 0.15)",   // Purple
-  speed = 0.0015,
+  speed = 0.0018,
   interactive = true,
-  opacity = 0.8,
+  opacity = 0.75,
+  intensity = "medium",
 }: FluidWaveBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const mouseRef = useRef({ x: -1000, y: -1000, targetX: -1000, targetY: -1000, active: false });
+  const mouseRef = useRef({
+    x: -1000,
+    y: -1000,
+    targetX: -1000,
+    targetY: -1000,
+    active: false,
+    rippleEnergy: 0,
+  });
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -32,23 +35,29 @@ export default function FluidWaveBackground({
 
     let animationFrameId: number;
     let isVisible = true;
-    let width = (canvas.width = canvas.parentElement?.clientWidth || window.innerWidth);
-    let height = (canvas.height = canvas.parentElement?.clientHeight || window.innerHeight);
+
+    const updateDimensions = () => {
+      if (!canvas) return;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = window.innerWidth * dpr;
+      canvas.height = window.innerHeight * dpr;
+      ctx.scale(dpr, dpr);
+    };
+
+    updateDimensions();
 
     const handleResize = () => {
-      if (!canvas) return;
-      width = canvas.width = canvas.parentElement?.clientWidth || window.innerWidth;
-      height = canvas.height = canvas.parentElement?.clientHeight || window.innerHeight;
+      updateDimensions();
     };
 
     window.addEventListener("resize", handleResize, { passive: true });
 
     const handleMouseMove = (e: MouseEvent) => {
-      if (!interactive || !canvas) return;
-      const rect = canvas.getBoundingClientRect();
-      mouseRef.current.targetX = e.clientX - rect.left;
-      mouseRef.current.targetY = e.clientY - rect.top;
+      if (!interactive) return;
+      mouseRef.current.targetX = e.clientX;
+      mouseRef.current.targetY = e.clientY;
       mouseRef.current.active = true;
+      mouseRef.current.rippleEnergy = Math.min(mouseRef.current.rippleEnergy + 0.1, 1.0);
     };
 
     const handleMouseLeave = () => {
@@ -57,16 +66,6 @@ export default function FluidWaveBackground({
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true });
     window.addEventListener("mouseleave", handleMouseLeave, { passive: true });
-
-    // Pause RAF when not in viewport or tab hidden
-    const observer = new IntersectionObserver(([entry]) => {
-      isVisible = entry.isIntersecting;
-      if (isVisible) {
-        cancelAnimationFrame(animationFrameId);
-        render();
-      }
-    });
-    observer.observe(canvas);
 
     const handleVisibilityChange = () => {
       if (document.hidden) {
@@ -85,71 +84,95 @@ export default function FluidWaveBackground({
       if (!isVisible) return;
       time += speed;
 
-      // Smooth mouse interpolation
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      // Mouse position smoothing with lerp
       if (mouseRef.current.active) {
-        mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.05;
-        mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.05;
+        mouseRef.current.x += (mouseRef.current.targetX - mouseRef.current.x) * 0.08;
+        mouseRef.current.y += (mouseRef.current.targetY - mouseRef.current.y) * 0.08;
+        mouseRef.current.rippleEnergy *= 0.98;
       }
 
-      ctx.clearRect(0, 0, width, height);
+      ctx.clearRect(0, 0, w, h);
 
-      // Waves configuration
-      const waves = [
+      // Waves configuration: layered atmospheric fluid gradients
+      const isVibrant = intensity === "vibrant";
+      const isSubtle = intensity === "subtle";
+
+      const waveConfigs = [
         {
-          color: waveColor1,
-          baseY: height * 0.65,
-          amplitude: 45,
-          frequency: 0.002,
+          baseY: h * 0.72,
+          amplitude: isVibrant ? 55 : isSubtle ? 30 : 42,
+          frequency: 0.0022,
           speedOffset: 0,
+          strokeColor: "rgba(99, 102, 241, 0.45)",
+          gradientStart: "rgba(79, 70, 229, 0.22)",
+          gradientEnd: "rgba(5, 6, 8, 0.0)",
         },
         {
-          color: waveColor2,
-          baseY: height * 0.72,
-          amplitude: 60,
-          frequency: 0.0015,
-          speedOffset: 2,
+          baseY: h * 0.78,
+          amplitude: isVibrant ? 70 : isSubtle ? 38 : 54,
+          frequency: 0.0016,
+          speedOffset: 2.1,
+          strokeColor: "rgba(56, 189, 248, 0.4)",
+          gradientStart: "rgba(14, 116, 144, 0.20)",
+          gradientEnd: "rgba(5, 6, 8, 0.0)",
         },
         {
-          color: waveColor3,
-          baseY: height * 0.8,
-          amplitude: 75,
-          frequency: 0.001,
-          speedOffset: 4,
+          baseY: h * 0.85,
+          amplitude: isVibrant ? 85 : isSubtle ? 45 : 65,
+          frequency: 0.0011,
+          speedOffset: 4.3,
+          strokeColor: "rgba(168, 85, 247, 0.35)",
+          gradientStart: "rgba(126, 34, 206, 0.18)",
+          gradientEnd: "rgba(5, 6, 8, 0.0)",
         },
       ];
 
-      waves.forEach((wave) => {
+      waveConfigs.forEach((wave) => {
         ctx.beginPath();
-        ctx.moveTo(0, height);
+        ctx.moveTo(0, h);
         ctx.lineTo(0, wave.baseY);
 
-        const step = 10;
-        for (let x = 0; x <= width; x += step) {
-          // Compound sinusoidal waves
+        const step = 8;
+        for (let x = 0; x <= w + step; x += step) {
+          // Harmonic wave calculation
           let y =
             wave.baseY +
             Math.sin(x * wave.frequency + time + wave.speedOffset) * wave.amplitude +
-            Math.cos(x * wave.frequency * 0.5 + time * 1.5) * (wave.amplitude * 0.5);
+            Math.cos(x * wave.frequency * 0.6 + time * 1.4) * (wave.amplitude * 0.45);
 
-          // Mouse interactive ripple distortion
+          // Smooth interactive ripple deflection
           if (mouseRef.current.active) {
             const dist = Math.abs(x - mouseRef.current.x);
-            const maxDist = 250;
+            const maxDist = 280;
             if (dist < maxDist) {
-              const factor = (1 - dist / maxDist) * Math.sin((dist / 30) - time * 8);
-              const mouseOffsetY = (mouseRef.current.y - wave.baseY) * 0.2;
-              y += factor * 35 + mouseOffsetY * (1 - dist / maxDist);
+              const falloff = 1 - dist / maxDist;
+              const ripple = Math.sin(dist * 0.04 - time * 6) * falloff;
+              const cursorVerticalPull = (mouseRef.current.y - wave.baseY) * 0.15;
+              y += ripple * 28 + cursorVerticalPull * falloff;
             }
           }
 
           ctx.lineTo(x, y);
         }
 
-        ctx.lineTo(width, height);
+        ctx.lineTo(w, h);
         ctx.closePath();
 
-        ctx.fillStyle = wave.color;
+        // Vertical gradient fill
+        const gradient = ctx.createLinearGradient(0, wave.baseY - wave.amplitude, 0, h);
+        gradient.addColorStop(0, wave.gradientStart);
+        gradient.addColorStop(1, wave.gradientEnd);
+
+        ctx.fillStyle = gradient;
         ctx.fill();
+
+        // Soft luminous top crest line
+        ctx.strokeStyle = wave.strokeColor;
+        ctx.lineWidth = 1.2;
+        ctx.stroke();
       });
 
       animationFrameId = requestAnimationFrame(render);
@@ -158,14 +181,13 @@ export default function FluidWaveBackground({
     render();
 
     return () => {
-      observer.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("mouseleave", handleMouseLeave);
       cancelAnimationFrame(animationFrameId);
     };
-  }, [waveColor1, waveColor2, waveColor3, speed, interactive]);
+  }, [speed, interactive, intensity]);
 
   return (
     <div
@@ -173,8 +195,8 @@ export default function FluidWaveBackground({
       style={{ opacity }}
     >
       <canvas ref={canvasRef} className="w-full h-full block" />
-      {/* Bottom fade gradient to blend seamlessly into dark UI */}
-      <div className="absolute inset-0 bg-gradient-to-t from-[#050608] via-transparent to-transparent pointer-events-none" />
+      {/* Seamless bottom fade */}
+      <div className="absolute inset-x-0 bottom-0 h-40 bg-gradient-to-t from-[#050608] to-transparent pointer-events-none" />
     </div>
   );
 }

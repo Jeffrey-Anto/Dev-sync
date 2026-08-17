@@ -1,7 +1,7 @@
 "use client";
 
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from "react";
+import { motion, useMotionValue, useSpring } from "framer-motion";
 
 interface AuroraMeshBackgroundProps {
   className?: string;
@@ -12,11 +12,35 @@ interface AuroraMeshBackgroundProps {
 export default function AuroraMeshBackground({
   className = "",
   intensity = "medium",
+  interactive = true,
 }: AuroraMeshBackgroundProps) {
+  // Mouse reactive spring parallax
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+
+  const springConfig = { damping: 25, stiffness: 60 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  useEffect(() => {
+    if (!interactive) return;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const { innerWidth, innerHeight } = window;
+      const normX = (e.clientX / innerWidth - 0.5) * 60; // Max 60px offset
+      const normY = (e.clientY / innerHeight - 0.5) * 60;
+      mouseX.set(normX);
+      mouseY.set(normY);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, [interactive, mouseX, mouseY]);
+
   const opacityMap = {
-    subtle: "opacity-30",
-    medium: "opacity-50",
-    vibrant: "opacity-75",
+    subtle: "opacity-40",
+    medium: "opacity-65",
+    vibrant: "opacity-90",
   };
 
   return (
@@ -24,74 +48,77 @@ export default function AuroraMeshBackground({
       className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}
       aria-hidden="true"
     >
-      {/* Container with high-blur diffusion filter */}
-      <div className={`relative w-full h-full filter blur-[80px] md:blur-[120px] transition-opacity duration-1000 ${opacityMap[intensity]}`}>
-        {/* Aurora Layer 1: Indigo Nebula */}
+      {/* High-diffusion organic blur container */}
+      <motion.div
+        style={{ x: smoothX, y: smoothY }}
+        className={`relative w-full h-full filter blur-[70px] md:blur-[110px] transition-opacity duration-1000 ${opacityMap[intensity]}`}
+      >
+        {/* Aurora Nebula 1: Deep Sapphire & Indigo */}
         <motion.div
           animate={{
-            x: ["-10%", "20%", "-5%", "-10%"],
-            y: ["0%", "15%", "-15%", "0%"],
-            scale: [1, 1.25, 0.95, 1],
-            rotate: [0, 45, 90, 0],
+            x: ["-5%", "15%", "-10%", "-5%"],
+            y: ["-5%", "12%", "-8%", "-5%"],
+            scale: [1, 1.2, 0.95, 1],
+            rotate: [0, 30, 60, 0],
+          }}
+          transition={{
+            duration: 22,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute -top-[10%] -left-[10%] w-[60vw] h-[60vw] max-w-[700px] max-h-[700px] rounded-full bg-gradient-to-tr from-indigo-700/40 via-blue-600/30 to-purple-800/20 mix-blend-screen"
+        />
+
+        {/* Aurora Nebula 2: Ethereal Ocean Cyan & Sky Blue */}
+        <motion.div
+          animate={{
+            x: ["10%", "-15%", "8%", "10%"],
+            y: ["-8%", "15%", "0%", "-8%"],
+            scale: [1.1, 0.9, 1.18, 1.1],
+            rotate: [0, -45, -90, 0],
+          }}
+          transition={{
+            duration: 26,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+          className="absolute top-[5%] -right-[8%] w-[55vw] h-[55vw] max-w-[650px] max-h-[650px] rounded-full bg-gradient-to-bl from-cyan-600/35 via-sky-700/25 to-teal-800/15 mix-blend-screen"
+        />
+
+        {/* Aurora Nebula 3: Lavender & Velvet Violet Core */}
+        <motion.div
+          animate={{
+            x: ["-8%", "12%", "-5%", "-8%"],
+            y: ["10%", "-10%", "15%", "10%"],
+            scale: [0.95, 1.15, 1.0, 0.95],
           }}
           transition={{
             duration: 20,
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute -top-[15%] -left-[10%] w-[65vw] h-[65vw] max-w-[700px] max-h-[700px] rounded-full bg-gradient-to-tr from-indigo-600/50 via-purple-600/40 to-transparent mix-blend-screen"
+          className="absolute top-[30%] left-[25%] w-[48vw] h-[48vw] max-w-[550px] max-h-[550px] rounded-full bg-gradient-to-r from-violet-700/35 via-purple-600/25 to-indigo-900/15 mix-blend-screen"
         />
 
-        {/* Aurora Layer 2: Electric Cyan Beam */}
+        {/* Aurora Nebula 4: Soft Warm Amber Glow */}
         <motion.div
           animate={{
-            x: ["15%", "-15%", "10%", "15%"],
-            y: ["-10%", "20%", "5%", "-10%"],
-            scale: [1.1, 0.85, 1.2, 1.1],
-            rotate: [0, -60, -120, 0],
+            x: ["15%", "-15%", "5%", "15%"],
+            y: ["20%", "5%", "-5%", "20%"],
+            scale: [1, 1.25, 0.9, 1],
           }}
           transition={{
-            duration: 24,
+            duration: 30,
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute top-[10%] -right-[10%] w-[60vw] h-[60vw] max-w-[650px] max-h-[650px] rounded-full bg-gradient-to-bl from-cyan-500/45 via-teal-500/30 to-transparent mix-blend-screen"
+          className="absolute bottom-[0%] right-[12%] w-[42vw] h-[42vw] max-w-[480px] max-h-[480px] rounded-full bg-gradient-to-tl from-amber-600/20 via-rose-700/15 to-indigo-900/10 mix-blend-screen"
         />
+      </motion.div>
 
-        {/* Aurora Layer 3: Deep Violet / Magenta Core */}
-        <motion.div
-          animate={{
-            x: ["-5%", "15%", "-10%", "-5%"],
-            y: ["15%", "-10%", "20%", "15%"],
-            scale: [0.9, 1.15, 1, 0.9],
-          }}
-          transition={{
-            duration: 18,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute top-[35%] left-[25%] w-[50vw] h-[50vw] max-w-[550px] max-h-[550px] rounded-full bg-gradient-to-r from-violet-600/40 via-fuchsia-600/30 to-indigo-800/20 mix-blend-screen"
-        />
-
-        {/* Aurora Layer 4: Subtle Amber / Emerald Warm Accent */}
-        <motion.div
-          animate={{
-            x: ["20%", "-20%", "0%", "20%"],
-            y: ["30%", "10%", "-10%", "30%"],
-            scale: [1, 1.3, 0.85, 1],
-          }}
-          transition={{
-            duration: 28,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-          className="absolute bottom-[5%] right-[15%] w-[45vw] h-[45vw] max-w-[500px] max-h-[500px] rounded-full bg-gradient-to-tl from-emerald-500/25 via-sky-600/20 to-transparent mix-blend-screen"
-        />
-      </div>
-
-      {/* Dark Vignette Overlay for Crisp Readability */}
-      <div className="absolute inset-0 bg-[#050608]/40 pointer-events-none" />
-      <div className="absolute inset-0 bg-radial-[circle_at_center_transparent_0%,#050608_80%] pointer-events-none" />
+      {/* Subtle Radial Vignette to maintain contrast for white text */}
+      <div className="absolute inset-0 bg-[#050608]/30 pointer-events-none" />
+      <div className="absolute inset-0 bg-radial-[circle_at_center,transparent_20%,rgba(5,6,8,0.75)_90%] pointer-events-none" />
     </div>
   );
 }

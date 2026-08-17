@@ -25,6 +25,7 @@ import { DOMAINS, PROJECTS, Project } from "@/data/domains";
 import DomainBackground from "@/components/domain-themes/DomainBackground";
 import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectDetailModal from "@/components/projects/ProjectDetailModal";
+import { AndroidDemo } from "@/components/domain-themes/AndroidDemo";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   Globe,
@@ -224,6 +225,49 @@ export default function DomainDetailPage({ params }: PageProps) {
             ))}
           </div>
         </section>
+
+        {/* Specialized Mobile Device Architecture Mockup for Mobile Domain */}
+        {domain.id === "mobile-dev" && (
+          <motion.section
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="mb-20 rounded-3xl bg-gradient-to-b from-[#0e121e]/90 to-[#080b13]/90 border border-amber-500/20 p-8 sm:p-12 backdrop-blur-xl relative overflow-hidden"
+          >
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              <div className="lg:col-span-7 space-y-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-mono text-amber-300">
+                  <Smartphone className="w-3.5 h-3.5" />
+                  <span>NATIVE RUNTIME ENVIRONMENT</span>
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  Mobile Architecture & Live Performance Telemetry
+                </h3>
+                <p className="text-sm text-slate-300 leading-relaxed font-sans font-normal">
+                  Production mobile applications engineered by our cohort implement zero-jank 60 FPS interfaces, offline-first SQLite/WatermelonDB synchronization engines, and low-latency Bluetooth/WebSockets hardware communication.
+                </p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 font-mono text-xs">
+                  <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
+                    <span className="text-slate-400 text-[10px] block">FRAME BUDGET</span>
+                    <span className="text-emerald-400 font-bold text-sm">16.6ms / 60 FPS</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10">
+                    <span className="text-slate-400 text-[10px] block">OFFLINE LATENCY</span>
+                    <span className="text-amber-300 font-bold text-sm">&lt; 2ms Indexed</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-white/[0.04] border border-white/10 col-span-2 sm:col-span-1">
+                    <span className="text-slate-400 text-[10px] block">BRIDGE TYPE</span>
+                    <span className="text-cyan-300 font-bold text-sm">JSI TurboModules</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="lg:col-span-5 flex justify-center">
+                <AndroidDemo className="w-full max-w-[280px] sm:max-w-[320px]" />
+              </div>
+            </div>
+          </motion.section>
+        )}
 
         {/* 6. DOMAIN TECH STACK BADGES */}
         <motion.section

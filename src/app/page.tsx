@@ -9,7 +9,7 @@ import { DynamicBackground } from "@/components/backgrounds";
 
 export default function HomePage() {
   return (
-    <DynamicBackground variant="all" intensity="subtle" showGrid={true}>
+    <DynamicBackground variant="all" intensity="medium" showGrid={true}>
       <div className="relative min-h-screen text-slate-100 flex flex-col">
         {/* Navigation */}
         <Navbar />

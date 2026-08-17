@@ -2,87 +2,77 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Smartphone, Wifi, Battery, Signal, Radio } from "lucide-react";
+import { Android } from "@/registry/magicui/android";
+import { Wifi, Signal, Battery, Activity, Database, Radio, Smartphone } from "lucide-react";
 
 export default function MobileDevTheme() {
-  const [pulsePos, setPulsePos] = useState({ x: 50, y: 50 });
+  const [syncMetric, setSyncMetric] = useState(99.4);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setPulsePos({
-        x: 30 + Math.random() * 40,
-        y: 30 + Math.random() * 40,
-      });
-    }, 2500);
+      setSyncMetric(Number((99.1 + Math.random() * 0.8).toFixed(1)));
+    }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-[#080603]">
       {/* Radial Amber Ambiance */}
-      <div className="absolute inset-0 bg-radial from-amber-950/20 via-transparent to-[#060503]" />
+      <div className="absolute inset-0 bg-radial from-amber-950/25 via-transparent to-[#060503]" />
 
-      {/* Floating Modern Phone Frame Wireframe (Right Side) */}
+      {/* Floating Magic UI Android Frame (Right Side) */}
       <motion.div
-        animate={{ y: [0, -12, 0], rotate: [-4, -2, -4] }}
-        transition={{ repeat: Infinity, duration: 8, ease: "easeInOut" }}
-        className="absolute top-20 right-6 sm:right-20 w-64 sm:w-72 h-[420px] rounded-[40px] bg-amber-950/20 border-2 border-amber-500/25 backdrop-blur-lg p-3 opacity-40 shadow-[0_0_60px_rgba(245,158,11,0.15)] flex flex-col justify-between"
+        animate={{ y: [0, -14, 0], rotate: [-3, -1, -3] }}
+        transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
+        className="absolute top-20 right-6 sm:right-24 w-60 sm:w-72 opacity-40 hover:opacity-75 transition-opacity pointer-events-auto"
       >
-        {/* Dynamic Island / Notch */}
-        <div className="w-20 h-4 bg-black/60 rounded-full mx-auto mb-2 flex items-center justify-end px-2">
-          <div className="w-1.5 h-1.5 rounded-full bg-amber-500/80 animate-pulse" />
-        </div>
-
-        {/* Status Bar */}
-        <div className="flex items-center justify-between px-3 text-[10px] font-mono text-amber-300/80 mb-2">
-          <span>09:41</span>
-          <div className="flex items-center gap-1.5">
-            <Signal className="w-2.5 h-2.5" />
-            <Wifi className="w-2.5 h-2.5" />
-            <Battery className="w-3 h-3" />
-          </div>
-        </div>
-
-        {/* Mock Screen Content */}
-        <div className="relative flex-grow rounded-2xl bg-black/40 border border-amber-500/15 p-3 overflow-hidden font-mono space-y-2">
-          {/* Simulated Gesture Ripple */}
-          <motion.div
-            key={`${pulsePos.x}-${pulsePos.y}`}
-            initial={{ scale: 0, opacity: 0.8 }}
-            animate={{ scale: 3.5, opacity: 0 }}
-            transition={{ duration: 1.2, ease: "easeOut" }}
-            className="absolute w-8 h-8 rounded-full border border-amber-400 bg-amber-400/20 pointer-events-none"
-            style={{ left: `${pulsePos.x}%`, top: `${pulsePos.y}%` }}
-          />
-
-          <div className="h-6 w-2/3 bg-amber-500/20 rounded-md" />
-          <div className="h-20 bg-amber-500/10 rounded-xl border border-amber-500/20 p-2 text-[9px] text-amber-200/60">
-            <div className="flex items-center justify-between">
-              <span>OFFLINE_SYNC_ENGINE</span>
-              <span className="text-emerald-400">ACTIVE</span>
+        <Android className="w-full h-auto drop-shadow-[0_20px_50px_rgba(245,158,11,0.25)]">
+          <div className="w-full h-full bg-[#090c14] text-slate-200 p-3 pt-9 flex flex-col justify-between select-none">
+            {/* Status Bar */}
+            <div className="flex items-center justify-between text-[9px] font-mono text-amber-300/80 mb-2">
+              <span>09:41</span>
+              <div className="flex items-center gap-1">
+                <Signal className="w-2.5 h-2.5" />
+                <Wifi className="w-2.5 h-2.5" />
+                <Battery className="w-3 h-3 text-emerald-400" />
+              </div>
             </div>
-            <div className="h-2 w-full bg-amber-500/20 rounded mt-3" />
-          </div>
-          <div className="grid grid-cols-2 gap-1.5">
-            <div className="h-12 bg-amber-500/10 rounded-lg border border-amber-500/15" />
-            <div className="h-12 bg-amber-500/10 rounded-lg border border-amber-500/15" />
-          </div>
-        </div>
 
-        {/* Home Bar Indicator */}
-        <div className="w-24 h-1 bg-amber-400/40 rounded-full mx-auto mt-3" />
+            {/* Simulated Live Mobile Engine Screen */}
+            <div className="space-y-2 font-mono">
+              <div className="p-2 rounded-xl bg-amber-500/15 border border-amber-500/25">
+                <div className="flex items-center justify-between text-[9px]">
+                  <span className="text-amber-300 font-bold">CROSS_PLATFORM_CORE</span>
+                  <span className="text-emerald-400">ACTIVE</span>
+                </div>
+                <div className="text-[8px] text-slate-400 mt-1">WatermelonDB + JSI TurboModules</div>
+              </div>
+
+              <div className="p-2 rounded-xl bg-white/[0.03] border border-white/10 text-[8px] space-y-1">
+                <div className="flex justify-between text-slate-400">
+                  <span>FRAME RATE</span>
+                  <span className="text-emerald-400 font-bold">60.0 FPS</span>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>LOCAL CACHE SYNC</span>
+                  <span className="text-amber-300">{syncMetric}%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Gesture Pill */}
+            <div className="w-20 h-1 bg-amber-400/40 rounded-full mx-auto mt-2" />
+          </div>
+        </Android>
       </motion.div>
 
       {/* Floating Device Frame (Bottom Left) */}
       <motion.div
-        animate={{ y: [0, 10, 0], rotate: [6, 4, 6] }}
-        transition={{ repeat: Infinity, duration: 9, ease: "easeInOut" }}
-        className="absolute -bottom-16 left-6 sm:left-16 w-56 sm:w-64 h-80 rounded-[32px] bg-amber-950/20 border border-amber-500/20 backdrop-blur-md p-3 opacity-30 shadow-2xl"
+        animate={{ y: [0, 12, 0], rotate: [4, 2, 4] }}
+        transition={{ repeat: Infinity, duration: 11, ease: "easeInOut" }}
+        className="absolute -bottom-24 left-6 sm:left-16 w-52 sm:w-64 opacity-25"
       >
-        <div className="p-2 text-[10px] font-mono text-amber-300/70 border-b border-amber-500/15 flex items-center justify-between">
-          <span>REACT_NATIVE_BRIDGE</span>
-          <span>12ms</span>
-        </div>
+        <Android className="w-full h-auto" />
       </motion.div>
 
       {/* Background Dots */}
