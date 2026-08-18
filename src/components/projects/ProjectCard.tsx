@@ -378,6 +378,82 @@ function WebDevSpiderCard({
           : "0 10px 30px -10px rgba(0, 0, 0, 0.7)",
       }}
     >
+      {/* ── 3D Spider Silk Cocoon Overlay (Chrysalis that splits & hatches open like a butterfly) ── */}
+      <div
+        className="js-cocoon-wrapper absolute inset-0 z-20 pointer-events-none overflow-visible rounded-3xl"
+        style={{ perspective: "1000px" }}
+      >
+        {/* Top Suspension Silk Threads attaching to ceiling */}
+        <svg
+          className="js-cocoon-threads absolute -top-24 left-1/2 -translate-x-1/2 w-48 h-28 pointer-events-none overflow-visible z-30"
+          viewBox="0 0 100 60"
+        >
+          <line x1="10" y1="-25" x2="35" y2="60" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
+          <line x1="90" y1="-25" x2="65" y2="60" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
+          <line x1="50" y1="-35" x2="50" y2="60" stroke="#cbd5e1" strokeWidth="1.5" opacity="0.9" />
+          <line x1="30" y1="-18" x2="45" y2="60" stroke="#94a3b8" strokeWidth="0.8" opacity="0.6" />
+          <line x1="70" y1="-18" x2="55" y2="60" stroke="#94a3b8" strokeWidth="0.8" opacity="0.6" />
+          <circle cx="50" cy="55" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #38bdf8)" />
+        </svg>
+
+        {/* Cocoon Inner Energy Burst (Radiates when hatching) */}
+        <div className="js-cocoon-burst absolute inset-0 rounded-3xl opacity-0 bg-gradient-to-r from-cyan-400 via-white to-red-500 blur-2xl z-10 pointer-events-none" />
+
+        {/* 3D Left Silk Shell / Chrysalis Wing */}
+        <div
+          className="js-cocoon-left absolute top-0 left-0 w-1/2 h-full rounded-l-3xl overflow-hidden border-y-[2px] border-l-[2px] border-white/60 shadow-[inset_0_0_20px_rgba(255,255,255,0.4),-8px_0_25px_rgba(0,0,0,0.8)]"
+          style={{
+            background: "linear-gradient(135deg, #1e293b 0%, #0f172a 40%, #1e1b4b 100%)",
+            transformOrigin: "left center",
+          }}
+        >
+          {/* Layered Woven Silk Threads on Left Pod */}
+          <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 100 200" preserveAspectRatio="none">
+            <line x1="0" y1="20" x2="100" y2="80" stroke="#ffffff" strokeWidth="1.2" opacity="0.7" />
+            <line x1="0" y1="60" x2="100" y2="120" stroke="#ffffff" strokeWidth="1.5" opacity="0.85" />
+            <line x1="0" y1="100" x2="100" y2="160" stroke="#cbd5e1" strokeWidth="1.2" opacity="0.6" />
+            <line x1="0" y1="140" x2="100" y2="200" stroke="#ffffff" strokeWidth="1" opacity="0.8" />
+            <line x1="0" y1="180" x2="60" y2="200" stroke="#94a3b8" strokeWidth="1" opacity="0.5" />
+            <path d="M 0 0 Q 60 100 0 200" fill="none" stroke="#38bdf8" strokeWidth="1.5" opacity="0.5" />
+            <path d="M 0 40 Q 90 100 0 160" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.6" />
+          </svg>
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-white/20" />
+        </div>
+
+        {/* 3D Right Silk Shell / Chrysalis Wing */}
+        <div
+          className="js-cocoon-right absolute top-0 right-0 w-1/2 h-full rounded-r-3xl overflow-hidden border-y-[2px] border-r-[2px] border-white/60 shadow-[inset_0_0_20px_rgba(255,255,255,0.4),8px_0_25px_rgba(0,0,0,0.8)]"
+          style={{
+            background: "linear-gradient(225deg, #1e293b 0%, #0f172a 40%, #31102b 100%)",
+            transformOrigin: "right center",
+          }}
+        >
+          {/* Layered Woven Silk Threads on Right Pod */}
+          <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 100 200" preserveAspectRatio="none">
+            <line x1="100" y1="20" x2="0" y2="80" stroke="#ffffff" strokeWidth="1.2" opacity="0.7" />
+            <line x1="100" y1="60" x2="0" y2="120" stroke="#ffffff" strokeWidth="1.5" opacity="0.85" />
+            <line x1="100" y1="100" x2="0" y2="160" stroke="#cbd5e1" strokeWidth="1.2" opacity="0.6" />
+            <line x1="100" y1="140" x2="0" y2="200" stroke="#ffffff" strokeWidth="1" opacity="0.8" />
+            <line x1="100" y1="180" x2="40" y2="200" stroke="#94a3b8" strokeWidth="1" opacity="0.5" />
+            <path d="M 100 0 Q 40 100 100 200" fill="none" stroke="#ef4444" strokeWidth="1.5" opacity="0.5" />
+            <path d="M 100 40 Q 10 100 100 160" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.6" />
+          </svg>
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/5 to-white/20" />
+        </div>
+
+        {/* Central Chrysalis Core & Seam Seal */}
+        <div className="js-cocoon-core absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none">
+          <div className="w-14 h-14 rounded-2xl bg-black/90 border-2 border-white/80 flex items-center justify-center shadow-[0_0_25px_#38bdf8,inset_0_0_10px_rgba(255,255,255,0.4)] rotate-45">
+            <span className="text-xl -rotate-45 animate-pulse">🕷️</span>
+          </div>
+          <div className="px-3 py-1 rounded-full bg-black/90 border border-cyan-400/50 text-[10px] font-mono font-black text-cyan-200 shadow-[0_0_15px_rgba(56,189,248,0.4)] tracking-wider uppercase whitespace-nowrap">
+            🕸️ SILK COCOON #{index + 1}
+          </div>
+        </div>
+
+        {/* Seam Crack Line */}
+        <div className="js-cocoon-seam absolute top-0 left-1/2 -translate-x-1/2 w-[3px] h-full bg-gradient-to-b from-cyan-400 via-white to-red-500 shadow-[0_0_10px_#ffffff] z-25 opacity-90" />
+      </div>
       {/* Spiderweb Background Accent Lines */}
       <svg
         className="absolute -top-12 -right-12 w-48 h-48 opacity-[0.12] pointer-events-none text-red-400 group-hover:opacity-[0.22] group-hover:rotate-6 transition-all duration-500"

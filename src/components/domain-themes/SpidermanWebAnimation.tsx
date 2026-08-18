@@ -333,16 +333,33 @@ export default function SpidermanWebAnimation({
   const [frame, setFrame] = useState(0);
   const [statusText, setStatusText] = useState("Scroll here — Spidey executes his full hero move combo!");
 
-  // Hide all cards initially on mount
+  // Hide all cards initially on mount / show initial hanging 3D silk cocoons
   const hideAllCards = useCallback(() => {
     cardRefs.forEach((r) => {
       if (r.current) {
         gsap.set(r.current, {
-          opacity: 0,
-          y: -240,
-          scale: 0.35,
+          opacity: 1,
+          y: -18,
+          scale: 0.94,
           pointerEvents: "none",
         });
+
+        const cocoon = r.current.querySelector(".js-cocoon-wrapper");
+        if (cocoon) {
+          gsap.set(cocoon, { opacity: 1, display: "block" });
+          const left = cocoon.querySelector(".js-cocoon-left");
+          const right = cocoon.querySelector(".js-cocoon-right");
+          const core = cocoon.querySelector(".js-cocoon-core");
+          const seam = cocoon.querySelector(".js-cocoon-seam");
+          const threads = cocoon.querySelector(".js-cocoon-threads");
+          const burst = cocoon.querySelector(".js-cocoon-burst");
+          if (left) gsap.set(left, { rotateY: 0, x: 0, opacity: 1 });
+          if (right) gsap.set(right, { rotateY: 0, x: 0, opacity: 1 });
+          if (core) gsap.set(core, { scale: 1, opacity: 1 });
+          if (seam) gsap.set(seam, { opacity: 1 });
+          if (threads) gsap.set(threads, { opacity: 1, y: 0 });
+          if (burst) gsap.set(burst, { opacity: 0, scale: 0.8 });
+        }
       }
     });
   }, [cardRefs]);
@@ -527,21 +544,61 @@ export default function SpidermanWebAnimation({
         },
       });
 
-      // Card snatched DOWN from top with superhero impact right at mid-swing
-      tl.fromTo(
+      // ── Cocoon 3D Butterfly Emergence Animation ──
+      tl.add(() => {
+        const cocoon = card.querySelector(".js-cocoon-wrapper");
+        if (cocoon) {
+          const left = cocoon.querySelector(".js-cocoon-left");
+          const right = cocoon.querySelector(".js-cocoon-right");
+          const core = cocoon.querySelector(".js-cocoon-core");
+          const seam = cocoon.querySelector(".js-cocoon-seam");
+          const threads = cocoon.querySelector(".js-cocoon-threads");
+          const burst = cocoon.querySelector(".js-cocoon-burst");
+
+          // 1. Suspension threads snap
+          if (threads) gsap.to(threads, { opacity: 0, y: -25, duration: 0.35, ease: "power2.in" });
+
+          // 2. Central seal & seam split open with an energy flash
+          if (core) gsap.to(core, { scale: 1.4, opacity: 0, duration: 0.4, ease: "back.in(2)" });
+          if (seam) gsap.to(seam, { opacity: 0, duration: 0.25 });
+
+          // 3. Cocoon inner burst flares outward
+          if (burst) {
+            gsap.fromTo(
+              burst,
+              { opacity: 0, scale: 0.8 },
+              { opacity: 1, scale: 1.3, duration: 0.35, yoyo: true, repeat: 1, ease: "power2.out" }
+            );
+          }
+
+          // 4. 3D Left & Right Wings peel open 125° like butterfly wings
+          if (left) {
+            gsap.to(left, {
+              rotateY: -125,
+              x: -35,
+              opacity: 0,
+              duration: 0.85,
+              ease: "power2.out",
+            });
+          }
+          if (right) {
+            gsap.to(right, {
+              rotateY: 125,
+              x: 35,
+              opacity: 0,
+              duration: 0.85,
+              ease: "power2.out",
+            });
+          }
+        }
+      }, "<+0.50");
+
+      // Card blooms / hatches forward into place like an emerging butterfly
+      tl.to(
         card,
         {
-          opacity: 0,
-          y: -240,
-          scale: 0.35,
-          rotation: -6,
-          pointerEvents: "none",
-        },
-        {
-          opacity: 1,
           y: 0,
           scale: 1,
-          rotation: 0,
           duration: 0.85,
           ease: "elastic.out(1.1, 0.45)",
           onStart: () => {
@@ -549,9 +606,11 @@ export default function SpidermanWebAnimation({
           },
           onComplete: () => {
             gsap.set(card, { pointerEvents: "auto" });
+            const cocoon = card.querySelector(".js-cocoon-wrapper");
+            if (cocoon) gsap.set(cocoon, { display: "none" });
           },
         },
-        "<+0.55"
+        "<+0.05"
       );
 
       // Authentic white silk web impact flash on card border
