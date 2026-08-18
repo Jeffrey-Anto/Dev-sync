@@ -90,7 +90,7 @@ function SpiderManSprite({
   );
 }
 
-// ─── Dual-Layer Web Overlay (Overhead Swing Tether + Card Snatch Web) ───────
+// ─── Dual-Layer Organic Silk Web Overlay (Overhead Swing Tether + Card Snatch Web) ───
 export interface WebLine {
   x1: number;
   y1: number;
@@ -98,6 +98,8 @@ export interface WebLine {
   y2: number;
   opacity: number;
   isPulling?: boolean;
+  bowOffset?: number;
+  type?: "overhead" | "snatch";
 }
 
 function WebOverlay({ webs }: { webs: WebLine[] }) {
@@ -109,10 +111,10 @@ function WebOverlay({ webs }: { webs: WebLine[] }) {
       style={{ top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 9999 }}
     >
       <defs>
-        <filter id="spidey-glow" x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation="3.5" result="blur" />
+        {/* Subtle Silk Shimmer (Soft White Glow, No Laser Bloom) */}
+        <filter id="silk-shimmer" x="-30%" y="-30%" width="160%" height="160%">
+          <feGaussianBlur stdDeviation="1.5" result="blur" />
           <feMerge>
-            <feMergeNode in="blur" />
             <feMergeNode in="blur" />
             <feMergeNode in="SourceGraphic" />
           </feMerge>
@@ -121,47 +123,81 @@ function WebOverlay({ webs }: { webs: WebLine[] }) {
 
       {webs.map((web, idx) => {
         if (web.opacity <= 0.01) return null;
-        const midX = (web.x1 + web.x2) / 2 + (web.isPulling ? -10 : 0);
-        const midY = (web.y1 + web.y2) / 2 + (web.isPulling ? 6 : 0);
+
+        // Calculate dynamic organic whip/catenary curve points
+        const dx = web.x2 - web.x1;
+        const dy = web.y2 - web.y1;
+        const len = Math.hypot(dx, dy) || 1;
+        // Perpendicular vector for natural tension bow
+        const nx = -dy / len;
+        const ny = dx / len;
+
+        const bow = web.bowOffset ?? (web.isPulling ? -16 : 18);
+        const cp1X = web.x1 + dx * 0.32 + nx * bow * 0.7;
+        const cp1Y = web.y1 + dy * 0.32 + ny * bow * 0.7;
+        const cp2X = web.x1 + dx * 0.68 + nx * bow * 1.15;
+        const cp2Y = web.y1 + dy * 0.68 + ny * bow * 1.15;
+
+        const curvePath = `M ${web.x1} ${web.y1} C ${cp1X} ${cp1Y}, ${cp2X} ${cp2Y}, ${web.x2} ${web.y2}`;
 
         return (
-          <g key={`web-line-${idx}`} opacity={web.opacity}>
-            {/* Origin Glow Point */}
-            <circle
-              cx={web.x1}
-              cy={web.y1}
-              r={web.isPulling ? 8 : 6}
-              fill="#38bdf8"
-              filter="url(#spidey-glow)"
-            />
-            <circle cx={web.x1} cy={web.y1} r={3} fill="#ffffff" />
+          <g key={`silk-web-${idx}`} opacity={web.opacity}>
+            {/* 1. Ceiling Spider-Web Anchor Cluster (Only on overhead swing anchors) */}
+            {web.type !== "snatch" && (
+              <g opacity="0.95">
+                {/* Branching Silk Anchor Threads */}
+                <line x1={web.x1} y1={web.y1} x2={web.x1 - 14} y2={web.y1 - 10} stroke="#ffffff" strokeWidth="1.2" />
+                <line x1={web.x1} y1={web.y1} x2={web.x1 + 14} y2={web.y1 - 10} stroke="#ffffff" strokeWidth="1.2" />
+                <line x1={web.x1} y1={web.y1} x2={web.x1 - 5} y2={web.y1 - 15} stroke="#cbd5e1" strokeWidth="1.0" />
+                <line x1={web.x1} y1={web.y1} x2={web.x1 + 5} y2={web.y1 - 15} stroke="#cbd5e1" strokeWidth="1.0" />
+                {/* Anchor Knot */}
+                <circle cx={web.x1} cy={web.y1} r="2.5" fill="#ffffff" filter="url(#silk-shimmer)" />
+                <circle cx={web.x1} cy={web.y1} r="1.5" fill="#e2e8f0" />
+              </g>
+            )}
 
-            {/* Glowing Web Arc */}
+            {/* 2. Outer Translucent Silk Sheath (Soft natural white halo) */}
             <path
-              d={`M ${web.x1} ${web.y1} Q ${midX} ${midY} ${web.x2} ${web.y2}`}
+              d={curvePath}
               fill="none"
-              stroke="#38bdf8"
-              strokeWidth={web.isPulling ? 4.5 : 3.5}
-              filter="url(#spidey-glow)"
+              stroke="rgba(255, 255, 255, 0.45)"
+              strokeWidth={web.isPulling ? 5 : 4}
               strokeLinecap="round"
+              filter="url(#silk-shimmer)"
             />
+
+            {/* 3. Core Silk Strand (Pure white solid thread) */}
             <path
-              d={`M ${web.x1} ${web.y1} Q ${midX} ${midY} ${web.x2} ${web.y2}`}
+              d={curvePath}
               fill="none"
               stroke="#ffffff"
-              strokeWidth={web.isPulling ? 2 : 1.6}
+              strokeWidth={web.isPulling ? 2.5 : 2}
               strokeLinecap="round"
             />
 
-            {/* Target Web Impact Splat */}
-            <circle
-              cx={web.x2}
-              cy={web.y2}
-              r={web.isPulling ? 9 : 7}
-              fill="#38bdf8"
-              filter="url(#spidey-glow)"
+            {/* 4. Secondary Braided Specular Highlight */}
+            <path
+              d={curvePath}
+              fill="none"
+              stroke="#cbd5e1"
+              strokeWidth="0.8"
+              strokeDasharray="4 6"
+              strokeLinecap="round"
+              opacity="0.8"
             />
-            <circle cx={web.x2} cy={web.y2} r={3.5} fill="#ffffff" />
+
+            {/* 5. Target Web Splat / Connection (At card or hand) */}
+            {web.isPulling ? (
+              <g opacity="0.95">
+                {/* Micro web splat pattern at card contact */}
+                <circle cx={web.x2} cy={web.y2} r="7" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.85" />
+                <line x1={web.x2 - 9} y1={web.y2 - 6} x2={web.x2 + 9} y2={web.y2 + 6} stroke="#ffffff" strokeWidth="1" />
+                <line x1={web.x2 - 9} y1={web.y2 + 6} x2={web.x2 + 9} y2={web.y2 - 6} stroke="#ffffff" strokeWidth="1" />
+                <circle cx={web.x2} cy={web.y2} r="3" fill="#ffffff" />
+              </g>
+            ) : (
+              <circle cx={web.x2} cy={web.y2} r="2" fill="#ffffff" />
+            )}
           </g>
         );
       })}
@@ -395,6 +431,8 @@ export default function SpidermanWebAnimation({
           const anchorY = Math.max(15, cardRect.top - 120);
 
           const overheadOpacity = t < 0.82 ? 1 : Math.max(0, 1 - (t - 0.82) / 0.18);
+          // Dynamic organic whip curve: bows backward under momentum and tension
+          const swingBow = 24 * Math.sin(t * Math.PI);
 
           const webs: WebLine[] = [
             {
@@ -404,6 +442,8 @@ export default function SpidermanWebAnimation({
               y2: handY,
               opacity: overheadOpacity,
               isPulling: false,
+              bowOffset: swingBow,
+              type: "overhead",
             },
           ];
 
@@ -413,6 +453,7 @@ export default function SpidermanWebAnimation({
             const targetSkyY = Math.max(30, cardRect.top - 180);
             const targetPulledY = cardRect.top + 35;
             const currentCardY = targetSkyY + (targetPulledY - targetSkyY) * pullT;
+            const snatchBow = -14 * Math.sin(pullT * Math.PI);
 
             webs.push({
               x1: handX,
@@ -421,6 +462,8 @@ export default function SpidermanWebAnimation({
               y2: currentCardY,
               opacity: 1,
               isPulling: true,
+              bowOffset: snatchBow,
+              type: "snatch",
             });
           }
 
@@ -455,12 +498,12 @@ export default function SpidermanWebAnimation({
         "<+0.55"
       );
 
-      // Electric cyan impact flash celebration on card border
+      // Authentic white silk web impact flash celebration on card border
       tl.fromTo(
         card,
-        { boxShadow: "0 0 0 0px rgba(56, 189, 248, 0)" },
+        { boxShadow: "0 0 0 0px rgba(255, 255, 255, 0)" },
         {
-          boxShadow: "0 0 40px 8px rgba(56, 189, 248, 0.85)",
+          boxShadow: "0 0 35px 6px rgba(255, 255, 255, 0.75), 0 0 15px 3px rgba(226, 232, 240, 0.9)",
           duration: 0.4,
           yoyo: true,
           repeat: 1,
