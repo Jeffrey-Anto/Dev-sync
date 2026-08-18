@@ -69,6 +69,46 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
     );
   }
 
+  const isWebDev = domain.id === "web-dev";
+
+  // For Web Dev domain — GSAP Spiderman orchestrates card entry from top
+  if (isWebDev) {
+    return (
+      <div
+        ref={(el) => {
+          internalRef.current = el!;
+          if (typeof ref === "function") ref(el);
+          else if (ref) (ref as React.MutableRefObject<HTMLDivElement | null>).current = el;
+        }}
+        onMouseMove={handleMouseMove}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={handleMouseLeave}
+        onClick={() => onSelect(project)}
+        style={{
+          opacity: 0,
+          transformStyle: "preserve-3d",
+          transform: `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`,
+        }}
+        className="group relative cursor-pointer rounded-3xl transition-all duration-300 select-none flex flex-col justify-between"
+      >
+        {/* Outer Glow Halo */}
+        <div
+          className="absolute -inset-0.5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg pointer-events-none"
+          style={{
+            background: `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, ${domain.colorTheme.primary}, transparent 70%)`,
+          }}
+        />
+        <DarkCard
+          project={project}
+          domain={domain}
+          index={index}
+          isHovered={isHovered}
+          spotlightPos={spotlightPos}
+        />
+      </div>
+    );
+  }
+
   // Dark-theme domains: keep Framer Motion 3D tilt + entry
   return (
     <motion.div

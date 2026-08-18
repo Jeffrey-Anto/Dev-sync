@@ -27,6 +27,7 @@ import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectDetailModal from "@/components/projects/ProjectDetailModal";
 import { AndroidDemo } from "@/components/domain-themes/AndroidDemo";
 import CoffeePourAnimation from "@/components/domain-themes/CoffeePourAnimation";
+import SpidermanWebAnimation from "@/components/domain-themes/SpidermanWebAnimation";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   Globe,
@@ -50,6 +51,7 @@ export default function DomainDetailPage({ params }: PageProps) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isNavigatingBack, setIsNavigatingBack] = useState(false);
   const [pourCount, setPourCount] = useState(0);
+  const [swingCount, setSwingCount] = useState(0);
 
   // Stable per-card refs so GSAP can target each card DOM node
   const domainProjects = useMemo(
@@ -78,6 +80,7 @@ export default function DomainDetailPage({ params }: PageProps) {
   };
 
   const isUiUx = domain.id === "ui-ux";
+  const isWebDev = domain.id === "web-dev";
 
   return (
     <div
@@ -364,7 +367,7 @@ export default function DomainDetailPage({ params }: PageProps) {
             {domainProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
-                ref={isUiUx ? cardRefs[index] : undefined}
+                ref={(isUiUx || isWebDev) ? cardRefs[index] : undefined}
                 project={project}
                 domain={domain}
                 index={index}
@@ -372,6 +375,15 @@ export default function DomainDetailPage({ params }: PageProps) {
               />
             ))}
           </div>
+
+          {/* If Web Dev domain, Spidey runs on the bottom road & shoots webs to pull projects down from top */}
+          {isWebDev && (
+            <SpidermanWebAnimation
+              swingCount={swingCount}
+              onTriggerSwing={() => setSwingCount((prev) => prev + 1)}
+              cardRefs={cardRefs as React.RefObject<HTMLElement | null>[]}
+            />
+          )}
         </section>
 
         {/* Specialized Mobile Device Architecture Mockup for Mobile Domain */}
