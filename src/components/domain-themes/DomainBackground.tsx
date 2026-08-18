@@ -24,8 +24,9 @@ export default function DomainBackground({ domainId }: DomainBackgroundProps) {
       case "cloud-devops":
         return <CloudDevOpsTheme />;
       case "ui-ux":
-      case "embedded-iot":
         return <UiUxTheme />;
+      case "embedded-iot":
+        return <EmbeddedIotTheme />;
       case "mobile-dev":
         return <MobileDevTheme />;
       case "cybersecurity":
