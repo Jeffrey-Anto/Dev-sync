@@ -143,13 +143,10 @@ export default function StatStrip() {
                 transition={{ duration: 0.5, delay: index * 0.08 }}
                 className={`relative overflow-hidden rounded-2xl bg-gradient-to-b ${item.color} border ${item.border} p-5 flex flex-col justify-between group hover:border-white/30 transition-all duration-300 backdrop-blur-sm`}
               >
-                <div className="flex items-center justify-between mb-4">
+                <div className="mb-4">
                   <div className={`p-2 rounded-xl bg-slate-900/80 ${item.accent}`}>
                     <Icon className="w-5 h-5" />
                   </div>
-                  <span className="text-[10px] font-mono text-slate-500 uppercase">
-                    METRIC #{index + 1}
-                  </span>
                 </div>
 
                 <div>

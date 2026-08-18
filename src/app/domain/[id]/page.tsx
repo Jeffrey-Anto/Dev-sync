@@ -82,7 +82,8 @@ export default function DomainDetailPage({ params }: PageProps) {
               initial={{ scale: 1, opacity: 1 }}
               animate={{ scale: 0.3, opacity: 0 }}
               transition={{ duration: 0.4, ease: "easeInOut" }}
-              className="text-center font-mono text-cyan-300 text-sm"
+              className="text-center font-mono text-sm"
+              style={{ color: domain.colorTheme.secondary }}
             >
               RETURNING TO DOMAIN MATRIX...
             </motion.div>
@@ -108,7 +109,7 @@ export default function DomainDetailPage({ params }: PageProps) {
             onClick={handleBackNavigation}
             className="group flex items-center gap-2.5 text-xs font-mono text-slate-300 hover:text-white px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/25 transition-all cursor-pointer shadow-sm hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]"
           >
-            <ArrowLeft className="w-4 h-4 text-indigo-400 group-hover:-translate-x-1 transition-transform" />
+            <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" style={{ color: domain.colorTheme.secondary }} />
             <span>Return to Capability Matrix</span>
           </button>
 
@@ -167,21 +168,21 @@ export default function DomainDetailPage({ params }: PageProps) {
           {/* Aggregate Telemetry Metrics for this Domain */}
           <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4 text-xs sm:text-sm font-mono">
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#0e121e]/80 border border-white/10 text-slate-200 backdrop-blur-md">
-              <Users className="w-4 h-4 text-indigo-400" />
+              <Users className="w-4 h-4" style={{ color: domain.colorTheme.secondary }} />
               <span>
                 <strong className="text-white">{domain.studentCount}</strong> CS Undergraduates
               </span>
             </div>
 
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#0e121e]/80 border border-white/10 text-slate-200 backdrop-blur-md">
-              <FolderGit2 className="w-4 h-4 text-cyan-400" />
+              <FolderGit2 className="w-4 h-4" style={{ color: domain.colorTheme.secondary }} />
               <span>
                 <strong className="text-white">{domainProjects.length}</strong> Deployed Systems
               </span>
             </div>
 
             <div className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#0e121e]/80 border border-white/10 text-slate-200 backdrop-blur-md">
-              <Layers className="w-4 h-4 text-pink-400" />
+              <Layers className="w-4 h-4" style={{ color: domain.colorTheme.secondary }} />
               <span>
                 <strong className="text-white">{domain.techStack.length}</strong> Production Tech Stacks
               </span>

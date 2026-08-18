@@ -258,7 +258,7 @@ export default function DomainSelection() {
           className="mt-10 text-center text-xs font-mono text-slate-500 flex items-center justify-center gap-2"
         >
           <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Interactive 3D Carousel · Click centered card to deep-dive into verified pipelines</span>
+          <span>Click centered card to deep-dive into verified pipelines</span>
         </motion.div>
       </div>
     </section>
