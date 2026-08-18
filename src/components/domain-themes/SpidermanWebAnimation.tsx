@@ -19,7 +19,15 @@ interface SpidermanWebAnimationProps {
   cardRefs: React.RefObject<HTMLElement | null>[];
 }
 
-type SpiderAction = "run" | "shoot" | "pull" | "swing" | "idle";
+type SpiderAction =
+  | "swing"
+  | "flip"
+  | "run"
+  | "shoot"
+  | "pull"
+  | "landing"
+  | "dive"
+  | "idle";
 
 // ─── Authentic 16/32-Bit Original Retro Game Spider-Man Sprite ──────────────
 // Uses transparent PNG sprite sheets with grounded baselines and pixel-perfect rendering
@@ -44,6 +52,12 @@ function SpiderManSprite({
     frameH = 100;
     totalW = 720;
     currentFrame = Math.min(7, Math.max(0, frameIndex % 8));
+  } else if (action === "flip") {
+    stripUrl = "/sprites/spiderman/spidey_flip_strip.png";
+    frameW = 80;
+    frameH = 80;
+    totalW = 800;
+    currentFrame = Math.min(9, Math.max(0, frameIndex % 10));
   } else if (action === "run") {
     stripUrl = "/sprites/spiderman/spidey_run_strip.png";
     frameW = 80;
@@ -62,6 +76,18 @@ function SpiderManSprite({
     frameH = 105;
     totalW = 720;
     currentFrame = 2; // Centered 2-handed power heave stance
+  } else if (action === "landing") {
+    stripUrl = "/sprites/spiderman/spidey_landing_strip.png";
+    frameW = 80;
+    frameH = 60;
+    totalW = 400;
+    currentFrame = Math.min(4, Math.max(0, frameIndex % 5));
+  } else if (action === "dive") {
+    stripUrl = "/sprites/spiderman/spidey_dive_strip.png";
+    frameW = 80;
+    frameH = 80;
+    totalW = 400;
+    currentFrame = Math.min(4, Math.max(0, frameIndex % 5));
   } else if (action === "idle") {
     stripUrl = "/sprites/spiderman/spidey_idle_strip.png";
     frameW = 80;
@@ -145,12 +171,10 @@ function WebOverlay({ webs }: { webs: WebLine[] }) {
             {/* 1. Ceiling Spider-Web Anchor Cluster (Only on overhead swing anchors) */}
             {web.type !== "snatch" && (
               <g opacity="0.95">
-                {/* Branching Silk Anchor Threads */}
                 <line x1={web.x1} y1={web.y1} x2={web.x1 - 14} y2={web.y1 - 10} stroke="#ffffff" strokeWidth="1.2" />
                 <line x1={web.x1} y1={web.y1} x2={web.x1 + 14} y2={web.y1 - 10} stroke="#ffffff" strokeWidth="1.2" />
                 <line x1={web.x1} y1={web.y1} x2={web.x1 - 5} y2={web.y1 - 15} stroke="#cbd5e1" strokeWidth="1.0" />
                 <line x1={web.x1} y1={web.y1} x2={web.x1 + 5} y2={web.y1 - 15} stroke="#cbd5e1" strokeWidth="1.0" />
-                {/* Anchor Knot */}
                 <circle cx={web.x1} cy={web.y1} r="2.5" fill="#ffffff" filter="url(#silk-shimmer)" />
                 <circle cx={web.x1} cy={web.y1} r="1.5" fill="#e2e8f0" />
               </g>
@@ -186,10 +210,9 @@ function WebOverlay({ webs }: { webs: WebLine[] }) {
               opacity="0.8"
             />
 
-            {/* 5. Target Web Splat / Connection (At card or hand) */}
+            {/* 5. Target Web Splat / Connection */}
             {web.isPulling ? (
               <g opacity="0.95">
-                {/* Micro web splat pattern at card contact */}
                 <circle cx={web.x2} cy={web.y2} r="7" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.85" />
                 <line x1={web.x2 - 9} y1={web.y2 - 6} x2={web.x2 + 9} y2={web.y2 + 6} stroke="#ffffff" strokeWidth="1" />
                 <line x1={web.x2 - 9} y1={web.y2 + 6} x2={web.x2 + 9} y2={web.y2 - 6} stroke="#ffffff" strokeWidth="1" />
@@ -308,6 +331,7 @@ export default function SpidermanWebAnimation({
   const [revealedCount, setRevealedCount] = useState(0);
   const [activeWebs, setActiveWebs] = useState<WebLine[]>([]);
   const [frame, setFrame] = useState(0);
+  const [statusText, setStatusText] = useState("Scroll here — Spidey executes his full hero move combo!");
 
   // Hide all cards initially on mount
   const hideAllCards = useCallback(() => {
@@ -327,7 +351,7 @@ export default function SpidermanWebAnimation({
     hideAllCards();
   }, [hideAllCards]);
 
-  // ─── Aerial Web-Swinging & Project Snatching Routine ──────────────────────
+  // ─── Seamless Continuous Web-Swinging & Acrobatic Chain ───────────────────
   const runSequence = useCallback(() => {
     const validRefs = cardRefs.filter((r) => r.current);
     if (!validRefs.length || !runnerRef.current || !roadTrackRef.current) return;
@@ -335,9 +359,9 @@ export default function SpidermanWebAnimation({
     tlRef.current?.kill();
     setIsRunning(true);
     setAllDone(false);
-    setActionState("swing");
     setRevealedCount(0);
     setActiveWebs([]);
+    setActionState("swing");
 
     hideAllCards();
 
@@ -346,121 +370,124 @@ export default function SpidermanWebAnimation({
     const roadRect = road.getBoundingClientRect();
 
     // Initial setup: Spider-Man appears ready to swing in from high left
-    gsap.set(runner, { x: -100, y: -70, rotation: 25, opacity: 1, scale: 1.25 });
+    gsap.set(runner, { x: -100, y: -65, rotation: 25, opacity: 1, scale: 1.25 });
 
     const tl = gsap.timeline({
       onComplete: () => {
         setIsRunning(false);
         setAllDone(true);
         setActiveWebs([]);
-        // Clean acrobatic exit swing off-screen to right
-        gsap.to(runner, {
-          x: roadRect.width + 160,
-          y: -90,
-          rotation: -28,
-          duration: 1.1,
-          ease: "power2.inOut",
-          onComplete: () => {
-            gsap.set(runner, { opacity: 0 });
-          },
+
+        // Heroic Landing & Stance Finale
+        setActionState("landing");
+        gsap.set(runner, { y: 12, rotation: 0 });
+        setFrame(4);
+
+        // Rise into classic ready idle stance
+        gsap.delayedCall(0.5, () => {
+          setActionState("idle");
+          gsap.to(runner, { y: 0, duration: 0.3, ease: "back.out(2)" });
+
+          let idleFrame = 0;
+          const idleInt = setInterval(() => {
+            idleFrame = (idleFrame + 1) % 11;
+            setFrame(idleFrame);
+          }, 110);
+
+          // Exit swing after victory pose
+          gsap.delayedCall(1.6, () => {
+            clearInterval(idleInt);
+            setActionState("swing");
+            gsap.to(runner, {
+              x: roadRect.width + 160,
+              y: -90,
+              rotation: -28,
+              duration: 1.1,
+              ease: "power2.inOut",
+              onComplete: () => {
+                gsap.set(runner, { opacity: 0 });
+              },
+            });
+          });
         });
       },
     });
     tlRef.current = tl;
 
+    // Measured Glove Hand Coordinates (spidey_swing_strip)
+    const SWING_HANDS = [
+      { ox: -14.5, oy: -21.0 }, // frame 0: gloves reaching back into swing
+      { ox: 14.5,  oy: -19.0 }, // frame 1: gloves reaching forward
+      { ox: 9.5,   oy: -28.0 }, // frame 2: gloves holding web above
+      { ox: 5.0,   oy: -28.0 }, // frame 3: gloves at apex of swing
+      { ox: -2.0,  oy: -25.0 }, // frame 4: gloves ascending
+      { ox: -2.0,  oy: -27.0 }, // frame 5: gloves high kick
+      { ox: -16.0, oy: -24.0 }, // frame 6: gloves releasing
+      { ox: -21.5, oy: -29.0 }, // frame 7: gloves in somersault
+    ];
+
     validRefs.forEach((ref, i) => {
       const card = ref.current!;
 
+      // ────────────────────────────────────────────────────────────────────────
+      // PHASE A: Seamless Web-Swing Swoop across Card `i`
+      // ────────────────────────────────────────────────────────────────────────
+      const swingState = { progress: 0 };
+      const duration = 1.6;
+
       tl.add(() => {
         setActionState("swing");
+        setStatusText(`Spider-Man web-swinging across Project ${i + 1}… 🕸️`);
       });
-
-      // Swing Arc Animation for Card `i` (Slower, cinematic swing pace)
-      const swingState = { progress: 0 };
-      const duration = 1.65;
 
       tl.to(swingState, {
         progress: 1,
         duration: duration,
         ease: "power1.inOut",
-        onStart: () => {
-          setActionState("swing");
-        },
         onUpdate: function () {
           if (!roadTrackRef.current || !ref.current || !runnerRef.current) return;
-
           const currentRoad = roadTrackRef.current.getBoundingClientRect();
           const cardRect = ref.current.getBoundingClientRect();
 
-          // Calculate key swing points relative to track
           const cardCenterX = cardRect.left + cardRect.width / 2 - currentRoad.left;
-          const targetCardX = cardCenterX - 45; // Centered sprite anchor
+          const targetCardX = cardCenterX - 45;
 
-          // Previous swing exit or start
-          const prevX = i === 0 ? -90 : targetCardX - 180;
-          // Next swing apex or exit
-          const nextX = i === validRefs.length - 1 ? currentRoad.width + 120 : targetCardX + 180;
+          // Seamless continuity: Start where previous flip/swing finished
+          const prevX = i === 0 ? -90 : targetCardX - 160;
+          const nextX = i === validRefs.length - 1 ? currentRoad.width + 120 : targetCardX + 160;
 
           const t = swingState.progress;
-
-          // Parabolic Swing Trajectory
           const currentX = gsap.utils.interpolate(prevX, nextX, t);
-          // Parabola: High at edges (y ~ -65), lowest in center directly above road (y ~ 5)
+          // Parabolic swing arc
           const currentY = -65 + 72 * Math.sin(t * Math.PI);
+          const currentRotation = 26 * (1 - 2 * t);
 
-          // Realistic pendulum angle: tilted forward at start (+28°), level at midpoint (0°), kicking up at end (-28°)
-          const currentRotation = 28 * (1 - 2 * t);
-
-          // Map 8 authentic retro swing frames to arc progress
           const swingFrame = Math.min(7, Math.floor(t * 8));
           setFrame(swingFrame);
 
-          gsap.set(runner, {
-            x: currentX,
-            y: currentY,
-            rotation: currentRotation,
-          });
-
-          // ─── Exact Red Glove Gripping Hand Coordinates (Clean Sprite Hands) ───
-          const SWING_HAND_OFFSETS = [
-            { ox: -14.5, oy: -21.0 }, // frame 0: gloves reaching back into swing
-            { ox: 14.5,  oy: -19.0 }, // frame 1: gloves reaching forward
-            { ox: 9.5,   oy: -28.0 }, // frame 2: gloves holding web above
-            { ox: 5.0,   oy: -28.0 }, // frame 3: gloves at apex of swing
-            { ox: -2.0,  oy: -25.0 }, // frame 4: gloves ascending
-            { ox: -2.0,  oy: -27.0 }, // frame 5: gloves high kick
-            { ox: -16.0, oy: -24.0 }, // frame 6: gloves releasing
-            { ox: -21.5, oy: -29.0 }, // frame 7: gloves in somersault
-          ];
+          gsap.set(runner, { x: currentX, y: currentY, rotation: currentRotation });
 
           const runnerBox = runner.getBoundingClientRect();
           const cx = runnerBox.left + runnerBox.width / 2;
           const cy = runnerBox.top + runnerBox.height / 2;
-
           const rad = (currentRotation * Math.PI) / 180;
-          const hOff = SWING_HAND_OFFSETS[swingFrame] ?? { ox: 0, oy: -45 };
+          const hOff = SWING_HANDS[swingFrame] ?? { ox: 0, oy: -45 };
           const scale = 1.25;
 
-          // Rotated exact gripping hand point
           const handRotX = (hOff.ox * Math.cos(rad) - hOff.oy * Math.sin(rad)) * scale;
           const handRotY = (hOff.ox * Math.sin(rad) + hOff.oy * Math.cos(rad)) * scale;
           const handX = cx + handRotX;
           const handY = cy + handRotY;
 
-          // Rotated wrist web-shooter point (fires down at card)
-          const shootOffX = 18;
-          const shootOffY = 6;
-          const shootRotX = (shootOffX * Math.cos(rad) - shootOffY * Math.sin(rad)) * scale;
-          const shootRotY = (shootOffX * Math.sin(rad) + shootOffY * Math.cos(rad)) * scale;
+          const shootRotX = (18 * Math.cos(rad) - 6 * Math.sin(rad)) * scale;
+          const shootRotY = (18 * Math.sin(rad) + 6 * Math.cos(rad)) * scale;
           const shooterX = cx + shootRotX;
           const shooterY = cy + shootRotY;
 
-          // Ceiling anchor placed above the card in the viewport
-          const anchorX = cardRect.left + cardRect.width / 2 + 10;
+          const anchorX = cardRect.left + cardRect.width / 2;
           const anchorY = Math.max(15, cardRect.top - 120);
 
           const overheadOpacity = t < 0.82 ? 1 : Math.max(0, 1 - (t - 0.82) / 0.18);
-          // Dynamic organic whip curve: bows backward under momentum and tension
           const swingBow = 24 * Math.sin(t * Math.PI);
 
           const webs: WebLine[] = [
@@ -476,7 +503,7 @@ export default function SpidermanWebAnimation({
             },
           ];
 
-          // ─── Snatch & Pull Web to Card (Triggered at Mid-Swoop t >= 0.35 and t <= 0.75) ───
+          // Snatch web triggers at mid-swoop (t in 0.35..0.75)
           if (t >= 0.35 && t <= 0.75) {
             const pullT = (t - 0.35) / 0.40;
             const targetSkyY = Math.max(30, cardRect.top - 180);
@@ -500,7 +527,7 @@ export default function SpidermanWebAnimation({
         },
       });
 
-      // Snatches Card DOWN from top with superhero impact right at mid-swing
+      // Card snatched DOWN from top with superhero impact right at mid-swing
       tl.fromTo(
         card,
         {
@@ -527,7 +554,7 @@ export default function SpidermanWebAnimation({
         "<+0.55"
       );
 
-      // Authentic white silk web impact flash celebration on card border
+      // Authentic white silk web impact flash on card border
       tl.fromTo(
         card,
         { boxShadow: "0 0 0 0px rgba(255, 255, 255, 0)" },
@@ -541,8 +568,43 @@ export default function SpidermanWebAnimation({
         "<"
       );
 
+      // ────────────────────────────────────────────────────────────────────────
+      // PHASE B: Mid-Air Acrobatic Somersault Flip Transition to Next Card
+      // ────────────────────────────────────────────────────────────────────────
       if (i < validRefs.length - 1) {
-        tl.to({}, { duration: 0.35 });
+        const nextCard = validRefs[i + 1].current!;
+
+        tl.add(() => {
+          setActiveWebs([]);
+          setActionState("flip");
+          setStatusText("Spider-Man executing mid-air flip into next swing… 🤸‍♂️");
+        });
+
+        const flipObj = { t: 0 };
+        tl.to(flipObj, {
+          t: 1,
+          duration: 0.75,
+          ease: "power1.inOut",
+          onUpdate: function () {
+            if (!roadTrackRef.current || !card || !nextCard || !runnerRef.current) return;
+            const currentRoad = roadTrackRef.current.getBoundingClientRect();
+            const c1Rect = card.getBoundingClientRect();
+            const c2Rect = nextCard.getBoundingClientRect();
+
+            const c1X = c1Rect.left + c1Rect.width / 2 - currentRoad.left - 45 + 160;
+            const c2X = c2Rect.left + c2Rect.width / 2 - currentRoad.left - 45 - 160;
+
+            const t = flipObj.t;
+            const fX = gsap.utils.interpolate(c1X, c2X, t);
+            // Slight mid-air parabolic rise and dip
+            const fY = -65 - 18 * Math.sin(t * Math.PI);
+
+            const fIdx = Math.min(9, Math.floor(t * 10));
+            setFrame(fIdx);
+
+            gsap.set(runner, { x: fX, y: fY, rotation: 0 });
+          },
+        });
       }
     });
   }, [cardRefs, hideAllCards]);
@@ -581,7 +643,7 @@ export default function SpidermanWebAnimation({
 
   return (
     <div className="relative w-full mt-12 mb-6 select-none">
-      {/* Full-screen SVG Web Overlay with Overhead Swings + Card Snatches */}
+      {/* Full-screen SVG Web Overlay */}
       <WebOverlay webs={activeWebs} />
 
       {/* ─── 2.5D Horizontal Perspective Highway Track ─── */}
@@ -600,7 +662,7 @@ export default function SpidermanWebAnimation({
           className="absolute bottom-3 pointer-events-none z-30 overflow-visible"
           style={{ opacity: 0, transformOrigin: "center center" }}
         >
-          {/* Ground Contact Shadow (Visible when swooping low over track) */}
+          {/* Ground Contact Shadow */}
           <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-16 h-3.5 bg-black/80 rounded-full blur-[2px] pointer-events-none" />
           <SpiderManSprite frameIndex={frame} action={actionState} />
         </div>
@@ -614,8 +676,8 @@ export default function SpidermanWebAnimation({
             {allDone
               ? "All projects pulled down & revealed! 🕸️✨"
               : isRunning
-                ? "Spidey swinging across cards & pulling projects down… 🕸️"
-                : "Scroll here — Spidey swings dynamically across the track and pulls each project!"}
+                ? statusText
+                : "Scroll here — Spidey executes his full hero move combo!"}
           </span>
         </div>
 
@@ -626,7 +688,7 @@ export default function SpidermanWebAnimation({
           className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-mono font-bold border border-red-400/50 shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
           <span>🕸️</span>
-          <span>{isRunning ? "SWINGING & PULLING…" : allDone ? "SWING AGAIN! 🕷️" : "SWING & PULL PROJECTS!"}</span>
+          <span>{isRunning ? "HERO IN ACTION…" : allDone ? "TRIGGER COMBO AGAIN! 🕷️" : "START HERO COMBO!"}</span>
         </button>
       </div>
     </div>
