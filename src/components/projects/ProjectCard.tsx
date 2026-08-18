@@ -71,7 +71,7 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
 
   const isWebDev = domain.id === "web-dev";
 
-  // For Web Dev domain — GSAP Spiderman orchestrates card entry from top
+  // For Web Dev domain — Spider-Verse Cyber Card with Spider-Sense & Web-Cocoon Aesthetics
   if (isWebDev) {
     return (
       <div
@@ -91,14 +91,14 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
         }}
         className="group relative cursor-pointer rounded-3xl transition-all duration-300 select-none flex flex-col justify-between"
       >
-        {/* Outer Glow Halo */}
+        {/* ⚡ Spider-Sense Golden-Red Glow Halo */}
         <div
-          className="absolute -inset-0.5 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-lg pointer-events-none"
+          className="absolute -inset-1 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
           style={{
-            background: `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, ${domain.colorTheme.primary}, transparent 70%)`,
+            background: `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, rgba(239, 68, 68, 0.45), rgba(251, 191, 36, 0.25) 45%, transparent 70%)`,
           }}
         />
-        <DarkCard
+        <WebDevSpiderCard
           project={project}
           domain={domain}
           index={index}
@@ -349,6 +349,141 @@ function DarkCard({
         <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-white transition-colors">
           <span>Click to inspect telemetry</span>
           <span style={{ color: domain.colorTheme.secondary }}>Deep Dive →</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ─── Web Dev Spider-Verse Card ───────────────────────────────────────────────
+function WebDevSpiderCard({
+  project,
+  domain,
+  index,
+  isHovered,
+  spotlightPos,
+}: {
+  project: Project;
+  domain: Domain;
+  index: number;
+  isHovered: boolean;
+  spotlightPos: { x: number; y: number };
+}) {
+  return (
+    <div
+      className="relative h-full rounded-3xl p-6 sm:p-8 flex flex-col justify-between overflow-hidden bg-gradient-to-br from-[#0c0f1d]/90 via-[#070a14]/95 to-[#130d22]/90 backdrop-blur-xl border border-red-500/20 text-white group-hover:border-red-500/50 shadow-2xl transition-all duration-300"
+      style={{
+        boxShadow: isHovered
+          ? "0 20px 45px -12px rgba(239, 68, 68, 0.45), 0 0 25px rgba(251, 191, 36, 0.25), inset 0 0 20px rgba(239, 68, 68, 0.15)"
+          : "0 10px 30px -10px rgba(0, 0, 0, 0.7)",
+      }}
+    >
+      {/* Spiderweb Background Accent Lines */}
+      <svg
+        className="absolute -top-12 -right-12 w-48 h-48 opacity-[0.12] pointer-events-none text-red-400 group-hover:opacity-[0.22] group-hover:rotate-6 transition-all duration-500"
+        viewBox="0 0 100 100"
+      >
+        <circle cx="100" cy="0" r="25" fill="none" stroke="currentColor" strokeWidth="0.8" />
+        <circle cx="100" cy="0" r="50" fill="none" stroke="currentColor" strokeWidth="0.8" />
+        <circle cx="100" cy="0" r="75" fill="none" stroke="currentColor" strokeWidth="0.8" />
+        <circle cx="100" cy="0" r="100" fill="none" stroke="currentColor" strokeWidth="0.8" />
+        <line x1="100" y1="0" x2="0" y2="100" stroke="currentColor" strokeWidth="0.8" />
+        <line x1="100" y1="0" x2="25" y2="100" stroke="currentColor" strokeWidth="0.8" />
+        <line x1="100" y1="0" x2="50" y2="100" stroke="currentColor" strokeWidth="0.8" />
+        <line x1="100" y1="0" x2="0" y2="50" stroke="currentColor" strokeWidth="0.8" />
+        <line x1="100" y1="0" x2="0" y2="25" stroke="currentColor" strokeWidth="0.8" />
+      </svg>
+
+      {/* Spiderweb Corner Filaments (Bottom-Left) */}
+      <svg
+        className="absolute -bottom-10 -left-10 w-36 h-36 opacity-[0.08] pointer-events-none text-cyan-400 group-hover:opacity-[0.18] transition-opacity duration-500"
+        viewBox="0 0 100 100"
+      >
+        <circle cx="0" cy="100" r="30" fill="none" stroke="currentColor" strokeWidth="0.8" />
+        <circle cx="0" cy="100" r="60" fill="none" stroke="currentColor" strokeWidth="0.8" />
+        <line x1="0" y1="100" x2="100" y2="0" stroke="currentColor" strokeWidth="0.8" />
+      </svg>
+
+      {/* ─── Header Row ─── */}
+      <div className="mb-6 relative z-10">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444] animate-pulse" />
+            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-red-300/80">
+              ARTIFACT #{index + 1}
+            </span>
+            <span className="text-[9px] font-mono font-black px-2 py-0.5 bg-red-950/70 border border-red-500/40 text-red-200 rounded-md shadow-[0_0_8px_rgba(239,68,68,0.3)]">
+              🕸️ WEB-PULLED
+            </span>
+          </div>
+
+          {/* Spider-Sense Indicator on Hover */}
+          <div className="flex items-center gap-2">
+            <span className="text-[10px] font-mono font-bold text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-0.5">
+              ⚡ SENSE
+            </span>
+            <div className="w-8 h-8 rounded-full flex items-center justify-center bg-red-950/80 border border-red-500/40 text-red-300 group-hover:text-white group-hover:bg-red-600 group-hover:border-red-400 group-hover:rotate-45 transition-all shadow-[0_0_12px_rgba(239,68,68,0.25)]">
+              <ArrowUpRight className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+
+        {/* ─── Cyber Web Terminal HUD Preview Box ─── */}
+        <div
+          className="h-32 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden border border-red-500/20 group-hover:border-red-500/40 transition-colors"
+          style={{
+            background: "linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(56, 189, 248, 0.08) 50%, rgba(8, 10, 18, 0.9) 100%)",
+          }}
+        >
+          <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-300">
+            <span className="flex items-center gap-1 text-red-300">
+              <Activity className="w-3 h-3 text-red-400 animate-pulse" />
+              CYBER ARCHITECTURE
+            </span>
+            <span className="text-cyan-400/90 font-mono">60 FPS VERIFIED</span>
+          </div>
+
+          <div className="font-mono text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-red-500/30 inline-block self-start shadow-[0_0_12px_rgba(239,68,68,0.2)]">
+            {project.metrics?.[0] ? (
+              <div className="flex items-center gap-2">
+                <span className="text-slate-400 font-normal">{project.metrics[0].label}:</span>
+                <span className="text-cyan-300 font-bold">{project.metrics[0].value}</span>
+              </div>
+            ) : (
+              <span className="text-red-300">🕷️ Production Live</span>
+            )}
+          </div>
+
+          {/* Perspective Web Grid Floor */}
+          <div className="absolute inset-0 tech-grid-bg opacity-25 pointer-events-none" />
+        </div>
+      </div>
+
+      {/* ─── Title & One-Liner ─── */}
+      <div className="mb-6 relative z-10">
+        <h3 className="text-xl sm:text-2xl font-black tracking-tight leading-snug text-white group-hover:text-red-200 transition-colors">
+          {project.title}
+        </h3>
+        <p className="text-xs sm:text-sm mt-2.5 leading-relaxed text-slate-300 font-sans line-clamp-3">
+          {project.oneLiner}
+        </p>
+      </div>
+
+      {/* ─── Tech Stack + CTA ─── */}
+      <div className="relative z-10">
+        <div className="flex flex-wrap gap-1.5 pt-4 border-t border-white/10 group-hover:border-red-500/20 transition-colors">
+          {project.techStack.map((tech, tIdx) => (
+            <span
+              key={tIdx}
+              className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-white/[0.04] border border-white/10 text-slate-300 group-hover:border-red-500/30 group-hover:text-red-200 transition-colors"
+            >
+              {tech}
+            </span>
+          ))}
+        </div>
+        <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-white transition-colors">
+          <span className="text-slate-400 group-hover:text-red-300 transition-colors">Inspect Web Telemetry</span>
+          <span className="text-cyan-400 font-bold group-hover:translate-x-0.5 transition-transform">Spider-Deep Dive →</span>
         </div>
       </div>
     </div>
