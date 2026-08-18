@@ -19,7 +19,12 @@ interface SpidermanWebAnimationProps {
   cardRefs: React.RefObject<HTMLElement | null>[];
 }
 
-// ─── 4-Frame Retro 16-Bit Pixel Spiderman ───────────────────────────────────────
+// ─── High-Definition 32-Bit Retro Pixel Spider-Man ──────────────────────────────
+// 28 Columns × 34 Rows for high visual fidelity
+// R = Red (#ff1e27), D = Dark Red Shadow (#a80512)
+// B = Electric Blue (#0070f3), N = Deep Navy Shadow (#002b80)
+// W = Pure White (#ffffff), G = Lens Grey (#94a3b8)
+// K = Jet Black (#10141e), _ = Transparent
 function SpiderManSprite({
   frameIndex = 0,
   isShooting = false,
@@ -27,107 +32,172 @@ function SpiderManSprite({
   frameIndex?: number;
   isShooting?: boolean;
 }) {
-  // 14 cols × 18 rows
-  // R = Red, B = Blue, K = Black/Outline, W = White/Eyes, _ = Transparent
   const FRAMES = [
-    // Frame 0: Contact (Right leg forward)
+    // Frame 0: Sprint Contact 1 (Right leg forward)
     [
-      "____KKKKKK____",
-      "___KRRRRRRK___",
-      "__KRRWWWWRRK__",
-      "_KRRWKKKKWRRK_",
-      "_KRRWKKKKWRRK_",
-      "__KRRRRRRRRK__",
-      "___KRRRRRRK___",
-      "__KRRRKKRRRK__",
-      "_KBRRRKKKRRRB_",
-      "KBBRRRKKKRRRBK",
-      "KBBRRRKKKRRRBK",
-      "_KBRRRKKKRRRB_",
-      "__KBBBKKKBBBK_",
-      "__KBBK___KBBK_",
-      "_KBBK_____KBBK",
-      "_KKK_______KKK",
-      "______________",
-      "______________",
+      "__________KKKKKKKK__________",
+      "________KKRRRRRRRRKK________",
+      "_______KRRRDKRRRRKKRK_______",
+      "______KRRRRDKRRRRKKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDGGKKKGGKRRK______",
+      "_______KRRRDKRRRRKRRK_______",
+      "________KKRRRKKKKRRK________",
+      "______KKKKKKKKKKKKKKKK______",
+      "_____KBNNNRRRRRRRRNNBNK_____",
+      "____KBBBNNRRRKKRRRNNBBBNK___",
+      "____KBBNNNRRKKKKRRNNNBBK____",
+      "____KBNNNRRRKKKKRRRNNBNK____",
+      "____KKNNNRRRKKKKRRRNNNKK____",
+      "___KBNNNRRRRKRRKRRRRNNBK____",
+      "___KBBNNRRRRRRRRRRRRNNBK____",
+      "____KKNNNNNNNNNNNNNNNKK_____",
+      "_____KBNNNNNNNNNNNNBNK______",
+      "____KBBBNNN_____NNNBBBNK____",
+      "___KBBBNN_________NNBBBNK___",
+      "__KBBBNN___________NNBBBNK__",
+      "__KBBBN_____________NNBBBK__",
+      "_KRRDK_______________KRRDK__",
+      "_KRRDK_______________KRRDK__",
+      "_KRRDK________________KRRDK_",
+      "_KRRDK_________________KRRDK",
+      "_KKKK___________________KKKK",
+      "____________________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
     ],
-    // Frame 1: Stride
+    // Frame 1: Mid-Stride Air Sprint (Legs passing)
     [
-      "____KKKKKK____",
-      "___KRRRRRRK___",
-      "__KRRWWWWRRK__",
-      "_KRRWKKKKWRRK_",
-      "_KRRWKKKKWRRK_",
-      "__KRRRRRRRRK__",
-      "___KRRRRRRK___",
-      "__KRRRKKRRRK__",
-      "_KBRRRKKKRRRB_",
-      "KBBRRRKKKRRRBK",
-      "KBBRRRKKKRRRBK",
-      "_KBRRRKKKRRRB_",
-      "__KBBBKKKBBBK_",
-      "___KBBK_KBBK__",
-      "___KBBK_KBBK__",
-      "___KKK___KKK__",
-      "______________",
-      "______________",
+      "__________KKKKKKKK__________",
+      "________KKRRRRRRRRKK________",
+      "_______KRRRDKRRRRKKRK_______",
+      "______KRRRRDKRRRRKKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDGGKKKGGKRRK______",
+      "_______KRRRDKRRRRKRRK_______",
+      "________KKRRRKKKKRRK________",
+      "______KKKKKKKKKKKKKKKK______",
+      "_____KBNNNRRRRRRRRNNBNK_____",
+      "____KBBBNNRRRKKRRRNNBBBNK___",
+      "____KBBNNNRRKKKKRRNNNBBK____",
+      "____KBNNNRRRKKKKRRRNNBNK____",
+      "____KKNNNRRRKKKKRRRNNNKK____",
+      "___KBNNNRRRRKRRKRRRRNNBK____",
+      "___KBBNNRRRRRRRRRRRRNNBK____",
+      "____KKNNNNNNNNNNNNNNNKK_____",
+      "______KNNNNNNNNNNNNNK_______",
+      "_______KBBBNNNNNNBBBK_______",
+      "_______KBBBBNNNNBBBBK_______",
+      "________KBBBNNNNBBBK________",
+      "________KBNNN__NNNBK________",
+      "________KRRDK__KRRDK________",
+      "________KRRDK__KRRDK________",
+      "________KRRDK__KRRDK________",
+      "________KRRDK__KRRDK________",
+      "________KKKK____KKKK________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
     ],
-    // Frame 2: Contact (Left leg forward)
+    // Frame 2: Sprint Contact 2 (Left leg forward)
     [
-      "____KKKKKK____",
-      "___KRRRRRRK___",
-      "__KRRWWWWRRK__",
-      "_KRRWKKKKWRRK_",
-      "_KRRWKKKKWRRK_",
-      "__KRRRRRRRRK__",
-      "___KRRRRRRK___",
-      "__KRRRKKRRRK__",
-      "_KBRRRKKKRRRB_",
-      "KBBRRRKKKRRRBK",
-      "KBBRRRKKKRRRBK",
-      "_KBRRRKKKRRRB_",
-      "__KBBBKKKBBBK_",
-      "_KBBK_____KBBK",
-      "KBBK_______KBB",
-      "KKK_________KK",
-      "______________",
-      "______________",
+      "__________KKKKKKKK__________",
+      "________KKRRRRRRRRKK________",
+      "_______KRRRDKRRRRKKRK_______",
+      "______KRRRRDKRRRRKKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDWWKKKWWKRRK______",
+      "______KRRRDGGKKKGGKRRK______",
+      "_______KRRRDKRRRRKRRK_______",
+      "________KKRRRKKKKRRK________",
+      "______KKKKKKKKKKKKKKKK______",
+      "_____KBNNNRRRRRRRRNNBNK_____",
+      "____KBBBNNRRRKKRRRNNBBBNK___",
+      "____KBBNNNRRKKKKRRNNNBBK____",
+      "____KBNNNRRRKKKKRRRNNBNK____",
+      "____KKNNNRRRKKKKRRRNNNKK____",
+      "___KBNNNRRRRKRRKRRRRNNBK____",
+      "___KBBNNRRRRRRRRRRRRNNBK____",
+      "____KKNNNNNNNNNNNNNNNKK_____",
+      "_____KBNNNNNNNNNNNNBNK______",
+      "____KBBBNNN_____NNNBBBNK____",
+      "___KBBBNN_________NNBBBNK___",
+      "__KBBBNN___________NNBBBNK__",
+      "__KBBNN_____________NNBBBK__",
+      "__KRRDK_____________KRRDK___",
+      "___KRRDK___________KRRDK____",
+      "____KRRDK_________KRRDK_____",
+      "_____KRRDK_______KRRDK______",
+      "______KKKK_______KKKK_______",
+      "____________________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
     ],
-    // Frame 3: Shooting Web upwards/forward pose
+    // Frame 3: Signature Upward Web-Shooting Thwip Pose
     [
-      "____KKKKKK____",
-      "___KRRRRRRK___",
-      "__KRRWWWWRRK__",
-      "_KRRWKKKKWRRK_",
-      "_KRRWKKKKWRRK_",
-      "__KRRRRRRRRK__",
-      "___KRRRRRRK___",
-      "__KRRRKKRRRK__",
-      "_KBRRRKKKRRRBK",
-      "KBBRRRKKKRRRBKKK",
-      "KBBRRRKKKRRRBRRRK",
-      "_KBRRRKKKRRRBKKK",
-      "__KBBBKKKBBBK_",
-      "___KBBKKKBBK__",
-      "___KBBK_KBBK__",
-      "___KKK___KKK__",
-      "______________",
-      "______________",
+      "________________KKKKKK______",
+      "______________KKRRRRRRKK____",
+      "_____________KRRRDKRRKKRK___",
+      "____________KRRRRDKRRKKRRK__",
+      "____________KRRRDWWKKWWKRRK_",
+      "____________KRRRDWWKKWWKRRK_",
+      "____________KRRRDWWKKWWKRRK_",
+      "____________KRRRDGGKKGGKRRK_",
+      "_____________KRRRDKRRKRRK___",
+      "____KKKK______KKRRRKKRRK____",
+      "___KRRRRKKKKKKKKKKKKKKKKK___",
+      "__KRRRRRRNNNRRRRRRRRNNBNK___",
+      "_KRRWWRRRBNNRRRKKRRRNNBBBNK_",
+      "KKKWWWKKKBNNNRRKKKKRRNNNBBK_",
+      "__KRRWWRRKBNNNRRRKKKKRRRNNBN",
+      "___KRRRRKKKNNNRRRKKKKRRRNNNK",
+      "____KKKK__KBNNNRRRRKRRKRRRRN",
+      "__________KBBNNRRRRRRRRRRRRN",
+      "___________KKNNNNNNNNNNNNNNN",
+      "____________KBNNNNNNNNNNNBNK",
+      "___________KBBBNNNNNNNNBBBNK",
+      "__________KBBBNN_____NNBBBNK",
+      "_________KBBBNN_______NNBBBN",
+      "_________KBBN__________NNBBB",
+      "_________KRRDK__________KRRD",
+      "________KRRDK____________KRR",
+      "_______KRRDK_____________KKK",
+      "______KRRDK_________________",
+      "______KKKK__________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
+      "____________________________",
     ],
   ];
 
   const currentFrame = isShooting ? FRAMES[3] : FRAMES[frameIndex % 3];
 
   const colorMap: Record<string, string> = {
-    R: "#e60012",
-    B: "#0048ba",
-    K: "#0f111a",
+    R: "#ff1e27",
+    D: "#a80512",
+    B: "#0070f3",
+    N: "#002b80",
     W: "#ffffff",
+    G: "#94a3b8",
+    K: "#0b0e14",
     _: "transparent",
   };
 
-  const px = 3.5;
-  const cols = 17;
+  const px = 2.4;
+  const cols = 28;
 
   return (
     <svg
@@ -135,10 +205,10 @@ function SpiderManSprite({
       width={cols * px}
       height={currentFrame.length * px}
       style={{ imageRendering: "pixelated", display: "block" }}
-      className="drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)]"
+      className="drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]"
     >
       {currentFrame.map((row, ry) =>
-        row.padEnd(cols, "_").split("").map((c, cx) =>
+        row.split("").map((c, cx) =>
           c !== "_" ? (
             <rect
               key={`${ry}-${cx}`}
@@ -247,7 +317,7 @@ export default function SpidermanWebAnimation({
     if (legIntervalRef.current) return;
     legIntervalRef.current = setInterval(() => {
       setFrame((f) => (f + 1) % 3);
-    }, 105);
+    }, 100);
   }, []);
 
   const stopRunningLegs = useCallback(() => {
@@ -294,7 +364,7 @@ export default function SpidermanWebAnimation({
     const roadRect = road.getBoundingClientRect();
 
     // Start off left of road
-    gsap.set(runner, { x: -75, opacity: 1 });
+    gsap.set(runner, { x: -85, opacity: 1 });
     startRunningLegs();
 
     const tl = gsap.timeline({
@@ -306,7 +376,7 @@ export default function SpidermanWebAnimation({
         setWeb(null);
         // Spidey runs off the right side of the road
         gsap.to(runner, {
-          x: roadRect.width + 100,
+          x: roadRect.width + 110,
           duration: 0.75,
           ease: "power2.in",
           onComplete: () => {
@@ -333,7 +403,7 @@ export default function SpidermanWebAnimation({
           if (!roadTrackRef.current || !ref.current) return;
           const currentRoad = roadTrackRef.current.getBoundingClientRect();
           const cardRect = ref.current.getBoundingClientRect();
-          const targetRelativeX = (cardRect.left + cardRect.width / 2) - currentRoad.left - 30;
+          const targetRelativeX = (cardRect.left + cardRect.width / 2) - currentRoad.left - 34;
           gsap.set(runner, {
             x: gsap.utils.interpolate(
               gsap.getProperty(runner, "x") as number,
@@ -353,8 +423,8 @@ export default function SpidermanWebAnimation({
         const cardBox = card.getBoundingClientRect();
 
         // Web starts from Spidey's hand at bottom road
-        const startX = runnerBox.left + runnerBox.width * 0.7;
-        const startY = runnerBox.top + runnerBox.height * 0.3;
+        const startX = runnerBox.left + runnerBox.width * 0.45;
+        const startY = runnerBox.top + runnerBox.height * 0.35;
 
         // Web shoots way up high (above the card destination into the sky)
         const targetX = cardBox.left + cardBox.width / 2;
@@ -486,10 +556,10 @@ export default function SpidermanWebAnimation({
       {/* Full-screen SVG Web Overlay */}
       <WebOverlay web={web} />
 
-      {/* ─── Retro 16-Bit Pixel Road Track at the Bottom ─── */}
+      {/* ─── Retro 16/32-Bit Pixel Road Track at the Bottom ─── */}
       <div
         ref={roadTrackRef}
-        className="relative w-full h-18 sm:h-22 bg-gradient-to-b from-[#151722] via-[#0d0f17] to-[#07080d] rounded-2xl border-2 border-indigo-500/30 overflow-hidden shadow-[0_12px_35px_rgba(0,0,0,0.85),inset_0_2px_4px_rgba(255,255,255,0.08)] flex items-center"
+        className="relative w-full h-22 sm:h-26 bg-gradient-to-b from-[#151722] via-[#0d0f17] to-[#07080d] rounded-2xl border-2 border-indigo-500/30 overflow-hidden shadow-[0_12px_35px_rgba(0,0,0,0.85),inset_0_2px_4px_rgba(255,255,255,0.08)] flex items-center"
       >
         {/* Retro Grid / Pixel texture */}
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:12px_12px] opacity-40 pointer-events-none" />
@@ -504,7 +574,7 @@ export default function SpidermanWebAnimation({
         {/* Mini 16-Bit Road Horizon Traffic / Tech Deco */}
         <div className="absolute left-6 text-[10px] font-mono font-bold text-indigo-400/60 flex items-center gap-1.5">
           <span className="animate-pulse">🚦</span>
-          <span className="hidden sm:inline">HIGHWAY PATROL: SPIDER-BOT v1.6</span>
+          <span className="hidden sm:inline">HIGHWAY PATROL: SPIDER-BOT v2.0 (HI-RES)</span>
         </div>
 
         <div className="absolute right-6 text-[10px] font-mono font-bold text-red-400/60 flex items-center gap-1.5">
@@ -516,10 +586,10 @@ export default function SpidermanWebAnimation({
           </span>
         </div>
 
-        {/* ─── Spiderman Sprite Running On Road At Bottom ─── */}
+        {/* ─── Spiderman High-Definition Sprite Running On Road At Bottom ─── */}
         <div
           ref={runnerRef}
-          className="absolute bottom-2 pointer-events-none z-20"
+          className="absolute bottom-1 pointer-events-none z-20"
           style={{ opacity: 0 }}
         >
           <SpiderManSprite frameIndex={frame} isShooting={isShooting} />
