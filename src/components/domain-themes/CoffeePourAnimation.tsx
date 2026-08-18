@@ -28,6 +28,9 @@ export default function CoffeePourAnimation({
   // The coffee fill rect inside the mug — we animate its y to simulate draining
   const coffeeFillRef = useRef<SVGRectElement>(null);
   const coffeeSurfaceRef = useRef<SVGGElement>(null);
+  // The two surface ellipses — shrink rx/ry as mug tapers toward bottom
+  const coffeeRimOuterRef = useRef<SVGEllipseElement>(null);
+  const coffeeRimInnerRef = useRef<SVGEllipseElement>(null);
 
   const tlRef = useRef<gsap.core.Timeline | null>(null);
   const hasRunRef = useRef(false);
@@ -74,6 +77,9 @@ export default function CoffeePourAnimation({
     if (coffeeFill) gsap.set(coffeeFill, { attr: { y: 52, height: 150 } });
     // Reset coffee surface group to top position
     if (coffeeSurfaceRef.current) gsap.set(coffeeSurfaceRef.current, { y: 0 });
+    // Reset ellipse radii to full (mug is widest at top)
+    if (coffeeRimOuterRef.current) gsap.set(coffeeRimOuterRef.current, { attr: { rx: 68, ry: 22 } });
+    if (coffeeRimInnerRef.current) gsap.set(coffeeRimInnerRef.current, { attr: { rx: 54, ry: 15 } });
 
     // All cards hidden + coffee overlay visible
     validRefs.forEach((r) => {
@@ -120,6 +126,16 @@ export default function CoffeePourAnimation({
         const drainAmount = (i + 1) * drainPerCard;
         const newY = 52 + drainAmount;
         const newH = Math.max(4, 200 - newY);
+        // How far along the full drain are we? (0 at top → 1 at bottom)
+        const drainFraction = drainAmount / 130;
+        // Mug tapers measured from path geometry:
+        // top (y=52): half-width~75 → rx_outer=68, ry=22
+        // bottom drain (y=182): half-width~56 → rx_outer=52, ry=17
+        const outerRx = Math.max(52, 68 - drainFraction * 16);
+        const outerRy = Math.max(17, 22 - drainFraction * 5);
+        const innerRx = Math.max(42, 54 - drainFraction * 12);
+        const innerRy = Math.max(12, 15 - drainFraction * 3);
+
         tl.to(
           coffeeFill,
           { attr: { y: newY, height: newH }, duration: 0.55, ease: "power2.inOut" },
@@ -130,6 +146,21 @@ export default function CoffeePourAnimation({
           tl.to(
             coffeeSurface,
             { y: drainAmount, duration: 0.55, ease: "power2.inOut" },
+            "<"
+          );
+        }
+        // Shrink ellipse radii to match mug taper at this depth
+        if (coffeeRimOuterRef.current) {
+          tl.to(
+            coffeeRimOuterRef.current,
+            { attr: { rx: outerRx, ry: outerRy }, duration: 0.55, ease: "power2.inOut" },
+            "<"
+          );
+        }
+        if (coffeeRimInnerRef.current) {
+          tl.to(
+            coffeeRimInnerRef.current,
+            { attr: { rx: innerRx, ry: innerRy }, duration: 0.55, ease: "power2.inOut" },
             "<"
           );
         }
@@ -307,8 +338,8 @@ export default function CoffeePourAnimation({
 
           {/* Coffee top surface oval + foam — grouped & clipped so they slide down naturally inside the cup */}
           <g ref={coffeeSurfaceRef} clipPath="url(#mug-interior-clip)">
-            <ellipse cx="110" cy="52" rx="68" ry="22" fill="#3A1D0B" stroke="#000" strokeWidth="3.5" />
-            <ellipse cx="110" cy="52" rx="54" ry="15" fill="#522A12" />
+            <ellipse ref={coffeeRimOuterRef} cx="110" cy="52" rx="68" ry="22" fill="#3A1D0B" stroke="#000" strokeWidth="3.5" />
+            <ellipse ref={coffeeRimInnerRef} cx="110" cy="52" rx="54" ry="15" fill="#522A12" />
             {/* Foam latte swirl on surface */}
             <path d="M 80 52 Q 105 44 130 50 Q 118 60 95 56 Q 78 62 80 52 Z" fill="#C48858" opacity="0.75" />
             <path d="M 85 52 Q 110 44 135 52 Q 120 58 100 54" fill="none" stroke="#D4A57A" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
