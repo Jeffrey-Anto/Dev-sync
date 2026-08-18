@@ -73,9 +73,9 @@ export default function CoffeePourAnimation({
 
     // Coffee fill starts FULL (y=52 = surface, height fills to bottom of cup ~y=200)
     if (coffeeFill) gsap.set(coffeeFill, { attr: { y: 52, height: 150 } });
-    // Reset surface ellipses to top — animate cy directly (no group transforms, no clip path issues)
-    if (coffeeRimOuterRef.current) gsap.set(coffeeRimOuterRef.current, { attr: { cy: 52, rx: 120, ry: 22 } });
-    if (coffeeRimInnerRef.current) gsap.set(coffeeRimInnerRef.current, { attr: { cy: 52, rx: 100, ry: 15 } });
+    // Reset surface ellipses to top — rx=72 fits the mug rim (half-width ~75px), ry=14 gives good 3-D perspective
+    if (coffeeRimOuterRef.current) gsap.set(coffeeRimOuterRef.current, { attr: { cy: 52, rx: 72, ry: 14 } });
+    if (coffeeRimInnerRef.current) gsap.set(coffeeRimInnerRef.current, { attr: { cy: 52, rx: 58, ry: 9 } });
 
     // All cards hidden via clip-path pinch (magic lamp initial state)
     validRefs.forEach((r) => {
@@ -124,18 +124,22 @@ export default function CoffeePourAnimation({
         const newY = 52 + drainAmount;
         const newH = Math.max(4, 200 - newY);
         const drainFraction = drainAmount / 130;
-        const outerRy = Math.max(16, 22 - drainFraction * 6);
-        const innerRy = Math.max(11, 15 - drainFraction * 4);
+        // Mug tapers from rx=72 at top to ~rx=48 at bottom — taper proportionally
+        const outerRx = Math.max(48, 72 - drainFraction * 24);
+        const innerRx = Math.max(38, 58 - drainFraction * 20);
+        // ry shrinks slightly to maintain perspective depth illusion
+        const outerRy = Math.max(9, 14 - drainFraction * 5);
+        const innerRy = Math.max(6, 9 - drainFraction * 3);
         const newCy = 52 + drainAmount; // surface cy tracks fill level
 
         tl.to(coffeeFill, { attr: { y: newY, height: newH }, duration: 0.55, ease: "power2.inOut" }, "<");
 
-        // Animate cy directly — no group transform, clip path in SVG space is always correct
+        // Animate cy + rx/ry directly — surface oval shrinks as mug tapers downward
         if (coffeeRimOuterRef.current) {
-          tl.to(coffeeRimOuterRef.current, { attr: { cy: newCy, ry: outerRy }, duration: 0.55, ease: "power2.inOut" }, "<");
+          tl.to(coffeeRimOuterRef.current, { attr: { cy: newCy, rx: outerRx, ry: outerRy }, duration: 0.55, ease: "power2.inOut" }, "<");
         }
         if (coffeeRimInnerRef.current) {
-          tl.to(coffeeRimInnerRef.current, { attr: { cy: newCy, ry: innerRy }, duration: 0.55, ease: "power2.inOut" }, "<");
+          tl.to(coffeeRimInnerRef.current, { attr: { cy: newCy, rx: innerRx, ry: innerRy }, duration: 0.55, ease: "power2.inOut" }, "<");
         }
       }
 
@@ -328,17 +332,24 @@ export default function CoffeePourAnimation({
           {/* Specular highlight ON TOP of coffee */}
           <path d="M 46 62 C 49 118, 55 152, 63 186" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" opacity="0.4" />
 
-          {/* Coffee top surface oval — clipped directly (no group), cy animated in SVG space */}
+          {/* Coffee top surface oval — properly sized to mug rim (half-width ~72px), clipped to mug interior */}
           <ellipse
             ref={coffeeRimOuterRef}
-            cx="110" cy="52" rx="120" ry="22"
-            fill="#3A1D0B" stroke="#000" strokeWidth="3.5"
+            cx="110" cy="52" rx="72" ry="14"
+            fill="#3A1D0B" stroke="#000" strokeWidth="3"
             clipPath="url(#mug-body-clip)"
           />
+          {/* Inner lighter ring — gives 3-D depth to the coffee surface */}
           <ellipse
             ref={coffeeRimInnerRef}
-            cx="110" cy="52" rx="100" ry="15"
+            cx="110" cy="52" rx="58" ry="9"
             fill="#522A12"
+            clipPath="url(#mug-body-clip)"
+          />
+          {/* Foam highlight — tiny crescent to sell the liquid surface */}
+          <ellipse
+            cx="110" cy="52" rx="28" ry="4"
+            fill="none" stroke="#C48858" strokeWidth="2.5" opacity="0.55"
             clipPath="url(#mug-body-clip)"
           />
 
