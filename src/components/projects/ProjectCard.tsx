@@ -378,81 +378,145 @@ function WebDevSpiderCard({
           : "0 10px 30px -10px rgba(0, 0, 0, 0.7)",
       }}
     >
-      {/* ── 3D Spider Silk Cocoon Overlay (Chrysalis that splits & hatches open like a butterfly) ── */}
+      {/* ── Hyper-Realistic 3D Spider Silk Cocoon / Chrysalis Overlay ── */}
       <div
         className="js-cocoon-wrapper absolute inset-0 z-20 pointer-events-none overflow-visible rounded-3xl"
-        style={{ perspective: "1000px" }}
+        style={{ perspective: "1200px" }}
       >
-        {/* Top Suspension Silk Threads attaching to ceiling */}
+        {/* Branching Silk Suspension Web Tree (Anchoring Cocoon from Ceiling & Corners) */}
         <svg
-          className="js-cocoon-threads absolute -top-24 left-1/2 -translate-x-1/2 w-48 h-28 pointer-events-none overflow-visible z-30"
-          viewBox="0 0 100 60"
+          className="js-cocoon-threads absolute -top-28 left-1/2 -translate-x-1/2 w-64 h-32 pointer-events-none overflow-visible z-30"
+          viewBox="0 0 160 80"
         >
-          <line x1="10" y1="-25" x2="35" y2="60" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
-          <line x1="90" y1="-25" x2="65" y2="60" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
-          <line x1="50" y1="-35" x2="50" y2="60" stroke="#cbd5e1" strokeWidth="1.5" opacity="0.9" />
-          <line x1="30" y1="-18" x2="45" y2="60" stroke="#94a3b8" strokeWidth="0.8" opacity="0.6" />
-          <line x1="70" y1="-18" x2="55" y2="60" stroke="#94a3b8" strokeWidth="0.8" opacity="0.6" />
-          <circle cx="50" cy="55" r="4" fill="#ffffff" filter="drop-shadow(0 0 6px #38bdf8)" />
+          <defs>
+            <linearGradient id="silk-thread-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#ffffff" stopOpacity="0.9" />
+              <stop offset="50%" stopColor="#cbd5e1" stopOpacity="0.7" />
+              <stop offset="100%" stopColor="#64748b" stopOpacity="0.4" />
+            </linearGradient>
+            <filter id="silk-glow" x="-20%" y="-20%" width="140%" height="140%">
+              <feGaussianBlur stdDeviation="1.2" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+
+          {/* Primary High-Tension Strands */}
+          <line x1="10" y1="-30" x2="60" y2="80" stroke="url(#silk-thread-grad)" strokeWidth="1.8" filter="url(#silk-glow)" />
+          <line x1="150" y1="-30" x2="100" y2="80" stroke="url(#silk-thread-grad)" strokeWidth="1.8" filter="url(#silk-glow)" />
+          <line x1="80" y1="-45" x2="80" y2="80" stroke="#ffffff" strokeWidth="2.2" filter="url(#silk-glow)" />
+
+          {/* Secondary Braided Filaments & Web Guy-Wires */}
+          <line x1="30" y1="-20" x2="72" y2="80" stroke="#ffffff" strokeWidth="1.0" strokeDasharray="3 2" opacity="0.8" />
+          <line x1="130" y1="-20" x2="88" y2="80" stroke="#ffffff" strokeWidth="1.0" strokeDasharray="3 2" opacity="0.8" />
+          <line x1="-15" y1="0" x2="50" y2="80" stroke="#94a3b8" strokeWidth="0.8" opacity="0.6" />
+          <line x1="175" y1="0" x2="110" y2="80" stroke="#94a3b8" strokeWidth="0.8" opacity="0.6" />
+
+          {/* Branching Cross-Web Bridges */}
+          <path d="M 30 10 Q 80 35 130 10" fill="none" stroke="#ffffff" strokeWidth="0.9" opacity="0.75" />
+          <path d="M 45 35 Q 80 55 115 35" fill="none" stroke="#cbd5e1" strokeWidth="0.8" opacity="0.7" />
+          <path d="M 58 55 Q 80 70 102 55" fill="none" stroke="#94a3b8" strokeWidth="0.7" opacity="0.6" />
+
+          {/* Top Silk Node Anchor */}
+          <circle cx="80" cy="76" r="5" fill="#ffffff" filter="url(#silk-glow)" />
+          <circle cx="80" cy="76" r="2.5" fill="#38bdf8" />
         </svg>
 
         {/* Cocoon Inner Energy Burst (Radiates when hatching) */}
         <div className="js-cocoon-burst absolute inset-0 rounded-3xl opacity-0 bg-gradient-to-r from-cyan-400 via-white to-red-500 blur-2xl z-10 pointer-events-none" />
 
-        {/* 3D Left Silk Shell / Chrysalis Wing */}
+        {/* ── 3D Left Organic Silk Shell (Woven Chrysalis Half) ── */}
         <div
-          className="js-cocoon-left absolute top-0 left-0 w-1/2 h-full rounded-l-3xl overflow-hidden border-y-[2px] border-l-[2px] border-white/60 shadow-[inset_0_0_20px_rgba(255,255,255,0.4),-8px_0_25px_rgba(0,0,0,0.8)]"
+          className="js-cocoon-left absolute top-0 left-0 w-1/2 h-full rounded-l-3xl overflow-hidden border-y border-l border-white/50 shadow-[inset_-5px_0_20px_rgba(0,0,0,0.8),inset_0_0_25px_rgba(255,255,255,0.35),-10px_0_30px_rgba(0,0,0,0.9)]"
           style={{
-            background: "linear-gradient(135deg, #1e293b 0%, #0f172a 40%, #1e1b4b 100%)",
+            background: "radial-gradient(ellipse at 40% 50%, #1e293b 0%, #0f172a 55%, #050811 100%)",
             transformOrigin: "left center",
           }}
         >
-          {/* Layered Woven Silk Threads on Left Pod */}
-          <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 100 200" preserveAspectRatio="none">
-            <line x1="0" y1="20" x2="100" y2="80" stroke="#ffffff" strokeWidth="1.2" opacity="0.7" />
-            <line x1="0" y1="60" x2="100" y2="120" stroke="#ffffff" strokeWidth="1.5" opacity="0.85" />
-            <line x1="0" y1="100" x2="100" y2="160" stroke="#cbd5e1" strokeWidth="1.2" opacity="0.6" />
-            <line x1="0" y1="140" x2="100" y2="200" stroke="#ffffff" strokeWidth="1" opacity="0.8" />
-            <line x1="0" y1="180" x2="60" y2="200" stroke="#94a3b8" strokeWidth="1" opacity="0.5" />
-            <path d="M 0 0 Q 60 100 0 200" fill="none" stroke="#38bdf8" strokeWidth="1.5" opacity="0.5" />
-            <path d="M 0 40 Q 90 100 0 160" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.6" />
+          {/* Dense Multi-Layer Organic Silk Mesh (Left Half) */}
+          <svg className="absolute inset-0 w-full h-full opacity-75" viewBox="0 0 120 240" preserveAspectRatio="none">
+            {/* 3D Curved Cylindrical Wrapping Bands */}
+            <path d="M 0 20 Q 70 10 120 20" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
+            <path d="M 0 50 Q 80 35 120 50" fill="none" stroke="#ffffff" strokeWidth="1.4" opacity="0.85" />
+            <path d="M 0 85 Q 90 65 120 85" fill="none" stroke="#cbd5e1" strokeWidth="1.3" opacity="0.75" />
+            <path d="M 0 120 Q 95 100 120 120" fill="none" stroke="#ffffff" strokeWidth="1.6" opacity="0.9" />
+            <path d="M 0 155 Q 90 140 120 155" fill="none" stroke="#cbd5e1" strokeWidth="1.3" opacity="0.75" />
+            <path d="M 0 190 Q 80 178 120 190" fill="none" stroke="#ffffff" strokeWidth="1.4" opacity="0.8" />
+            <path d="M 0 220 Q 70 212 120 220" fill="none" stroke="#ffffff" strokeWidth="1.1" opacity="0.7" />
+
+            {/* Diagonal Braided Silk Strands & Spiral Filaments */}
+            <path d="M 0 0 C 40 60, 80 120, 120 240" fill="none" stroke="#ffffff" strokeWidth="1.5" opacity="0.7" />
+            <path d="M 0 40 C 50 100, 80 160, 120 220" fill="none" stroke="#cbd5e1" strokeWidth="1.1" opacity="0.65" />
+            <path d="M 0 100 C 60 140, 90 180, 120 240" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.6" />
+            <path d="M 0 200 C 60 150, 90 100, 120 20" fill="none" stroke="#38bdf8" strokeWidth="1.2" opacity="0.55" />
+            <path d="M 0 160 C 50 110, 80 60, 120 0" fill="none" stroke="#ffffff" strokeWidth="1.3" opacity="0.65" />
+            <path d="M 0 240 C 40 180, 80 90, 120 60" fill="none" stroke="#cbd5e1" strokeWidth="1.0" opacity="0.5" />
+
+            {/* Organic Fibrous Web Node Clusters */}
+            <circle cx="45" cy="85" r="2" fill="#ffffff" opacity="0.8" />
+            <circle cx="70" cy="140" r="2.5" fill="#ffffff" opacity="0.85" />
+            <circle cx="35" cy="180" r="1.8" fill="#ffffff" opacity="0.75" />
           </svg>
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-white/20" />
+
+          {/* Translucent Spun Silk Specular Sheen Layer */}
+          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-white/25 pointer-events-none" />
         </div>
 
-        {/* 3D Right Silk Shell / Chrysalis Wing */}
+        {/* ── 3D Right Organic Silk Shell (Woven Chrysalis Half) ── */}
         <div
-          className="js-cocoon-right absolute top-0 right-0 w-1/2 h-full rounded-r-3xl overflow-hidden border-y-[2px] border-r-[2px] border-white/60 shadow-[inset_0_0_20px_rgba(255,255,255,0.4),8px_0_25px_rgba(0,0,0,0.8)]"
+          className="js-cocoon-right absolute top-0 right-0 w-1/2 h-full rounded-r-3xl overflow-hidden border-y border-r border-white/50 shadow-[inset_5px_0_20px_rgba(0,0,0,0.8),inset_0_0_25px_rgba(255,255,255,0.35),10px_0_30px_rgba(0,0,0,0.9)]"
           style={{
-            background: "linear-gradient(225deg, #1e293b 0%, #0f172a 40%, #31102b 100%)",
+            background: "radial-gradient(ellipse at 60% 50%, #1e293b 0%, #0f172a 55%, #050811 100%)",
             transformOrigin: "right center",
           }}
         >
-          {/* Layered Woven Silk Threads on Right Pod */}
-          <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 100 200" preserveAspectRatio="none">
-            <line x1="100" y1="20" x2="0" y2="80" stroke="#ffffff" strokeWidth="1.2" opacity="0.7" />
-            <line x1="100" y1="60" x2="0" y2="120" stroke="#ffffff" strokeWidth="1.5" opacity="0.85" />
-            <line x1="100" y1="100" x2="0" y2="160" stroke="#cbd5e1" strokeWidth="1.2" opacity="0.6" />
-            <line x1="100" y1="140" x2="0" y2="200" stroke="#ffffff" strokeWidth="1" opacity="0.8" />
-            <line x1="100" y1="180" x2="40" y2="200" stroke="#94a3b8" strokeWidth="1" opacity="0.5" />
-            <path d="M 100 0 Q 40 100 100 200" fill="none" stroke="#ef4444" strokeWidth="1.5" opacity="0.5" />
-            <path d="M 100 40 Q 10 100 100 160" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.6" />
+          {/* Dense Multi-Layer Organic Silk Mesh (Right Half) */}
+          <svg className="absolute inset-0 w-full h-full opacity-75" viewBox="0 0 120 240" preserveAspectRatio="none">
+            {/* 3D Curved Cylindrical Wrapping Bands */}
+            <path d="M 120 20 Q 50 10 0 20" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
+            <path d="M 120 50 Q 40 35 0 50" fill="none" stroke="#ffffff" strokeWidth="1.4" opacity="0.85" />
+            <path d="M 120 85 Q 30 65 0 85" fill="none" stroke="#cbd5e1" strokeWidth="1.3" opacity="0.75" />
+            <path d="M 120 120 Q 25 100 0 120" fill="none" stroke="#ffffff" strokeWidth="1.6" opacity="0.9" />
+            <path d="M 120 155 Q 30 140 0 155" fill="none" stroke="#cbd5e1" strokeWidth="1.3" opacity="0.75" />
+            <path d="M 120 190 Q 40 178 0 190" fill="none" stroke="#ffffff" strokeWidth="1.4" opacity="0.8" />
+            <path d="M 120 220 Q 50 212 0 220" fill="none" stroke="#ffffff" strokeWidth="1.1" opacity="0.7" />
+
+            {/* Diagonal Braided Silk Strands & Spiral Filaments */}
+            <path d="M 120 0 C 80 60, 40 120, 0 240" fill="none" stroke="#ffffff" strokeWidth="1.5" opacity="0.7" />
+            <path d="M 120 40 C 70 100, 40 160, 0 220" fill="none" stroke="#cbd5e1" strokeWidth="1.1" opacity="0.65" />
+            <path d="M 120 100 C 60 140, 30 180, 0 240" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.6" />
+            <path d="M 120 200 C 60 150, 30 100, 0 20" fill="none" stroke="#ef4444" strokeWidth="1.2" opacity="0.55" />
+            <path d="M 120 160 C 70 110, 40 60, 0 0" fill="none" stroke="#ffffff" strokeWidth="1.3" opacity="0.65" />
+            <path d="M 120 240 C 80 180, 40 90, 0 60" fill="none" stroke="#cbd5e1" strokeWidth="1.0" opacity="0.5" />
+
+            {/* Organic Fibrous Web Node Clusters */}
+            <circle cx="75" cy="85" r="2" fill="#ffffff" opacity="0.8" />
+            <circle cx="50" cy="140" r="2.5" fill="#ffffff" opacity="0.85" />
+            <circle cx="85" cy="180" r="1.8" fill="#ffffff" opacity="0.75" />
           </svg>
-          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/5 to-white/20" />
+
+          {/* Translucent Spun Silk Specular Sheen Layer */}
+          <div className="absolute inset-0 bg-gradient-to-l from-transparent via-white/10 to-white/25 pointer-events-none" />
         </div>
 
-        {/* Central Chrysalis Core & Seam Seal */}
-        <div className="js-cocoon-core absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2 pointer-events-none">
-          <div className="w-14 h-14 rounded-2xl bg-black/90 border-2 border-white/80 flex items-center justify-center shadow-[0_0_25px_#38bdf8,inset_0_0_10px_rgba(255,255,255,0.4)] rotate-45">
-            <span className="text-xl -rotate-45 animate-pulse">🕷️</span>
+        {/* ── Central Chrysalis Spider Seal & Bio-Lock ── */}
+        <div className="js-cocoon-core absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center gap-2.5 pointer-events-none">
+          <div className="relative w-16 h-16 rounded-2xl bg-[#090d1a] border-2 border-white/90 flex items-center justify-center shadow-[0_0_30px_rgba(56,189,248,0.7),inset_0_0_15px_rgba(255,255,255,0.4)] rotate-45">
+            {/* Inner Rotating Spider Radar */}
+            <div className="absolute inset-1 rounded-xl border border-cyan-400/40 animate-spin" style={{ animationDuration: "8s" }} />
+            <span className="text-2xl -rotate-45 animate-pulse filter drop-shadow-[0_0_8px_#ef4444]">🕷️</span>
           </div>
-          <div className="px-3 py-1 rounded-full bg-black/90 border border-cyan-400/50 text-[10px] font-mono font-black text-cyan-200 shadow-[0_0_15px_rgba(56,189,248,0.4)] tracking-wider uppercase whitespace-nowrap">
-            🕸️ SILK COCOON #{index + 1}
+
+          <div className="px-3.5 py-1.5 rounded-full bg-black/95 border border-cyan-400/60 text-[10px] font-mono font-black text-cyan-200 shadow-[0_0_20px_rgba(56,189,248,0.5)] tracking-wider uppercase whitespace-nowrap flex items-center gap-1.5">
+            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+            <span>SILK CHRYSALIS #{index + 1}</span>
           </div>
         </div>
 
-        {/* Seam Crack Line */}
-        <div className="js-cocoon-seam absolute top-0 left-1/2 -translate-x-1/2 w-[3px] h-full bg-gradient-to-b from-cyan-400 via-white to-red-500 shadow-[0_0_10px_#ffffff] z-25 opacity-90" />
+        {/* Organic Jagged Seam Glow Line */}
+        <div className="js-cocoon-seam absolute top-0 left-1/2 -translate-x-1/2 w-[3px] h-full bg-gradient-to-b from-cyan-400 via-white to-red-500 shadow-[0_0_15px_#ffffff] z-25 opacity-95" />
       </div>
       {/* Spiderweb Background Accent Lines */}
       <svg

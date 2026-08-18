@@ -210,13 +210,20 @@ function WebOverlay({ webs }: { webs: WebLine[] }) {
               opacity="0.8"
             />
 
-            {/* 5. Target Web Splat / Connection */}
+            {/* 5. Target Web Splat / Connection on the Spider Logo */}
             {web.isPulling ? (
               <g opacity="0.95">
-                <circle cx={web.x2} cy={web.y2} r="7" fill="none" stroke="#ffffff" strokeWidth="1.2" opacity="0.85" />
-                <line x1={web.x2 - 9} y1={web.y2 - 6} x2={web.x2 + 9} y2={web.y2 + 6} stroke="#ffffff" strokeWidth="1" />
-                <line x1={web.x2 - 9} y1={web.y2 + 6} x2={web.x2 + 9} y2={web.y2 - 6} stroke="#ffffff" strokeWidth="1" />
-                <circle cx={web.x2} cy={web.y2} r="3" fill="#ffffff" />
+                {/* Radial Web Impact Rings */}
+                <circle cx={web.x2} cy={web.y2} r="16" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="1" strokeDasharray="3 3" />
+                <circle cx={web.x2} cy={web.y2} r="9" fill="none" stroke="#ffffff" strokeWidth="1.5" opacity="0.9" />
+                {/* 8 Radial Spiderweb Strands */}
+                <line x1={web.x2 - 18} y1={web.y2} x2={web.x2 + 18} y2={web.y2} stroke="#ffffff" strokeWidth="1.2" />
+                <line x1={web.x2} y1={web.y2 - 18} x2={web.x2} y2={web.y2 + 18} stroke="#ffffff" strokeWidth="1.2" />
+                <line x1={web.x2 - 13} y1={web.y2 - 13} x2={web.x2 + 13} y2={web.y2 + 13} stroke="#ffffff" strokeWidth="1.0" />
+                <line x1={web.x2 - 13} y1={web.y2 + 13} x2={web.x2 + 13} y2={web.y2 - 13} stroke="#ffffff" strokeWidth="1.0" />
+                {/* Central Glowing Silk Impact Core */}
+                <circle cx={web.x2} cy={web.y2} r="4" fill="#ffffff" filter="url(#silk-shimmer)" />
+                <circle cx={web.x2} cy={web.y2} r="2" fill="#38bdf8" />
               </g>
             ) : (
               <circle cx={web.x2} cy={web.y2} r="2" fill="#ffffff" />
@@ -523,16 +530,30 @@ export default function SpidermanWebAnimation({
           // Snatch web triggers at mid-swoop (t in 0.35..0.75)
           if (t >= 0.35 && t <= 0.75) {
             const pullT = (t - 0.35) / 0.40;
-            const targetSkyY = Math.max(30, cardRect.top - 180);
-            const targetPulledY = cardRect.top + 35;
-            const currentCardY = targetSkyY + (targetPulledY - targetSkyY) * pullT;
+
+            // Target the exact center of the Spider Chrysalis Logo on the cocoon
+            const coreEl = ref.current.querySelector(".js-cocoon-core");
+            let targetLogoX = cardRect.left + cardRect.width / 2;
+            let targetLogoY = cardRect.top + cardRect.height * 0.50; // Exact vertical center of cocoon
+            if (coreEl) {
+              const coreRect = coreEl.getBoundingClientRect();
+              targetLogoX = coreRect.left + coreRect.width / 2;
+              targetLogoY = coreRect.top + coreRect.height * 0.40; // Center of the diamond spider badge
+            }
+
+            // Web-shot travels down directly and locks onto the spider logo center
+            const startSkyY = Math.max(15, cardRect.top - 140);
+            const currentImpactY = pullT < 0.22
+              ? startSkyY + (targetLogoY - startSkyY) * (pullT / 0.22)
+              : targetLogoY;
+
             const snatchBow = -14 * Math.sin(pullT * Math.PI);
 
             webs.push({
               x1: shooterX,
               y1: shooterY,
-              x2: cardRect.left + cardRect.width / 2,
-              y2: currentCardY,
+              x2: targetLogoX,
+              y2: currentImpactY,
               opacity: 1,
               isPulling: true,
               bowOffset: snatchBow,
