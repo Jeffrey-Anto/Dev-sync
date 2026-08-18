@@ -128,6 +128,30 @@ function UiUxCard({
         transition: "box-shadow 0.18s ease, transform 0.18s ease",
       }}
     >
+      {/* ── Coffee wash overlay — starts covering the card, GSAP wipes it up ──
+          Gives the feeling that the card IS coffee that then "reveals" itself.  */}
+      <div
+        className="js-coffee-overlay absolute inset-0 rounded-3xl z-10 pointer-events-none overflow-hidden"
+        style={{ background: "linear-gradient(160deg, #2A1008 0%, #3A1D0B 35%, #522A12 65%, #6B3E1E 100%)" }}
+      >
+        {/* Latte foam blobs */}
+        <div className="absolute top-6 left-1/2 -translate-x-1/2 w-3/4 h-8 rounded-full bg-[#C48858]/60 blur-sm" />
+        <div className="absolute top-8 left-1/3 w-1/4 h-4 rounded-full bg-[#D4A57A]/50 blur-[2px]" />
+        <div className="absolute top-9 right-1/3 w-1/5 h-3 rounded-full bg-[#C48858]/40 blur-[2px]" />
+        {/* Coffee texture grain */}
+        <div className="absolute inset-0 opacity-[0.08]" style={{
+          backgroundImage: "radial-gradient(circle, #8B4513 1px, transparent 1px)",
+          backgroundSize: "8px 8px",
+        }} />
+        {/* Ripple rings */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-2 border-[#C48858]/30" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-[#D4A57A]/25" />
+        {/* POUR label on overlay */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 font-doodle text-xs font-black text-[#C48858]/80 whitespace-nowrap tracking-wider">
+          ☕ BEING POURED…
+        </div>
+      </div>
+
       {/* Header Row */}
       <div className="mb-6">
         <div className="flex items-center justify-between mb-4">
