@@ -19,282 +19,79 @@ interface SpidermanWebAnimationProps {
   cardRefs: React.RefObject<HTMLElement | null>[];
 }
 
-type SpiderAction = "run" | "shoot" | "pull";
+type SpiderAction = "run" | "shoot" | "pull" | "swing" | "idle";
 
-// ─── High-Definition 32-Bit Retro Pixel Spider-Man (Dynamic Action Poses) ────────
-// 32 Columns × 32 Rows with Authentic Sprint, Aim-Shoot, and 2-Hand Power-Pull
-// R = Red (#ff1e27), D = Dark Red Shadow (#a80512)
-// B = Electric Blue (#0070f3), N = Deep Navy Shadow (#002b80)
-// W = Pure White (#ffffff), G = Lens Grey (#94a3b8)
-// K = Jet Black (#0b0e14), _ = Transparent
+// ─── Authentic 16/32-Bit Original Retro Game Spider-Man Sprite ──────────────
+// Uses transparent PNG sprite sheets with grounded baselines and pixel-perfect rendering
 function SpiderManSprite({
   frameIndex = 0,
-  action = "run",
+  action = "swing",
+  scale = 1,
 }: {
   frameIndex?: number;
   action?: SpiderAction;
+  scale?: number;
 }) {
-  const RUN_FRAMES = [
-    // Frame 0: Sprint 1 (Left arm reaching back, Right arm pumping forward open!)
-    [
-      "________________________________",
-      "___________KKKKKK_______________",
-      "_________KKRRRRRRKK_____________",
-      "________KDDDRRRRRRRK____________",
-      "_______KDDRKKKRRRKKRK___________",
-      "_______KDDKWWWKKKWWWK___________",
-      "_______KDDKWWWWKWWWWK___________",
-      "_______KDDRKKKKKKWWK____________",
-      "________KDDRRRRRRKK_____________",
-      "_________KKDDRRRRKK_____KKK_____",
-      "___KKKK___KDDRRRRRRK___KRRRK____",
-      "__KDDDRK__KDDDRRRRRRK__KRRRRK___",
-      "__KDDDDRK_KNNDRRRRRRBK_KRRRRK___",
-      "___KDDDRK_KNNRDKKRRBBK_KKKKK____",
-      "____KKKKK_KNNNDKKRBBBK__________",
-      "________KNNNDDRRRRBBBK__________",
-      "________KNNNNDDRRBBBBK__________",
-      "________KKKNNNNNNNBKKK__________",
-      "_______KNNNNNNNNNBBBBBK_________",
-      "______KNNNNNKKKKKKBBBBBK________",
-      "_____KNNNNNK______KBBBBBK_______",
-      "____KNNNNNK________KBBBBBK______",
-      "___KDDDDDK__________KRRRRRK_____",
-      "___KDDDDDK__________KRRRRRK_____",
-      "___KDDDDDK___________KRRRRRK____",
-      "____KKKKK_____________KKKKK_____",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-    ],
-    // Frame 1: Passing Stride (Arms passing through torso)
-    [
-      "________________________________",
-      "___________KKKKKK_______________",
-      "_________KKRRRRRRKK_____________",
-      "________KDDDRRRRRRRK____________",
-      "_______KDDRKKKRRRKKRK___________",
-      "_______KDDKWWWKKKWWWK___________",
-      "_______KDDKWWWWKWWWWK___________",
-      "_______KDDRKKKKKKWWK____________",
-      "________KDDRRRRRRKK_____________",
-      "_________KKDDRRRRKK_____________",
-      "__________KDDRRRRRRK____________",
-      "_________KDDDRRRRRRRK___________",
-      "________KDDBRRRRRRRBRK__________",
-      "________KNNDRRKKRRBBRK__________",
-      "________KNNDRRKKRRBBRK__________",
-      "________KDDBRRRRRRBRRK__________",
-      "_________KNNNDRRRBBBK___________",
-      "_________KKNNNNNNNBKK___________",
-      "________KNNNNNNNNNNBBK__________",
-      "________KNNNNKKKBBBBBK__________",
-      "________KNNNK___KBBBBK__________",
-      "________KDDDK___KBBBK___________",
-      "________KDDDK___KRRRK___________",
-      "________KDDDK___KRRRK___________",
-      "________KDDDK___KRRRK___________",
-      "_________KKK_____KKK____________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-    ],
-    // Frame 2: Sprint 2 (Right arm reaching back, Left arm pumping forward open!)
-    [
-      "________________________________",
-      "___________KKKKKK_______________",
-      "_________KKRRRRRRKK_____________",
-      "________KDDDRRRRRRRK____________",
-      "_______KDDRKKKRRRKKRK___________",
-      "_______KDDKWWWKKKWWWK___________",
-      "_______KDDKWWWWKWWWWK___________",
-      "_______KDDRKKKKKKWWK____________",
-      "________KDDRRRRRRKK_____________",
-      "____KKK__KKDDRRRRKK___KKKK______",
-      "___KDDDK__KDDRRRRRRK_KRRRRK_____",
-      "__KDDDDRK_KDDDRRRRRRKKRRRRRK____",
-      "__KDDDDRK_KNNDRRRRRRBK_KRRRRK___",
-      "___KKKKK_KNNRDKKRRBBK_KKKKK_____",
-      "_________KNNNDKKRBBBK___________",
-      "________KNNNDDRRRRBBBK__________",
-      "________KNNNNDDRRBBBBK__________",
-      "________KKKNNNNNNNBKKK__________",
-      "_______KNNNNNNNNNBBBBBK_________",
-      "______KNNNNNKKKKKKBBBBBK________",
-      "_____KNNNNNK______KBBBBBK_______",
-      "____KNNNNNK________KBBBBBK______",
-      "___KDDDDDK__________KRRRRRK_____",
-      "___KDDDDDK__________KRRRRRK_____",
-      "___KDDDDDK___________KRRRRRK____",
-      "____KKKKK_____________KKKKK_____",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-    ],
-    // Frame 3: Passing Stride (return)
-    [
-      "________________________________",
-      "___________KKKKKK_______________",
-      "_________KKRRRRRRKK_____________",
-      "________KDDDRRRRRRRK____________",
-      "_______KDDRKKKRRRKKRK___________",
-      "_______KDDKWWWKKKWWWK___________",
-      "_______KDDKWWWWKWWWWK___________",
-      "_______KDDRKKKKKKWWK____________",
-      "________KDDRRRRRRKK_____________",
-      "_________KKDDRRRRKK_____________",
-      "__________KDDRRRRRRK____________",
-      "_________KDDDRRRRRRRK___________",
-      "________KDDBRRRRRRRBRK__________",
-      "________KNNDRRKKRRBBRK__________",
-      "________KNNDRRKKRRBBRK__________",
-      "________KDDBRRRRRRBRRK__________",
-      "_________KNNNDRRRBBBK___________",
-      "_________KKNNNNNNNBKK___________",
-      "________KNNNNNNNNNNBBK__________",
-      "________KNNNNKKKBBBBBK__________",
-      "________KNNNK___KBBBBK__________",
-      "________KDDDK___KBBBK___________",
-      "________KDDDK___KRRRK___________",
-      "________KDDDK___KRRRK___________",
-      "________KDDDK___KRRRK___________",
-      "_________KKK_____KKK____________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-      "________________________________",
-    ],
-  ];
+  let stripUrl = "/sprites/spiderman/spidey_swing_strip.png";
+  let frameW = 90;
+  let frameH = 100;
+  let totalW = 720;
+  let currentFrame = frameIndex % 8;
 
-  // 1. AIM & SHOOT POSE (Signature Open Palm Thwip aiming up-forward)
-  const SHOOT_FRAME = [
-    "________________________________",
-    "___________KKKKKK_______________",
-    "_________KKRRRRRRKK_____KKK_____",
-    "________KDDDRRRRRRRK___KRRRK____",
-    "_______KDDRKKKRRRKKRK_KRRRRRK___",
-    "_______KDDKWWWKKKWWWK_KWWWWRK___",
-    "_______KDDKWWWWKWWWWK_KWWWWKK___",
-    "_______KDDRKKKKKKWWK__KRRRRK____",
-    "________KDDRRRRRRKK____KKKK_____",
-    "_________KKDDRRRRKK___KRRK______",
-    "____KKK___KDDRRRRRRK_KRRK_______",
-    "___KDDDK__KDDDRRRRRRKKRRK_______",
-    "___KDDDK_KNNDRRRRRRBKKRK________",
-    "___KDDDK_KNNRDKKRRBBKKK_________",
-    "____KKKK_KNNNDKKRBBBK___________",
-    "________KNNNDDRRRRBBBK__________",
-    "________KNNNNDDRRBBBBK__________",
-    "________KKKNNNNNNNBKKK__________",
-    "_______KNNNNNNNNNBBBBBK_________",
-    "______KNNNNNKKKKKKBBBBBK________",
-    "_____KNNNNNK______KBBBBBK_______",
-    "____KNNNNNK________KBBBBBK______",
-    "___KDDDDDK__________KRRRRRK_____",
-    "___KDDDDDK__________KRRRRRK_____",
-    "___KDDDDDK___________KRRRRRK____",
-    "____KKKKK_____________KKKKK_____",
-    "________________________________",
-    "________________________________",
-    "________________________________",
-    "________________________________",
-    "________________________________",
-    "________________________________",
-  ];
+  if (action === "swing") {
+    stripUrl = "/sprites/spiderman/spidey_swing_strip.png";
+    frameW = 90;
+    frameH = 100;
+    totalW = 720;
+    currentFrame = Math.min(7, Math.max(0, frameIndex % 8));
+  } else if (action === "run") {
+    stripUrl = "/sprites/spiderman/spidey_run_strip.png";
+    frameW = 80;
+    frameH = 95;
+    totalW = 720;
+    currentFrame = frameIndex % 9;
+  } else if (action === "shoot") {
+    stripUrl = "/sprites/spiderman/spidey_shoot_strip.png";
+    frameW = 80;
+    frameH = 80;
+    totalW = 720;
+    currentFrame = 4; // Authentic upward web-shooting pose
+  } else if (action === "pull") {
+    stripUrl = "/sprites/spiderman/spidey_pull_strip.png";
+    frameW = 90;
+    frameH = 105;
+    totalW = 720;
+    currentFrame = 2; // Centered 2-handed power heave stance
+  } else if (action === "idle") {
+    stripUrl = "/sprites/spiderman/spidey_idle_strip.png";
+    frameW = 80;
+    frameH = 95;
+    totalW = 880;
+    currentFrame = frameIndex % 11;
+  }
 
-  // 2. AUTHENTIC 2-HAND SPIDER-MAN HEAVE & PULL POSE (Deep knee power-crouch, leaning back hard, both arms heaving down!)
-  const PULL_FRAME = [
-    "________________________________",
-    "________________________________",
-    "_____________KKKKKK_____________",
-    "___________KKRRRRRRKK___________",
-    "__________KDDDRRRRRRRK__________",
-    "_________KDDRKKKRRRKKRK_________",
-    "_________KDDKWWWKKKWWWK_________",
-    "_________KDDKWWWWKWWWWK_________",
-    "_________KDDRKKKKKKWWK__________",
-    "__________KDDRRRRRRKK___________",
-    "___________KKDDRRRRKK___________",
-    "________KKKKDDRRRRRRKKKK________",
-    "_______KDDDDKDDDRRRRKRRRRK______",
-    "______KDDDDDKNNDRRRBKRRRRRK_____",
-    "______KDDDDK_KNNRDRBK_KRRRRK____",
-    "______KDDDK__KNNRDRBK__KRRRK____",
-    "_______KKK___KNNRDRBK___KKK_____",
-    "_____________KNNRDRBK___________",
-    "____________KKNNNNNNKK__________",
-    "___________KNNNNNNNNNNK_________",
-    "__________KNNNNNKKKKBBBBK_______",
-    "_________KNNNNNK____KBBBBK______",
-    "________KNNNNNK______KBBBBK_____",
-    "_______KDDDDDK________KRRRRRK___",
-    "_______KDDDDDK________KRRRRRK___",
-    "_______KDDDDDK________KRRRRRK___",
-    "________KKKKK__________KKKKK____",
-    "________________________________",
-    "________________________________",
-    "________________________________",
-    "________________________________",
-    "________________________________",
-  ];
-
-  let currentFrame = RUN_FRAMES[frameIndex % 4];
-  if (action === "shoot") currentFrame = SHOOT_FRAME;
-  if (action === "pull") currentFrame = PULL_FRAME;
-
-  const colorMap: Record<string, string> = {
-    R: "#ff1e27",
-    D: "#a80512",
-    B: "#0070f3",
-    N: "#002b80",
-    W: "#ffffff",
-    G: "#94a3b8",
-    K: "#0b0e14",
-    _: "transparent",
-  };
-
-  const px = 2.4;
-  const cols = 32;
+  const bgX = -currentFrame * frameW;
 
   return (
-    <svg
-      viewBox={`0 0 ${cols * px} ${currentFrame.length * px}`}
-      width={cols * px}
-      height={currentFrame.length * px}
-      style={{ imageRendering: "pixelated", display: "block" }}
-      className="drop-shadow-[0_8px_16px_rgba(0,0,0,0.95)]"
-    >
-      {currentFrame.map((row, ry) =>
-        row.split("").map((c, cx) =>
-          c !== "_" ? (
-            <rect
-              key={`${ry}-${cx}`}
-              x={cx * px}
-              y={ry * px}
-              width={px}
-              height={px}
-              fill={colorMap[c] ?? "transparent"}
-            />
-          ) : null
-        )
-      )}
-    </svg>
+    <div
+      style={{
+        width: `${frameW}px`,
+        height: `${frameH}px`,
+        backgroundImage: `url(${stripUrl})`,
+        backgroundPosition: `${bgX}px 0px`,
+        backgroundRepeat: "no-repeat",
+        backgroundSize: `${totalW}px ${frameH}px`,
+        imageRendering: "pixelated",
+        transform: `scale(${scale})`,
+        transformOrigin: "center center",
+      }}
+      className="drop-shadow-[0_12px_20px_rgba(0,0,0,0.95)] select-none pointer-events-none"
+    />
   );
 }
 
-// ─── Web Thread with Glowing Palm Muzzle Flash & Dynamic Elastic Tension ───────
-interface WebState {
+// ─── Dual-Layer Web Overlay (Overhead Swing Tether + Card Snatch Web) ───────
+export interface WebLine {
   x1: number;
   y1: number;
   x2: number;
@@ -303,12 +100,8 @@ interface WebState {
   isPulling?: boolean;
 }
 
-function WebOverlay({ web }: { web: WebState | null }) {
-  if (!web) return null;
-
-  // Calculate a slight elastic tension bow when pulling
-  const midX = (web.x1 + web.x2) / 2 + (web.isPulling ? -15 : 0);
-  const midY = (web.y1 + web.y2) / 2 + (web.isPulling ? 10 : 0);
+function WebOverlay({ webs }: { webs: WebLine[] }) {
+  if (!webs || webs.length === 0) return null;
 
   return (
     <svg
@@ -326,63 +119,57 @@ function WebOverlay({ web }: { web: WebState | null }) {
         </filter>
       </defs>
 
-      {/* Palm Web Muzzle Flash Burst */}
-      <circle
-        cx={web.x1}
-        cy={web.y1}
-        r={web.isPulling ? 10 : 8}
-        fill="#38bdf8"
-        opacity={web.opacity * 0.9}
-        filter="url(#spidey-glow)"
-      />
-      <circle
-        cx={web.x1}
-        cy={web.y1}
-        r={web.isPulling ? 4.5 : 3.5}
-        fill="#ffffff"
-        opacity={web.opacity}
-      />
+      {webs.map((web, idx) => {
+        if (web.opacity <= 0.01) return null;
+        const midX = (web.x1 + web.x2) / 2 + (web.isPulling ? -10 : 0);
+        const midY = (web.y1 + web.y2) / 2 + (web.isPulling ? 6 : 0);
 
-      {/* Curved Tension Path under superhero pull */}
-      <path
-        d={`M ${web.x1} ${web.y1} Q ${midX} ${midY} ${web.x2} ${web.y2}`}
-        fill="none"
-        stroke="#38bdf8"
-        strokeWidth={web.isPulling ? 5 : 4}
-        opacity={web.opacity * 0.85}
-        filter="url(#spidey-glow)"
-        strokeLinecap="round"
-      />
-      <path
-        d={`M ${web.x1} ${web.y1} Q ${midX} ${midY} ${web.x2} ${web.y2}`}
-        fill="none"
-        stroke="#ffffff"
-        strokeWidth={web.isPulling ? 2.2 : 1.8}
-        opacity={web.opacity}
-        strokeLinecap="round"
-      />
+        return (
+          <g key={`web-line-${idx}`} opacity={web.opacity}>
+            {/* Origin Glow Point */}
+            <circle
+              cx={web.x1}
+              cy={web.y1}
+              r={web.isPulling ? 8 : 6}
+              fill="#38bdf8"
+              filter="url(#spidey-glow)"
+            />
+            <circle cx={web.x1} cy={web.y1} r={3} fill="#ffffff" />
 
-      {/* Target Web Impact Splat at Card */}
-      <circle
-        cx={web.x2}
-        cy={web.y2}
-        r={web.isPulling ? 9 : 7}
-        fill="#38bdf8"
-        opacity={web.opacity * 0.9}
-        filter="url(#spidey-glow)"
-      />
-      <circle
-        cx={web.x2}
-        cy={web.y2}
-        r={3.5}
-        fill="#ffffff"
-        opacity={web.opacity}
-      />
+            {/* Glowing Web Arc */}
+            <path
+              d={`M ${web.x1} ${web.y1} Q ${midX} ${midY} ${web.x2} ${web.y2}`}
+              fill="none"
+              stroke="#38bdf8"
+              strokeWidth={web.isPulling ? 4.5 : 3.5}
+              filter="url(#spidey-glow)"
+              strokeLinecap="round"
+            />
+            <path
+              d={`M ${web.x1} ${web.y1} Q ${midX} ${midY} ${web.x2} ${web.y2}`}
+              fill="none"
+              stroke="#ffffff"
+              strokeWidth={web.isPulling ? 2 : 1.6}
+              strokeLinecap="round"
+            />
+
+            {/* Target Web Impact Splat */}
+            <circle
+              cx={web.x2}
+              cy={web.y2}
+              r={web.isPulling ? 9 : 7}
+              fill="#38bdf8"
+              filter="url(#spidey-glow)"
+            />
+            <circle cx={web.x2} cy={web.y2} r={3.5} fill="#ffffff" />
+          </g>
+        );
+      })}
     </svg>
   );
 }
 
-// ─── 2.5D Horizontal Perspective Highway (Running Left-to-Right) ──────────────
+// ─── 2.5D Horizontal Perspective Highway Track ──────────────────────────────
 function GeometricPerspectiveRoad() {
   const seams = Array.from({ length: 26 }, (_, i) => i * 48);
   const dashes = Array.from({ length: 18 }, (_, i) => i * 68 + 10);
@@ -480,27 +267,11 @@ export default function SpidermanWebAnimation({
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
   const [isRunning, setIsRunning] = useState(false);
-  const [actionState, setActionState] = useState<SpiderAction>("run");
+  const [actionState, setActionState] = useState<SpiderAction>("swing");
   const [allDone, setAllDone] = useState(false);
   const [revealedCount, setRevealedCount] = useState(0);
-  const [web, setWeb] = useState<WebState | null>(null);
+  const [activeWebs, setActiveWebs] = useState<WebLine[]>([]);
   const [frame, setFrame] = useState(0);
-  const legIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  // Smooth 4-beat running cadence
-  const startRunningLegs = useCallback(() => {
-    if (legIntervalRef.current) return;
-    legIntervalRef.current = setInterval(() => {
-      setFrame((f) => (f + 1) % 4);
-    }, 125);
-  }, []);
-
-  const stopRunningLegs = useCallback(() => {
-    if (legIntervalRef.current) {
-      clearInterval(legIntervalRef.current);
-      legIntervalRef.current = null;
-    }
-  }, []);
 
   // Hide all cards initially on mount
   const hideAllCards = useCallback(() => {
@@ -520,6 +291,7 @@ export default function SpidermanWebAnimation({
     hideAllCards();
   }, [hideAllCards]);
 
+  // ─── Aerial Web-Swinging & Project Snatching Routine ──────────────────────
   const runSequence = useCallback(() => {
     const validRefs = cardRefs.filter((r) => r.current);
     if (!validRefs.length || !runnerRef.current || !roadTrackRef.current) return;
@@ -527,9 +299,9 @@ export default function SpidermanWebAnimation({
     tlRef.current?.kill();
     setIsRunning(true);
     setAllDone(false);
-    setActionState("run");
+    setActionState("swing");
     setRevealedCount(0);
-    setWeb(null);
+    setActiveWebs([]);
 
     hideAllCards();
 
@@ -537,20 +309,21 @@ export default function SpidermanWebAnimation({
     const road = roadTrackRef.current;
     const roadRect = road.getBoundingClientRect();
 
-    gsap.set(runner, { x: -90, y: 0, rotation: 0, opacity: 1 });
-    startRunningLegs();
+    // Initial setup: Spider-Man appears ready to swing in from high left
+    gsap.set(runner, { x: -100, y: -70, rotation: 25, opacity: 1, scale: 1.25 });
 
     const tl = gsap.timeline({
       onComplete: () => {
         setIsRunning(false);
-        setActionState("run");
         setAllDone(true);
-        stopRunningLegs();
-        setWeb(null);
+        setActiveWebs([]);
+        // Clean acrobatic exit swing off-screen to right
         gsap.to(runner, {
-          x: roadRect.width + 120,
-          duration: 0.75,
-          ease: "power2.in",
+          x: roadRect.width + 160,
+          y: -90,
+          rotation: -28,
+          duration: 1.1,
+          ease: "power2.inOut",
           onComplete: () => {
             gsap.set(runner, { opacity: 0 });
           },
@@ -562,113 +335,100 @@ export default function SpidermanWebAnimation({
     validRefs.forEach((ref, i) => {
       const card = ref.current!;
 
-      // 1. Spiderman sprints along the highway
       tl.add(() => {
-        setActionState("run");
-        startRunningLegs();
+        setActionState("swing");
       });
 
-      tl.to(runner, {
-        duration: 0.65 + (i === 0 ? 0.25 : 0),
-        ease: "power2.inOut",
+      // Swing Arc Animation for Card `i` (Slower, cinematic swing pace)
+      const swingState = { progress: 0 };
+      const duration = 1.65;
+
+      tl.to(swingState, {
+        progress: 1,
+        duration: duration,
+        ease: "power1.inOut",
+        onStart: () => {
+          setActionState("swing");
+        },
         onUpdate: function () {
-          if (!roadTrackRef.current || !ref.current) return;
+          if (!roadTrackRef.current || !ref.current || !runnerRef.current) return;
+
           const currentRoad = roadTrackRef.current.getBoundingClientRect();
           const cardRect = ref.current.getBoundingClientRect();
-          const targetRelativeX = (cardRect.left + cardRect.width / 2) - currentRoad.left - 40;
+
+          // Calculate key swing points relative to track
+          const cardCenterX = cardRect.left + cardRect.width / 2 - currentRoad.left;
+          const targetCardX = cardCenterX - 45; // Centered sprite anchor
+
+          // Previous swing exit or start
+          const prevX = i === 0 ? -90 : targetCardX - 180;
+          // Next swing apex or exit
+          const nextX = i === validRefs.length - 1 ? currentRoad.width + 120 : targetCardX + 180;
+
+          const t = swingState.progress;
+
+          // Parabolic Swing Trajectory
+          const currentX = gsap.utils.interpolate(prevX, nextX, t);
+          // Parabola: High at edges (y ~ -65), lowest in center directly above road (y ~ 5)
+          const currentY = -65 + 72 * Math.sin(t * Math.PI);
+
+          // Realistic pendulum angle: tilted forward at start (+28°), level at midpoint (0°), kicking up at end (-28°)
+          const currentRotation = 28 * (1 - 2 * t);
+
+          // Map 8 authentic retro swing frames to arc progress
+          const swingFrame = Math.min(7, Math.floor(t * 8));
+          setFrame(swingFrame);
+
           gsap.set(runner, {
-            x: gsap.utils.interpolate(
-              gsap.getProperty(runner, "x") as number,
-              targetRelativeX,
-              this.progress()
-            ),
+            x: currentX,
+            y: currentY,
+            rotation: currentRotation,
           });
+
+          // ─── Overhead Swinging Web Tether (Ceiling to Hand) ───
+          const runnerBox = runner.getBoundingClientRect();
+          const handX = runnerBox.left + runnerBox.width * 0.52;
+          const handY = runnerBox.top + runnerBox.height * 0.22;
+
+          // Ceiling anchor placed above the card in the viewport
+          const anchorX = cardRect.left + cardRect.width / 2 + 10;
+          const anchorY = Math.max(15, cardRect.top - 120);
+
+          const overheadOpacity = t < 0.82 ? 1 : Math.max(0, 1 - (t - 0.82) / 0.18);
+
+          const webs: WebLine[] = [
+            {
+              x1: anchorX,
+              y1: anchorY,
+              x2: handX,
+              y2: handY,
+              opacity: overheadOpacity,
+              isPulling: false,
+            },
+          ];
+
+          // ─── Snatch & Pull Web to Card (Triggered at Mid-Swoop t >= 0.35 and t <= 0.75) ───
+          if (t >= 0.35 && t <= 0.75) {
+            const pullT = (t - 0.35) / 0.40;
+            const targetSkyY = Math.max(30, cardRect.top - 180);
+            const targetPulledY = cardRect.top + 35;
+            const currentCardY = targetSkyY + (targetPulledY - targetSkyY) * pullT;
+
+            webs.push({
+              x1: handX,
+              y1: handY,
+              x2: cardRect.left + cardRect.width / 2,
+              y2: currentCardY,
+              opacity: 1,
+              isPulling: true,
+            });
+          }
+
+          setActiveWebs(webs);
         },
       });
 
-      // 2. AIM & SHOOT: Plants feet, shoots web from open palm straight up into empty sky
-      tl.add(() => {
-        stopRunningLegs();
-        setActionState("shoot");
-
-        const runnerBox = runner.getBoundingClientRect();
-        const cardBox = card.getBoundingClientRect();
-
-        const startPalmX = runnerBox.left + runnerBox.width * 0.84;
-        const startPalmY = runnerBox.top + runnerBox.height * 0.08;
-        const targetX = cardBox.left + cardBox.width / 2;
-        const targetSkyY = Math.max(20, cardBox.top - 190);
-
-        const shootProgress = { t: 0 };
-
-        // Web flies up to target
-        gsap.to(shootProgress, {
-          t: 1,
-          duration: 0.18,
-          ease: "power3.out",
-          onUpdate() {
-            setWeb({
-              x1: startPalmX,
-              y1: startPalmY,
-              x2: startPalmX + (targetX - startPalmX) * shootProgress.t,
-              y2: startPalmY + (targetSkyY - startPalmY) * shootProgress.t,
-              opacity: 1,
-              isPulling: false,
-            });
-          },
-          onComplete() {
-            // 3. AUTHENTIC SUPERHERO HEAVE & PULL!
-            // Spidey switches to power pull stance, leans back hard, body recoils!
-            setActionState("pull");
-
-            // Spidey physical tug recoil
-            gsap.to(runner, {
-              y: 8,
-              x: "-=12",
-              rotation: -10,
-              duration: 0.12,
-              ease: "power4.out",
-            });
-
-            const pullProgress = { t: 0 };
-            const finalCardTargetY = cardBox.top + 30;
-
-            // Retract web violently with heavy tension
-            gsap.to(pullProgress, {
-              t: 1,
-              duration: 0.38,
-              ease: "power3.in",
-              onUpdate() {
-                // Hand moves down to chest/hip during pull
-                const pullHandX = runnerBox.left + runnerBox.width * 0.65;
-                const pullHandY = runnerBox.top + runnerBox.height * 0.40;
-
-                setWeb({
-                  x1: pullHandX,
-                  y1: pullHandY,
-                  x2: targetX,
-                  y2: targetSkyY + (finalCardTargetY - targetSkyY) * pullProgress.t,
-                  opacity: 1 - pullProgress.t * 0.1,
-                  isPulling: true,
-                });
-              },
-              onComplete() {
-                // Pop back up from pull stance
-                gsap.to(runner, {
-                  y: 0,
-                  x: "+=12",
-                  rotation: 0,
-                  duration: 0.28,
-                  ease: "back.out(2)",
-                });
-                setWeb(null);
-              },
-            });
-          },
-        });
-      });
-
-      // 4. Project Card gets snatched DOWN from top with superhero momentum!
+      // Snatches Card DOWN from top with superhero impact right at mid-swing
       tl.fromTo(
         card,
         {
@@ -683,8 +443,8 @@ export default function SpidermanWebAnimation({
           y: 0,
           scale: 1,
           rotation: 0,
-          duration: 0.58,
-          ease: "elastic.out(1.2, 0.45)",
+          duration: 0.85,
+          ease: "elastic.out(1.1, 0.45)",
           onStart: () => {
             setRevealedCount((prev) => prev + 1);
           },
@@ -692,16 +452,16 @@ export default function SpidermanWebAnimation({
             gsap.set(card, { pointerEvents: "auto" });
           },
         },
-        "<+0.22"
+        "<+0.55"
       );
 
-      // 5. Electric cyan impact flash celebration on card border
+      // Electric cyan impact flash celebration on card border
       tl.fromTo(
         card,
         { boxShadow: "0 0 0 0px rgba(56, 189, 248, 0)" },
         {
-          boxShadow: "0 0 40px 8px rgba(56, 189, 248, 0.8)",
-          duration: 0.3,
+          boxShadow: "0 0 40px 8px rgba(56, 189, 248, 0.85)",
+          duration: 0.4,
           yoyo: true,
           repeat: 1,
           ease: "power2.out",
@@ -710,10 +470,10 @@ export default function SpidermanWebAnimation({
       );
 
       if (i < validRefs.length - 1) {
-        tl.to({}, { duration: 0.25 });
+        tl.to({}, { duration: 0.35 });
       }
     });
-  }, [cardRefs, hideAllCards, startRunningLegs, stopRunningLegs]);
+  }, [cardRefs, hideAllCards]);
 
   // ScrollTrigger auto-activation
   useEffect(() => {
@@ -749,27 +509,27 @@ export default function SpidermanWebAnimation({
 
   return (
     <div className="relative w-full mt-12 mb-6 select-none">
-      {/* Full-screen SVG Web Overlay with Elastic Tension Curve */}
-      <WebOverlay web={web} />
+      {/* Full-screen SVG Web Overlay with Overhead Swings + Card Snatches */}
+      <WebOverlay webs={activeWebs} />
 
       {/* ─── 2.5D Horizontal Perspective Highway Track ─── */}
       <div
         ref={roadTrackRef}
-        className="relative w-full h-24 sm:h-28 rounded-2xl border border-indigo-500/30 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.9),inset_0_1px_3px_rgba(255,255,255,0.1)] flex items-center"
+        className="relative w-full h-24 sm:h-28 flex items-center overflow-visible"
       >
-        {/* Horizontal Perspective Road SVG */}
-        <GeometricPerspectiveRoad />
+        {/* Background Asphalt Road Surface (Clipped nicely to rounded pill) */}
+        <div className="absolute inset-0 w-full h-full rounded-2xl border border-indigo-500/30 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.9),inset_0_1px_3px_rgba(255,255,255,0.1)] pointer-events-none">
+          <GeometricPerspectiveRoad />
+        </div>
 
-        {/* ─── Spiderman High-Definition Sprite Running On Perspective Road ─── */}
+        {/* ─── Spiderman Authentic Retro Game Sprite (Full Unclipped Z-Layer) ─── */}
         <div
           ref={runnerRef}
-          className="absolute bottom-1 pointer-events-none z-20"
-          style={{ opacity: 0, transformOrigin: "bottom center" }}
+          className="absolute bottom-3 pointer-events-none z-30 overflow-visible"
+          style={{ opacity: 0, transformOrigin: "center center" }}
         >
-          {/* Ground Contact Shadow */}
-          <div
-            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-14 h-3 bg-black/70 rounded-full blur-[2px] pointer-events-none"
-          />
+          {/* Ground Contact Shadow (Visible when swooping low over track) */}
+          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-16 h-3.5 bg-black/80 rounded-full blur-[2px] pointer-events-none" />
           <SpiderManSprite frameIndex={frame} action={actionState} />
         </div>
       </div>
@@ -782,8 +542,8 @@ export default function SpidermanWebAnimation({
             {allDone
               ? "All projects pulled down & revealed! 🕸️✨"
               : isRunning
-                ? "Spidey heaving projects down from the sky… 🕸️"
-                : "Scroll here — Spidey runs along the bottom road and pulls projects down!"}
+                ? "Spidey swinging across cards & pulling projects down… 🕸️"
+                : "Scroll here — Spidey swings dynamically across the track and pulls each project!"}
           </span>
         </div>
 
@@ -794,7 +554,7 @@ export default function SpidermanWebAnimation({
           className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-mono font-bold border border-red-400/50 shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
           <span>🕸️</span>
-          <span>{isRunning ? "HEAVING PROJECTS…" : allDone ? "PULL AGAIN! 🕷️" : "PULL ALL PROJECTS!"}</span>
+          <span>{isRunning ? "SWINGING & PULLING…" : allDone ? "SWING AGAIN! 🕷️" : "SWING & PULL PROJECTS!"}</span>
         </button>
       </div>
     </div>
