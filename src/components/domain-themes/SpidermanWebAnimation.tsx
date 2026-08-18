@@ -19,12 +19,12 @@ interface SpidermanWebAnimationProps {
   cardRefs: React.RefObject<HTMLElement | null>[];
 }
 
-// ─── High-Definition 32-Bit Retro Pixel Spider-Man ──────────────────────────────
-// 28 Columns × 34 Rows for high visual fidelity
+// ─── High-Definition 32-Bit Retro Pixel Spider-Man (Dynamic Open Arms) ──────────
+// 32 Columns × 32 Rows with wide arm swing & dynamic web-pulling silhouette
 // R = Red (#ff1e27), D = Dark Red Shadow (#a80512)
 // B = Electric Blue (#0070f3), N = Deep Navy Shadow (#002b80)
 // W = Pure White (#ffffff), G = Lens Grey (#94a3b8)
-// K = Jet Black (#10141e), _ = Transparent
+// K = Jet Black (#0b0e14), _ = Transparent
 function SpiderManSprite({
   frameIndex = 0,
   isShooting = false,
@@ -32,158 +32,186 @@ function SpiderManSprite({
   frameIndex?: number;
   isShooting?: boolean;
 }) {
-  const FRAMES = [
-    // Frame 0: Sprint Contact 1 (Right leg forward)
+  const RUN_FRAMES = [
+    // Frame 0: Sprint 1 (Left arm reaching back, Right arm pumping forward open!)
     [
-      "__________KKKKKKKK__________",
-      "________KKRRRRRRRRKK________",
-      "_______KRRRDKRRRRKKRK_______",
-      "______KRRRRDKRRRRKKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDGGKKKGGKRRK______",
-      "_______KRRRDKRRRRKRRK_______",
-      "________KKRRRKKKKRRK________",
-      "______KKKKKKKKKKKKKKKK______",
-      "_____KBNNNRRRRRRRRNNBNK_____",
-      "____KBBBNNRRRKKRRRNNBBBNK___",
-      "____KBBNNNRRKKKKRRNNNBBK____",
-      "____KBNNNRRRKKKKRRRNNBNK____",
-      "____KKNNNRRRKKKKRRRNNNKK____",
-      "___KBNNNRRRRKRRKRRRRNNBK____",
-      "___KBBNNRRRRRRRRRRRRNNBK____",
-      "____KKNNNNNNNNNNNNNNNKK_____",
-      "_____KBNNNNNNNNNNNNBNK______",
-      "____KBBBNNN_____NNNBBBNK____",
-      "___KBBBNN_________NNBBBNK___",
-      "__KBBBNN___________NNBBBNK__",
-      "__KBBBN_____________NNBBBK__",
-      "_KRRDK_______________KRRDK__",
-      "_KRRDK_______________KRRDK__",
-      "_KRRDK________________KRRDK_",
-      "_KRRDK_________________KRRDK",
-      "_KKKK___________________KKKK",
-      "____________________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
+      "__________KKKKKKKK______________",
+      "________KKRRRRRRRRKK____________",
+      "_______KRRRDKRRRRKKRK___________",
+      "______KRRRRDKRRRRKKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDGGKKKGGKRRK__________",
+      "_______KRRRDKRRRRKRRK___KKKK____",
+      "___KKK__KKRRRKKKKRRK___KRRRRK___",
+      "__KRRRK_KKKKKKKKKKKKKKKKRRRDK___",
+      "__KRRRDKKBNNNRRRRRRRRNNBNRRDK___",
+      "___KRRDKBBBNNRRRKKRRRNNBBBNK____",
+      "____KKKKBBNNNRRKKKKRRNNNBBK_____",
+      "_______KBNNNRRRKKKKRRRNNBNK_____",
+      "_______KKNNNRRRKKKKRRRNNNKK_____",
+      "______KBNNNRRRRKRRKRRRRNNBK_____",
+      "______KBBNNNRRRRRRRRRRRNNBK_____",
+      "_______KKNNNNNNNNNNNNNNNKK______",
+      "________KBNNNNNNNNNNNNBNK_______",
+      "_______KBBBNNN_____NNNBBBNK_____",
+      "______KBBBNN_________NNBBBNK____",
+      "_____KBBBNN___________NNBBBNK___",
+      "_____KBBBN_____________NNBBBK___",
+      "____KRRDK_______________KRRDK___",
+      "____KRRDK_______________KRRDK___",
+      "____KRRDK________________KRRDK__",
+      "____KRRDK_________________KRRDK_",
+      "_____KKKK__________________KKKK_",
+      "________________________________",
+      "________________________________",
+      "________________________________",
     ],
-    // Frame 1: Mid-Stride Air Sprint (Legs passing)
+    // Frame 1: Passing Stride (Arms passing through torso)
     [
-      "__________KKKKKKKK__________",
-      "________KKRRRRRRRRKK________",
-      "_______KRRRDKRRRRKKRK_______",
-      "______KRRRRDKRRRRKKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDGGKKKGGKRRK______",
-      "_______KRRRDKRRRRKRRK_______",
-      "________KKRRRKKKKRRK________",
-      "______KKKKKKKKKKKKKKKK______",
-      "_____KBNNNRRRRRRRRNNBNK_____",
-      "____KBBBNNRRRKKRRRNNBBBNK___",
-      "____KBBNNNRRKKKKRRNNNBBK____",
-      "____KBNNNRRRKKKKRRRNNBNK____",
-      "____KKNNNRRRKKKKRRRNNNKK____",
-      "___KBNNNRRRRKRRKRRRRNNBK____",
-      "___KBBNNRRRRRRRRRRRRNNBK____",
-      "____KKNNNNNNNNNNNNNNNKK_____",
-      "______KNNNNNNNNNNNNNK_______",
-      "_______KBBBNNNNNNBBBK_______",
-      "_______KBBBBNNNNBBBBK_______",
-      "________KBBBNNNNBBBK________",
-      "________KBNNN__NNNBK________",
-      "________KRRDK__KRRDK________",
-      "________KRRDK__KRRDK________",
-      "________KRRDK__KRRDK________",
-      "________KRRDK__KRRDK________",
-      "________KKKK____KKKK________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
+      "__________KKKKKKKK______________",
+      "________KKRRRRRRRRKK____________",
+      "_______KRRRDKRRRRKKRK___________",
+      "______KRRRRDKRRRRKKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDGGKKKGGKRRK__________",
+      "_______KRRRDKRRRRKRRK___________",
+      "________KKRRRKKKKRRK____________",
+      "______KKKKKKKKKKKKKKKK__________",
+      "_____KBNNNRRRRRRRRNNBNK_________",
+      "____KBBBNNRRRKKRRRNNBBBNK_______",
+      "____KBBNNNRRKKKKRRNNNBBK________",
+      "____KBNNNRRRKKKKRRRNNBNK________",
+      "____KKNNNRRRKKKKRRRNNNKK________",
+      "___KBNNNRRRRKRRKRRRRNNBK________",
+      "___KBBNNRRRRRRRRRRRRNNBK________",
+      "____KKNNNNNNNNNNNNNNNKK_________",
+      "______KNNNNNNNNNNNNNK___________",
+      "_______KBBBNNNNNNBBBK___________",
+      "_______KBBBBNNNNBBBBK___________",
+      "________KBBBNNNNBBBK____________",
+      "________KBNNN__NNNBK____________",
+      "________KRRDK__KRRDK____________",
+      "________KRRDK__KRRDK____________",
+      "________KRRDK__KRRDK____________",
+      "________KRRDK__KRRDK____________",
+      "________KKKK____KKKK____________",
+      "________________________________",
+      "________________________________",
+      "________________________________",
     ],
-    // Frame 2: Sprint Contact 2 (Left leg forward)
+    // Frame 2: Sprint 2 (Right arm reaching back, Left arm pumping forward open!)
     [
-      "__________KKKKKKKK__________",
-      "________KKRRRRRRRRKK________",
-      "_______KRRRDKRRRRKKRK_______",
-      "______KRRRRDKRRRRKKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDWWKKKWWKRRK______",
-      "______KRRRDGGKKKGGKRRK______",
-      "_______KRRRDKRRRRKRRK_______",
-      "________KKRRRKKKKRRK________",
-      "______KKKKKKKKKKKKKKKK______",
-      "_____KBNNNRRRRRRRRNNBNK_____",
-      "____KBBBNNRRRKKRRRNNBBBNK___",
-      "____KBBNNNRRKKKKRRNNNBBK____",
-      "____KBNNNRRRKKKKRRRNNBNK____",
-      "____KKNNNRRRKKKKRRRNNNKK____",
-      "___KBNNNRRRRKRRKRRRRNNBK____",
-      "___KBBNNRRRRRRRRRRRRNNBK____",
-      "____KKNNNNNNNNNNNNNNNKK_____",
-      "_____KBNNNNNNNNNNNNBNK______",
-      "____KBBBNNN_____NNNBBBNK____",
-      "___KBBBNN_________NNBBBNK___",
-      "__KBBBNN___________NNBBBNK__",
-      "__KBBNN_____________NNBBBK__",
-      "__KRRDK_____________KRRDK___",
-      "___KRRDK___________KRRDK____",
-      "____KRRDK_________KRRDK_____",
-      "_____KRRDK_______KRRDK______",
-      "______KKKK_______KKKK_______",
-      "____________________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
+      "__________KKKKKKKK______________",
+      "________KKRRRRRRRRKK____________",
+      "_______KRRRDKRRRRKKRK___________",
+      "______KRRRRDKRRRRKKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDGGKKKGGKRRK__________",
+      "___KKKK_KRRRDKRRRRKRRK__________",
+      "__KRRRRK_KKRRRKKKKRRK___KKK_____",
+      "__KRRRDKKKKKKKKKKKKKKK_KRRRK____",
+      "__KRRDKKBNNNRRRRRRRRNNBNRRDK____",
+      "___KKK_KBBBNNRRRKKRRRNNBBBNK____",
+      "_______KBBNNNRRKKKKRRNNNBBK_____",
+      "_______KBNNNRRRKKKKRRRNNBNK_____",
+      "_______KKNNNRRRKKKKRRRNNNKK_____",
+      "______KBNNNRRRRKRRKRRRRNNBK_____",
+      "______KBBNNRRRRRRRRRRRRNNBK_____",
+      "_______KKNNNNNNNNNNNNNNNKK______",
+      "________KBNNNNNNNNNNNNBNK_______",
+      "_______KBBBNNN_____NNNBBBNK_____",
+      "______KBBBNN_________NNBBBNK____",
+      "_____KBBBNN___________NNBBBNK___",
+      "_____KBBNN_____________NNBBBK___",
+      "_____KRRDK_____________KRRDK____",
+      "_____KRRDK______________KRRDK___",
+      "_____KRRDK_______________KRRDK__",
+      "_____KRRDK________________KRRDK_",
+      "______KKKK_________________KKKK_",
+      "________________________________",
+      "________________________________",
+      "________________________________",
     ],
-    // Frame 3: Signature Upward Web-Shooting Thwip Pose
+    // Frame 3: Passing Stride (return)
     [
-      "________________KKKKKK______",
-      "______________KKRRRRRRKK____",
-      "_____________KRRRDKRRKKRK___",
-      "____________KRRRRDKRRKKRRK__",
-      "____________KRRRDWWKKWWKRRK_",
-      "____________KRRRDWWKKWWKRRK_",
-      "____________KRRRDWWKKWWKRRK_",
-      "____________KRRRDGGKKGGKRRK_",
-      "_____________KRRRDKRRKRRK___",
-      "____KKKK______KKRRRKKRRK____",
-      "___KRRRRKKKKKKKKKKKKKKKKK___",
-      "__KRRRRRRNNNRRRRRRRRNNBNK___",
-      "_KRRWWRRRBNNRRRKKRRRNNBBBNK_",
-      "KKKWWWKKKBNNNRRKKKKRRNNNBBK_",
-      "__KRRWWRRKBNNNRRRKKKKRRRNNBN",
-      "___KRRRRKKKNNNRRRKKKKRRRNNNK",
-      "____KKKK__KBNNNRRRRKRRKRRRRN",
-      "__________KBBNNRRRRRRRRRRRRN",
-      "___________KKNNNNNNNNNNNNNNN",
-      "____________KBNNNNNNNNNNNBNK",
-      "___________KBBBNNNNNNNNBBBNK",
-      "__________KBBBNN_____NNBBBNK",
-      "_________KBBBNN_______NNBBBN",
-      "_________KBBN__________NNBBB",
-      "_________KRRDK__________KRRD",
-      "________KRRDK____________KRR",
-      "_______KRRDK_____________KKK",
-      "______KRRDK_________________",
-      "______KKKK__________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
-      "____________________________",
+      "__________KKKKKKKK______________",
+      "________KKRRRRRRRRKK____________",
+      "_______KRRRDKRRRRKKRK___________",
+      "______KRRRRDKRRRRKKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDWWKKKWWKRRK__________",
+      "______KRRRDGGKKKGGKRRK__________",
+      "_______KRRRDKRRRRKRRK___________",
+      "________KKRRRKKKKRRK____________",
+      "______KKKKKKKKKKKKKKKK__________",
+      "_____KBNNNRRRRRRRRNNBNK_________",
+      "____KBBBNNRRRKKRRRNNBBBNK_______",
+      "____KBBNNNRRKKKKRRNNNBBK________",
+      "____KBNNNRRRKKKKRRRNNBNK________",
+      "____KKNNNRRRKKKKRRRNNNKK________",
+      "___KBNNNRRRRKRRKRRRRNNBK________",
+      "___KBBNNRRRRRRRRRRRRNNBK________",
+      "____KKNNNNNNNNNNNNNNNKK_________",
+      "______KNNNNNNNNNNNNNK___________",
+      "_______KBBBNNNNNNBBBK___________",
+      "_______KBBBBNNNNBBBBK___________",
+      "________KBBBNNNNBBBK____________",
+      "________KBNNN__NNNBK____________",
+      "________KRRDK__KRRDK____________",
+      "________KRRDK__KRRDK____________",
+      "________KRRDK__KRRDK____________",
+      "________KRRDK__KRRDK____________",
+      "________KKKK____KKKK____________",
+      "________________________________",
+      "________________________________",
+      "________________________________",
     ],
   ];
 
-  const currentFrame = isShooting ? FRAMES[3] : FRAMES[frameIndex % 3];
+  // Signature Wide Open Arms Shooting Pose (Left arm flung wide back, Right arm reaching high forward with open palm firing web!)
+  const SHOOT_FRAME = [
+    "__________KKKKKKKK________KKKK__",
+    "________KKRRRRRRRRKK_____KRRWWR_",
+    "_______KRRRDKRRRRKKRK___KKWWWKK_",
+    "______KRRRRDKRRRRKKRRK_KKRRWWRK_",
+    "______KRRRDWWKKKWWKRRK__KRRRRK__",
+    "______KRRRDWWKKKWWKRRK___KKKK___",
+    "______KRRRDWWKKKWWKRRK__KRRDK___",
+    "______KRRRDGGKKKGGKRRK_KRRRRK___",
+    "_______KRRRDKRRRRKRRK_KRRRRK____",
+    "__KKKK__KKRRRKKKKRRKKRRRRK______",
+    "_KRRRRKKKKKKKKKKKKKKKKKK________",
+    "_KRRRDKKBNNNRRRRRRRRNNBNK_______",
+    '__KRRDKBBBNNRRRKKRRRNNBBBNK_____',
+    "___KKK_KBBNNNRRKKKKRRNNNBBK_____",
+    "_______KBNNNRRRKKKKRRRNNBNK_____",
+    "_______KKNNNRRRKKKKRRRNNNKK_____",
+    "______KBNNNRRRRKRRKRRRRNNBK_____",
+    "______KBBNNRRRRRRRRRRRRNNBK_____",
+    "_______KKNNNNNNNNNNNNNNNKK______",
+    "________KBNNNNNNNNNNNNBNK_______",
+    "_______KBBBNNN_____NNNBBBNK_____",
+    "______KBBBNN_________NNBBBNK____",
+    "_____KBBBNN___________NNBBBNK___",
+    "_____KBBBN_____________NNBBBK___",
+    "____KRRDK_______________KRRDK___",
+    "____KRRDK_______________KRRDK___",
+    "____KRRDK________________KRRDK__",
+    "____KRRDK_________________KRRDK_",
+    "_____KKKK__________________KKKK_",
+    "________________________________",
+    "________________________________",
+    "________________________________",
+  ];
+
+  const currentFrame = isShooting ? SHOOT_FRAME : RUN_FRAMES[frameIndex % 4];
 
   const colorMap: Record<string, string> = {
     R: "#ff1e27",
@@ -197,7 +225,7 @@ function SpiderManSprite({
   };
 
   const px = 2.4;
-  const cols = 28;
+  const cols = 32;
 
   return (
     <svg
@@ -205,7 +233,7 @@ function SpiderManSprite({
       width={cols * px}
       height={currentFrame.length * px}
       style={{ imageRendering: "pixelated", display: "block" }}
-      className="drop-shadow-[0_6px_12px_rgba(0,0,0,0.9)]"
+      className="drop-shadow-[0_6px_14px_rgba(0,0,0,0.9)]"
     >
       {currentFrame.map((row, ry) =>
         row.split("").map((c, cx) =>
@@ -225,7 +253,7 @@ function SpiderManSprite({
   );
 }
 
-// ─── Web Thread with Glowing Neon Impact Splat ───────────────────────────────
+// ─── Web Thread with Glowing Palm Muzzle Flash & Anchor ───────────────────────
 interface WebState {
   x1: number;
   y1: number;
@@ -242,7 +270,7 @@ function WebOverlay({ web }: { web: WebState | null }) {
       style={{ top: 0, left: 0, width: "100vw", height: "100vh", zIndex: 9999 }}
     >
       <defs>
-        <filter id="spidey-glow" x="-30%" y="-30%" width="160%" height="160%">
+        <filter id="spidey-glow" x="-40%" y="-40%" width="180%" height="180%">
           <feGaussianBlur stdDeviation="3.5" result="blur" />
           <feMerge>
             <feMergeNode in="blur" />
@@ -251,6 +279,24 @@ function WebOverlay({ web }: { web: WebState | null }) {
           </feMerge>
         </filter>
       </defs>
+
+      {/* Palm Web Muzzle Flash Burst */}
+      <circle
+        cx={web.x1}
+        cy={web.y1}
+        r="8"
+        fill="#38bdf8"
+        opacity={web.opacity * 0.9}
+        filter="url(#spidey-glow)"
+      />
+      <circle
+        cx={web.x1}
+        cy={web.y1}
+        r="3.5"
+        fill="#ffffff"
+        opacity={web.opacity}
+      />
+
       {/* Outer Web Glow Line */}
       <line
         x1={web.x1}
@@ -259,7 +305,7 @@ function WebOverlay({ web }: { web: WebState | null }) {
         y2={web.y2}
         stroke="#38bdf8"
         strokeWidth="4"
-        opacity={web.opacity * 0.75}
+        opacity={web.opacity * 0.8}
         filter="url(#spidey-glow)"
         strokeLinecap="round"
       />
@@ -274,7 +320,8 @@ function WebOverlay({ web }: { web: WebState | null }) {
         opacity={web.opacity}
         strokeLinecap="round"
       />
-      {/* Top Web Anchor & Particle Glow */}
+
+      {/* Top Web Impact Splat at Card Target */}
       <circle
         cx={web.x2}
         cy={web.y2}
@@ -312,12 +359,12 @@ export default function SpidermanWebAnimation({
   const [frame, setFrame] = useState(0);
   const legIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Animate legs while running
+  // Smooth 4-beat open-arm running cadence (125ms per phase)
   const startRunningLegs = useCallback(() => {
     if (legIntervalRef.current) return;
     legIntervalRef.current = setInterval(() => {
-      setFrame((f) => (f + 1) % 3);
-    }, 100);
+      setFrame((f) => (f + 1) % 4);
+    }, 125);
   }, []);
 
   const stopRunningLegs = useCallback(() => {
@@ -364,7 +411,7 @@ export default function SpidermanWebAnimation({
     const roadRect = road.getBoundingClientRect();
 
     // Start off left of road
-    gsap.set(runner, { x: -85, opacity: 1 });
+    gsap.set(runner, { x: -90, opacity: 1 });
     startRunningLegs();
 
     const tl = gsap.timeline({
@@ -376,7 +423,7 @@ export default function SpidermanWebAnimation({
         setWeb(null);
         // Spidey runs off the right side of the road
         gsap.to(runner, {
-          x: roadRect.width + 110,
+          x: roadRect.width + 120,
           duration: 0.75,
           ease: "power2.in",
           onComplete: () => {
@@ -390,20 +437,20 @@ export default function SpidermanWebAnimation({
     validRefs.forEach((ref, i) => {
       const card = ref.current!;
 
-      // 1. Spiderman runs on the bottom road to align directly beneath this project card
+      // 1. Spiderman runs on the bottom road with pumping open arms
       tl.add(() => {
         setIsShooting(false);
         startRunningLegs();
       });
 
       tl.to(runner, {
-        duration: 0.6 + (i === 0 ? 0.25 : 0),
+        duration: 0.65 + (i === 0 ? 0.25 : 0),
         ease: "power2.inOut",
         onUpdate: function () {
           if (!roadTrackRef.current || !ref.current) return;
           const currentRoad = roadTrackRef.current.getBoundingClientRect();
           const cardRect = ref.current.getBoundingClientRect();
-          const targetRelativeX = (cardRect.left + cardRect.width / 2) - currentRoad.left - 34;
+          const targetRelativeX = (cardRect.left + cardRect.width / 2) - currentRoad.left - 40;
           gsap.set(runner, {
             x: gsap.utils.interpolate(
               gsap.getProperty(runner, "x") as number,
@@ -414,7 +461,7 @@ export default function SpidermanWebAnimation({
         },
       });
 
-      // 2. Stop running, pose & shoot web straight UP into empty space above the card slot
+      // 2. Open arms wide & shoot web directly from the outstretched PALM
       tl.add(() => {
         stopRunningLegs();
         setIsShooting(true);
@@ -422,32 +469,32 @@ export default function SpidermanWebAnimation({
         const runnerBox = runner.getBoundingClientRect();
         const cardBox = card.getBoundingClientRect();
 
-        // Web starts from Spidey's hand at bottom road
-        const startX = runnerBox.left + runnerBox.width * 0.45;
-        const startY = runnerBox.top + runnerBox.height * 0.35;
+        // Exact Open Palm location (row 2, col 27 in the 32x32 grid => 84% width, 8% height)
+        const startPalmX = runnerBox.left + runnerBox.width * 0.84;
+        const startPalmY = runnerBox.top + runnerBox.height * 0.08;
 
-        // Web shoots way up high (above the card destination into the sky)
+        // Web shoots up into the sky above the card destination
         const targetX = cardBox.left + cardBox.width / 2;
         const targetSkyY = Math.max(20, cardBox.top - 180);
 
         const webProgress = { t: 0 };
 
-        // Phase A: Web flies up into the sky
+        // Phase A: Web flies up directly out of Spider-Man's palm
         gsap.to(webProgress, {
           t: 1,
           duration: 0.2,
           ease: "power3.out",
           onUpdate() {
             setWeb({
-              x1: startX,
-              y1: startY,
-              x2: startX + (targetX - startX) * webProgress.t,
-              y2: startY + (targetSkyY - startY) * webProgress.t,
+              x1: startPalmX,
+              y1: startPalmY,
+              x2: startPalmX + (targetX - startPalmX) * webProgress.t,
+              y2: startPalmY + (targetSkyY - startPalmY) * webProgress.t,
               opacity: 1,
             });
           },
           onComplete() {
-            // Phase B: Web attaches & pulls project card DOWN from top
+            // Phase B: Web attaches & pulls project card DOWN from top back towards palm
             const finalCardTargetY = cardBox.top + 30;
 
             // Retract web down with the card
@@ -457,8 +504,8 @@ export default function SpidermanWebAnimation({
               ease: "power2.in",
               onUpdate() {
                 setWeb({
-                  x1: startX,
-                  y1: startY,
+                  x1: startPalmX,
+                  y1: startPalmY,
                   x2: targetX,
                   y2: targetSkyY + (finalCardTargetY - targetSkyY) * (1 - webProgress.t),
                   opacity: webProgress.t,
@@ -574,7 +621,7 @@ export default function SpidermanWebAnimation({
         {/* Mini 16-Bit Road Horizon Traffic / Tech Deco */}
         <div className="absolute left-6 text-[10px] font-mono font-bold text-indigo-400/60 flex items-center gap-1.5">
           <span className="animate-pulse">🚦</span>
-          <span className="hidden sm:inline">HIGHWAY PATROL: SPIDER-BOT v2.0 (HI-RES)</span>
+          <span className="hidden sm:inline">HIGHWAY PATROL: SPIDER-BOT v2.4</span>
         </div>
 
         <div className="absolute right-6 text-[10px] font-mono font-bold text-red-400/60 flex items-center gap-1.5">
