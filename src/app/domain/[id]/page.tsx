@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useState } from "react";
+import React, { use, useState, useRef, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
@@ -26,6 +26,7 @@ import DomainBackground from "@/components/domain-themes/DomainBackground";
 import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectDetailModal from "@/components/projects/ProjectDetailModal";
 import { AndroidDemo } from "@/components/domain-themes/AndroidDemo";
+import CoffeePourAnimation from "@/components/domain-themes/CoffeePourAnimation";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   Globe,
@@ -48,13 +49,25 @@ export default function DomainDetailPage({ params }: PageProps) {
 
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
   const [isNavigatingBack, setIsNavigatingBack] = useState(false);
+  const [pourCount, setPourCount] = useState(0);
+
+  // Stable per-card refs so GSAP can target each card DOM node
+  const domainProjects = useMemo(
+    () => PROJECTS.filter((p) => p.domainId === resolvedParams.id),
+    [resolvedParams.id]
+  );
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const cardRefs = useMemo(
+    () => domainProjects.map(() => React.createRef<HTMLDivElement>()),
+    [domainProjects.length]
+  );
 
   if (!domain) {
     return notFound();
   }
 
   const Icon = iconMap[domain.icon] || Terminal;
-  const domainProjects = PROJECTS.filter((p) => p.domainId === domain.id);
+  // (domainProjects is now derived in useMemo above before the null-guard)
 
   const handleBackNavigation = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -322,7 +335,6 @@ export default function DomainDetailPage({ params }: PageProps) {
                 Click any system architecture tile to inspect problem statements, benchmarked outcomes, and live source.
               </p>
             </div>
-
             <span
               className={`hidden sm:inline ${
                 isUiUx
@@ -339,10 +351,20 @@ export default function DomainDetailPage({ params }: PageProps) {
             </span>
           </div>
 
+          {/* If UI/UX domain, GSAP-driven Coffee Pour Animation orchestrates card entries */}
+          {isUiUx && (
+            <CoffeePourAnimation
+              pourCount={pourCount}
+              onTriggerPour={() => setPourCount((prev) => prev + 1)}
+              cardRefs={cardRefs as React.RefObject<HTMLElement | null>[]}
+            />
+          )}
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 perspective-container">
             {domainProjects.map((project, index) => (
               <ProjectCard
                 key={project.id}
+                ref={isUiUx ? cardRefs[index] : undefined}
                 project={project}
                 domain={domain}
                 index={index}

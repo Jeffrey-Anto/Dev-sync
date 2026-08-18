@@ -1,12 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, Terminal, Coffee, BookOpen, MousePointer2 } from "lucide-react";
+import { motion } from "framer-motion";
 
 export default function UiUxTheme() {
   const [isPoweredOn, setIsPoweredOn] = useState(false);
-  const [isSpilled, setIsSpilled] = useState(false);
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useEffect(() => {
@@ -224,105 +222,17 @@ export default function UiUxTheme() {
         </svg>
       </motion.div>
 
-      {/* 5. BOTTOM RIGHT: HAND-DRAWN CYAN COFFEE MUG ("PROJECTS" / "spill coffee") */}
+      {/* 5. BOTTOM RIGHT: HAND-DRAWN PLAYFUL RETRO STICKERS & JELLY LAB BADGES */}
       <motion.div
-        animate={{ y: [0, 8, 0], rotate: [-2, 1, -2] }}
-        transition={{ repeat: Infinity, duration: 7, ease: "easeInOut" }}
-        className="absolute bottom-10 right-4 sm:right-28 w-48 sm:w-64 pointer-events-auto drop-shadow-2xl"
+        animate={{ y: [0, 8, 0], rotate: [-2, 2, -2] }}
+        transition={{ repeat: Infinity, duration: 6.5, ease: "easeInOut" }}
+        className="absolute bottom-12 right-6 sm:right-20 pointer-events-auto flex flex-col items-end gap-3 drop-shadow-xl"
       >
-        <div className="relative">
-          <svg viewBox="0 0 240 220" className="w-full h-auto">
-            {/* Cyan Mug Handle */}
-            <path
-              d="M 175 60 C 230 65, 235 155, 170 165"
-              fill="none"
-              stroke="#00D4FF"
-              strokeWidth="20"
-              strokeLinecap="round"
-            />
-            <path
-              d="M 175 60 C 230 65, 235 155, 170 165"
-              fill="none"
-              stroke="#000000"
-              strokeWidth="4"
-              strokeLinecap="round"
-            />
-
-            {/* Cyan Mug Body */}
-            <path
-              d="M 35 45 C 95 38, 140 38, 185 45 C 180 120, 175 165, 160 195 C 115 205, 75 205, 52 195 C 42 165, 38 120, 35 45 Z"
-              fill="#00D4FF"
-              stroke="#000000"
-              strokeWidth="4"
-            />
-
-            {/* Dark Brown Coffee Surface (Top Oval) */}
-            <ellipse
-              cx="110"
-              cy="52"
-              rx="68"
-              ry="22"
-              fill="#3A1D0B"
-              stroke="#000000"
-              strokeWidth="3.5"
-            />
-
-            {/* Hand-drawn bold text "PROJ ECTS" in Blue/Black */}
-            <text
-              x="108"
-              y="118"
-              textAnchor="middle"
-              fontFamily="sans-serif"
-              fontWeight="900"
-              fontSize="28"
-              fill="#001880"
-              transform="rotate(-5 108 118)"
-            >
-              PROJ
-            </text>
-            <text
-              x="108"
-              y="155"
-              textAnchor="middle"
-              fontFamily="sans-serif"
-              fontWeight="900"
-              fontSize="28"
-              fill="#001880"
-              transform="rotate(-5 108 155)"
-            >
-              ECTS
-            </text>
-          </svg>
-
-          {/* Circular "spill coffee" Button Pill */}
-          <button
-            onClick={() => setIsSpilled(!isSpilled)}
-            className="absolute top-1/3 right-4 px-2.5 py-1.5 rounded-full bg-blue-700 text-white font-mono text-[9px] font-bold border-2 border-white shadow-lg hover:scale-110 active:scale-95 transition-transform cursor-pointer"
-          >
-            {isSpilled ? "clean up" : "spill coffee"}
-          </button>
-
-          {/* Coffee Splash Particles */}
-          <AnimatePresence>
-            {isSpilled && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0 }}
-                className="absolute -bottom-8 -left-10 w-40 h-16 pointer-events-none"
-              >
-                <svg viewBox="0 0 160 60" className="w-full h-full">
-                  <path
-                    d="M 10 30 Q 30 10 60 25 T 110 20 Q 140 35 150 25 Q 130 55 80 50 T 20 45 Z"
-                    fill="#3A1D0B"
-                    opacity="0.85"
-                  />
-                  <circle cx="20" cy="15" r="4" fill="#3A1D0B" />
-                  <circle cx="135" cy="12" r="3" fill="#3A1D0B" />
-                </svg>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        <div className="handdrawn-box bg-[#FFE600] text-black font-doodle text-base sm:text-lg font-black px-4 py-2 shadow-[4px_4px_0_#000000] rotate-[-2deg]">
+          ✨ 60 FPS JELLY ENGINE
+        </div>
+        <div className="handdrawn-box-alt bg-[#FF00AA] text-white font-doodle text-sm sm:text-base font-black px-4 py-1.5 shadow-[4px_4px_0_#000000] rotate-[3deg]">
+          🎨 POP-ART DESIGN SYSTEM
         </div>
       </motion.div>
     </div>
