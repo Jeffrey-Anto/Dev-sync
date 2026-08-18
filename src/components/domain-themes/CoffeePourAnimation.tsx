@@ -27,8 +27,7 @@ export default function CoffeePourAnimation({
   const splooshRef = useRef<HTMLDivElement>(null);
   // The coffee fill rect inside the mug — we animate its y to simulate draining
   const coffeeFillRef = useRef<SVGRectElement>(null);
-  const coffeeSurfaceRef = useRef<SVGGElement>(null);
-  // The two surface ellipses — shrink rx/ry as mug tapers toward bottom
+  // The two surface ellipses — animate cy directly in SVG space (no group transform)
   const coffeeRimOuterRef = useRef<SVGEllipseElement>(null);
   const coffeeRimInnerRef = useRef<SVGEllipseElement>(null);
 
@@ -62,7 +61,6 @@ export default function CoffeePourAnimation({
     const stream = streamRef.current;
     const sploosh = splooshRef.current;
     const coffeeFill = coffeeFillRef.current;
-    const coffeeSurface = coffeeSurfaceRef.current;
 
     const offsets = getCardOffsets(validRefs);
     const totalCards = validRefs.length;
@@ -75,22 +73,22 @@ export default function CoffeePourAnimation({
 
     // Coffee fill starts FULL (y=52 = surface, height fills to bottom of cup ~y=200)
     if (coffeeFill) gsap.set(coffeeFill, { attr: { y: 52, height: 150 } });
-    // Reset coffee surface group to top position
-    if (coffeeSurfaceRef.current) gsap.set(coffeeSurfaceRef.current, { y: 0 });
-    // Reset ellipse radii to full (mug is widest at top)
-    if (coffeeRimOuterRef.current) gsap.set(coffeeRimOuterRef.current, { attr: { rx: 68, ry: 22 } });
-    if (coffeeRimInnerRef.current) gsap.set(coffeeRimInnerRef.current, { attr: { rx: 54, ry: 15 } });
+    // Reset surface ellipses to top — animate cy directly (no group transforms, no clip path issues)
+    if (coffeeRimOuterRef.current) gsap.set(coffeeRimOuterRef.current, { attr: { cy: 52, rx: 120, ry: 22 } });
+    if (coffeeRimInnerRef.current) gsap.set(coffeeRimInnerRef.current, { attr: { cy: 52, rx: 100, ry: 15 } });
 
-    // All cards hidden + coffee overlay visible
+    // All cards hidden via clip-path pinch (magic lamp initial state)
     validRefs.forEach((r) => {
       const card = r.current!;
       gsap.set(card, {
-        opacity: 0,
-        y: -90,
-        scaleX: 0.5,
-        scaleY: 1.5,
+        opacity: 1,
+        y: 0,
+        scaleX: 1,
+        scaleY: 1,
         rotation: 0,
-        transformOrigin: "center bottom",
+        // Pinched to a thin line at the top (stream spout point)
+        clipPath: "polygon(49% 0%, 51% 0%, 51% 1%, 49% 1%)",
+        transformOrigin: "top center",
       });
       // Reset the coffee overlay inside the card
       const overlay = card.querySelector<HTMLElement>(".js-coffee-overlay");
@@ -111,8 +109,7 @@ export default function CoffeePourAnimation({
     validRefs.forEach((ref, i) => {
       const card = ref.current!;
       const targetX = offsets[i] ?? 0;
-      const entryRotation = i % 2 === 0 ? -12 : 12;
-      gsap.set(card, { rotation: entryRotation });
+      gsap.set(card, { rotation: 0 });
 
       // ① Slide group over card
       tl.to(group, { x: targetX, duration: 0.65, ease: "power3.inOut" });
@@ -120,49 +117,25 @@ export default function CoffeePourAnimation({
       // ② Tilt mug into pour
       tl.to(mug, { rotation: -50, duration: 0.4, ease: "back.out(1.5)" }, "<+0.2");
 
-      // ③ Coffee fill DRAINS in mug (y increases, height decreases per card)
+      // ③ Coffee fill DRAINS + surface ellipses follow cy (SVG coordinate space, clip path works correctly)
       if (coffeeFill) {
-        const drainPerCard = 130 / totalCards; // split 130px of height across all pours
+        const drainPerCard = 130 / totalCards;
         const drainAmount = (i + 1) * drainPerCard;
         const newY = 52 + drainAmount;
         const newH = Math.max(4, 200 - newY);
-        // How far along the full drain are we? (0 at top → 1 at bottom)
         const drainFraction = drainAmount / 130;
-        // Mug tapers measured from path geometry:
-        // top (y=52): half-width~75 → rx_outer=68, ry=22
-        // bottom drain (y=182): half-width~56 → rx_outer=52, ry=17
-        const outerRx = Math.max(52, 68 - drainFraction * 16);
-        const outerRy = Math.max(17, 22 - drainFraction * 5);
-        const innerRx = Math.max(42, 54 - drainFraction * 12);
-        const innerRy = Math.max(12, 15 - drainFraction * 3);
+        const outerRy = Math.max(16, 22 - drainFraction * 6);
+        const innerRy = Math.max(11, 15 - drainFraction * 4);
+        const newCy = 52 + drainAmount; // surface cy tracks fill level
 
-        tl.to(
-          coffeeFill,
-          { attr: { y: newY, height: newH }, duration: 0.55, ease: "power2.inOut" },
-          "<"
-        );
-        // Surface oval + foam drop in sync with the fill level
-        if (coffeeSurface) {
-          tl.to(
-            coffeeSurface,
-            { y: drainAmount, duration: 0.55, ease: "power2.inOut" },
-            "<"
-          );
-        }
-        // Shrink ellipse radii to match mug taper at this depth
+        tl.to(coffeeFill, { attr: { y: newY, height: newH }, duration: 0.55, ease: "power2.inOut" }, "<");
+
+        // Animate cy directly — no group transform, clip path in SVG space is always correct
         if (coffeeRimOuterRef.current) {
-          tl.to(
-            coffeeRimOuterRef.current,
-            { attr: { rx: outerRx, ry: outerRy }, duration: 0.55, ease: "power2.inOut" },
-            "<"
-          );
+          tl.to(coffeeRimOuterRef.current, { attr: { cy: newCy, ry: outerRy }, duration: 0.55, ease: "power2.inOut" }, "<");
         }
         if (coffeeRimInnerRef.current) {
-          tl.to(
-            coffeeRimInnerRef.current,
-            { attr: { rx: innerRx, ry: innerRy }, duration: 0.55, ease: "power2.inOut" },
-            "<"
-          );
+          tl.to(coffeeRimInnerRef.current, { attr: { cy: newCy, ry: innerRy }, duration: 0.55, ease: "power2.inOut" }, "<");
         }
       }
 
@@ -173,12 +146,31 @@ export default function CoffeePourAnimation({
         "<+0.1"
       );
 
-      // ⑤ Card drops in with elastic jelly
+      // ⑤ ✨ MAGIC LAMP — liquid pours from stream spout into card shape
+      //  Phase 1: top blows open wide (stream exits into card top)
       tl.to(
         card,
-        { opacity: 1, y: 0, scaleX: 1, scaleY: 1, rotation: 0, duration: 1.05, ease: "elastic.out(1, 0.42)" },
+        {
+          clipPath: "polygon(0% 0%, 100% 0%, 72% 38%, 28% 38%)",
+          duration: 0.22,
+          ease: "power3.out",
+        },
         "<+0.12"
       );
+      //  Phase 2: wave ripples down (liquid fills the card body)
+      tl.to(card, {
+        clipPath: "polygon(0% 0%, 100% 0%, 84% 72%, 16% 72%)",
+        duration: 0.2,
+        ease: "power2.inOut",
+      });
+      //  Phase 3: bottom snaps open with elastic bounce
+      tl.to(card, {
+        clipPath: "polygon(0% 0%, 100% 0%, 100% 100%, 0% 100%)",
+        duration: 0.38,
+        ease: "elastic.out(1.1, 0.45)",
+      });
+      // Clear clip-path so card is fully normal and scrollable
+      tl.set(card, { clipPath: "none" });
 
       // ⑥ Coffee-wash overlay wipes away (upward reveal like liquid draining)
       const overlay = card.querySelector<HTMLElement>(".js-coffee-overlay");
@@ -336,14 +328,19 @@ export default function CoffeePourAnimation({
           {/* Specular highlight ON TOP of coffee */}
           <path d="M 46 62 C 49 118, 55 152, 63 186" fill="none" stroke="#fff" strokeWidth="5" strokeLinecap="round" opacity="0.4" />
 
-          {/* Coffee top surface oval + foam — grouped & clipped so they slide down naturally inside the cup */}
-          <g ref={coffeeSurfaceRef} clipPath="url(#mug-interior-clip)">
-            <ellipse ref={coffeeRimOuterRef} cx="110" cy="52" rx="68" ry="22" fill="#3A1D0B" stroke="#000" strokeWidth="3.5" />
-            <ellipse ref={coffeeRimInnerRef} cx="110" cy="52" rx="54" ry="15" fill="#522A12" />
-            {/* Foam latte swirl on surface */}
-            <path d="M 80 52 Q 105 44 130 50 Q 118 60 95 56 Q 78 62 80 52 Z" fill="#C48858" opacity="0.75" />
-            <path d="M 85 52 Q 110 44 135 52 Q 120 58 100 54" fill="none" stroke="#D4A57A" strokeWidth="2" strokeLinecap="round" opacity="0.5" />
-          </g>
+          {/* Coffee top surface oval — clipped directly (no group), cy animated in SVG space */}
+          <ellipse
+            ref={coffeeRimOuterRef}
+            cx="110" cy="52" rx="120" ry="22"
+            fill="#3A1D0B" stroke="#000" strokeWidth="3.5"
+            clipPath="url(#mug-body-clip)"
+          />
+          <ellipse
+            ref={coffeeRimInnerRef}
+            cx="110" cy="52" rx="100" ry="15"
+            fill="#522A12"
+            clipPath="url(#mug-body-clip)"
+          />
 
           {/* PROJ ECTS text */}
           <text x="108" y="100" textAnchor="middle" fontFamily="sans-serif" fontWeight="900" fontSize="22" fill="#C48858" transform="rotate(-5 108 100)" opacity="0.85">PROJ</text>
