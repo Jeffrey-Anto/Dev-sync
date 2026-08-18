@@ -19,18 +19,20 @@ interface SpidermanWebAnimationProps {
   cardRefs: React.RefObject<HTMLElement | null>[];
 }
 
-// ─── High-Definition 32-Bit Retro Pixel Spider-Man (Dynamic Open Arms) ──────────
-// 32 Columns × 32 Rows with wide arm swing & dynamic web-pulling silhouette
+type SpiderAction = "run" | "shoot" | "pull";
+
+// ─── High-Definition 32-Bit Retro Pixel Spider-Man (Dynamic Action Poses) ────────
+// 32 Columns × 32 Rows with Authentic Sprint, Aim-Shoot, and 2-Hand Power-Pull
 // R = Red (#ff1e27), D = Dark Red Shadow (#a80512)
 // B = Electric Blue (#0070f3), N = Deep Navy Shadow (#002b80)
 // W = Pure White (#ffffff), G = Lens Grey (#94a3b8)
 // K = Jet Black (#0b0e14), _ = Transparent
 function SpiderManSprite({
   frameIndex = 0,
-  isShooting = false,
+  action = "run",
 }: {
   frameIndex?: number;
-  isShooting?: boolean;
+  action?: SpiderAction;
 }) {
   const RUN_FRAMES = [
     // Frame 0: Sprint 1 (Left arm reaching back, Right arm pumping forward open!)
@@ -175,7 +177,7 @@ function SpiderManSprite({
     ],
   ];
 
-  // Signature Wide Open Arms Shooting Pose (Left arm flung wide back, Right arm reaching high forward with open palm firing web!)
+  // 1. AIM & SHOOT POSE (Signature Open Palm Thwip aiming up-forward)
   const SHOOT_FRAME = [
     "__________KKKKKKKK________KKKK__",
     "________KKRRRRRRRRKK_____KRRWWR_",
@@ -189,7 +191,7 @@ function SpiderManSprite({
     "__KKKK__KKRRRKKKKRRKKRRRRK______",
     "_KRRRRKKKKKKKKKKKKKKKKKK________",
     "_KRRRDKKBNNNRRRRRRRRNNBNK_______",
-    '__KRRDKBBBNNRRRKKRRRNNBBBNK_____',
+    "__KRRDKBBBNNRRRKKRRRNNBBBNK_____",
     "___KKK_KBBNNNRRKKKKRRNNNBBK_____",
     "_______KBNNNRRRKKKKRRRNNBNK_____",
     "_______KKNNNRRRKKKKRRRNNNKK_____",
@@ -211,7 +213,45 @@ function SpiderManSprite({
     "________________________________",
   ];
 
-  const currentFrame = isShooting ? SHOOT_FRAME : RUN_FRAMES[frameIndex % 4];
+  // 2. AUTHENTIC 2-HAND SPIDER-MAN HEAVE & PULL POSE (Deep knee power-crouch, leaning back hard, both arms heaving down!)
+  const PULL_FRAME = [
+    "____________KKKKKKKK____________",
+    "__________KKRRRRRRRRKK__________",
+    "_________KRRRDKRRRRKKRK_________",
+    "________KRRRRDKRRRRKKRRK________",
+    "________KRRRDWWKKKWWKRRK________",
+    "________KRRRDWWKKKWWKRRK________",
+    "________KRRRDWWKKKWWKRRK________",
+    "________KRRRDGGKKKGGKRRK________",
+    "_________KRRRDKRRRRKRRK_________",
+    "__________KKRRRKKKKRRK__________",
+    "_______KKKKKKKKKKKKKKKKKK_______",
+    "______KBNNNRRRRRRRRNNBNRRK______",
+    "_____KBBBNNRRRKKRRRNNBBBNRRK____",
+    "____KBBNNNRRKKKKRRNNNBBK_KRRK___",
+    "____KBNNNRRRKKKKRRRNNBNK__KKKK__",
+    "____KKNNNRRRKKKKRRRNNNKK___KRRK_",
+    "___KBNNNRRRRKRRKRRRRNNBK__KRRDK_",
+    "___KBBNNRRRRRRRRRRRRNNBK__KKKK__",
+    "____KKNNNNNNNNNNNNNNNKK_________",
+    "_____KBNNNNNNNNNNNNBNK__________",
+    "____KBBBNNN_____NNNBBBNK________",
+    "___KBBBNN_________NNBBBNK_______",
+    "__KBBBNN___________NNBBBNK______",
+    "_KBBBNN_____________NNBBBNK_____",
+    "_KRRDK_______________KRRDK______",
+    "_KRRDK_______________KRRDK______",
+    "KRRDK_________________KRRDK_____",
+    "KRRDK__________________KRRDK____",
+    "KKKK____________________KKKK____",
+    "________________________________",
+    "________________________________",
+    "________________________________",
+  ];
+
+  let currentFrame = RUN_FRAMES[frameIndex % 4];
+  if (action === "shoot") currentFrame = SHOOT_FRAME;
+  if (action === "pull") currentFrame = PULL_FRAME;
 
   const colorMap: Record<string, string> = {
     R: "#ff1e27",
@@ -233,7 +273,7 @@ function SpiderManSprite({
       width={cols * px}
       height={currentFrame.length * px}
       style={{ imageRendering: "pixelated", display: "block" }}
-      className="drop-shadow-[0_6px_14px_rgba(0,0,0,0.9)]"
+      className="drop-shadow-[0_8px_16px_rgba(0,0,0,0.95)]"
     >
       {currentFrame.map((row, ry) =>
         row.split("").map((c, cx) =>
@@ -253,17 +293,23 @@ function SpiderManSprite({
   );
 }
 
-// ─── Web Thread with Glowing Palm Muzzle Flash & Anchor ───────────────────────
+// ─── Web Thread with Glowing Palm Muzzle Flash & Dynamic Elastic Tension ───────
 interface WebState {
   x1: number;
   y1: number;
   x2: number;
   y2: number;
   opacity: number;
+  isPulling?: boolean;
 }
 
 function WebOverlay({ web }: { web: WebState | null }) {
   if (!web) return null;
+
+  // Calculate a slight elastic tension bow when pulling
+  const midX = (web.x1 + web.x2) / 2 + (web.isPulling ? -15 : 0);
+  const midY = (web.y1 + web.y2) / 2 + (web.isPulling ? 10 : 0);
+
   return (
     <svg
       className="fixed pointer-events-none"
@@ -284,7 +330,7 @@ function WebOverlay({ web }: { web: WebState | null }) {
       <circle
         cx={web.x1}
         cy={web.y1}
-        r="8"
+        r={web.isPulling ? 10 : 8}
         fill="#38bdf8"
         opacity={web.opacity * 0.9}
         filter="url(#spidey-glow)"
@@ -292,40 +338,35 @@ function WebOverlay({ web }: { web: WebState | null }) {
       <circle
         cx={web.x1}
         cy={web.y1}
-        r="3.5"
+        r={web.isPulling ? 4.5 : 3.5}
         fill="#ffffff"
         opacity={web.opacity}
       />
 
-      {/* Outer Web Glow Line */}
-      <line
-        x1={web.x1}
-        y1={web.y1}
-        x2={web.x2}
-        y2={web.y2}
+      {/* Curved Tension Path under superhero pull */}
+      <path
+        d={`M ${web.x1} ${web.y1} Q ${midX} ${midY} ${web.x2} ${web.y2}`}
+        fill="none"
         stroke="#38bdf8"
-        strokeWidth="4"
-        opacity={web.opacity * 0.8}
+        strokeWidth={web.isPulling ? 5 : 4}
+        opacity={web.opacity * 0.85}
         filter="url(#spidey-glow)"
         strokeLinecap="round"
       />
-      {/* Inner White Core Web Line */}
-      <line
-        x1={web.x1}
-        y1={web.y1}
-        x2={web.x2}
-        y2={web.y2}
+      <path
+        d={`M ${web.x1} ${web.y1} Q ${midX} ${midY} ${web.x2} ${web.y2}`}
+        fill="none"
         stroke="#ffffff"
-        strokeWidth="1.8"
+        strokeWidth={web.isPulling ? 2.2 : 1.8}
         opacity={web.opacity}
         strokeLinecap="round"
       />
 
-      {/* Top Web Impact Splat at Card Target */}
+      {/* Target Web Impact Splat at Card */}
       <circle
         cx={web.x2}
         cy={web.y2}
-        r="7"
+        r={web.isPulling ? 9 : 7}
         fill="#38bdf8"
         opacity={web.opacity * 0.9}
         filter="url(#spidey-glow)"
@@ -333,10 +374,97 @@ function WebOverlay({ web }: { web: WebState | null }) {
       <circle
         cx={web.x2}
         cy={web.y2}
-        r="3"
+        r={3.5}
         fill="#ffffff"
         opacity={web.opacity}
       />
+    </svg>
+  );
+}
+
+// ─── 2.5D Horizontal Perspective Highway (Running Left-to-Right) ──────────────
+function GeometricPerspectiveRoad() {
+  const seams = Array.from({ length: 26 }, (_, i) => i * 48);
+  const dashes = Array.from({ length: 18 }, (_, i) => i * 68 + 10);
+
+  return (
+    <svg
+      viewBox="0 0 1200 110"
+      preserveAspectRatio="none"
+      className="absolute inset-0 w-full h-full pointer-events-none"
+    >
+      <defs>
+        <linearGradient id="highway-asphalt" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#080a14" />
+          <stop offset="35%" stopColor="#0f1322" />
+          <stop offset="70%" stopColor="#151b30" />
+          <stop offset="100%" stopColor="#1a223d" />
+        </linearGradient>
+
+        <linearGradient id="top-guardrail" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#ef4444" stopOpacity="0.8" />
+          <stop offset="50%" stopColor="#818cf8" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#ef4444" stopOpacity="0.8" />
+        </linearGradient>
+
+        <linearGradient id="bottom-curb" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stopColor="#06b6d4" />
+          <stop offset="50%" stopColor="#38bdf8" />
+          <stop offset="100%" stopColor="#06b6d4" />
+        </linearGradient>
+      </defs>
+
+      {/* 1. Main Asphalt Surface */}
+      <rect x="0" y="0" width="1200" height="110" fill="url(#highway-asphalt)" />
+
+      {/* 2. Longitudinal Depth Strips */}
+      <rect x="0" y="0" width="1200" height="24" fill="#000000" opacity="0.35" />
+      <line x1="0" y1="24" x2="1200" y2="24" stroke="#38bdf8" strokeWidth="0.8" opacity="0.15" />
+      <line x1="0" y1="82" x2="1200" y2="82" stroke="#38bdf8" strokeWidth="0.8" opacity="0.15" />
+
+      {/* 3. 2.5D Isometric Diagonal Asphalt Seams */}
+      {seams.map((x, idx) => (
+        <line
+          key={`seam-${idx}`}
+          x1={x + 35}
+          y1="8"
+          x2={x}
+          y2="102"
+          stroke="#38bdf8"
+          strokeWidth="1.2"
+          opacity={idx % 2 === 0 ? 0.12 : 0.06}
+        />
+      ))}
+
+      {/* 4. Horizontal Center Lane Dashes */}
+      {dashes.map((dx, idx) => (
+        <g key={`dash-${idx}`}>
+          <polygon
+            points={`${dx},52 ${dx + 42},52 ${dx + 38},56 ${dx - 4},56`}
+            fill="#fbbf24"
+            opacity="0.85"
+          />
+          <line
+            x1={dx - 4}
+            y1="54"
+            x2={dx + 42}
+            y2="54"
+            stroke="#f59e0b"
+            strokeWidth="3"
+            opacity="0.3"
+          />
+        </g>
+      ))}
+
+      {/* 5. Top Far Guardrail */}
+      <rect x="0" y="0" width="1200" height="6" fill="url(#top-guardrail)" />
+      <line x1="0" y1="6" x2="1200" y2="6" stroke="#000000" strokeWidth="1.5" opacity="0.8" />
+      <line x1="0" y1="8" x2="1200" y2="8" stroke="#ffffff" strokeWidth="0.5" opacity="0.4" />
+
+      {/* 6. Bottom Near Curb */}
+      <rect x="0" y="102" width="1200" height="8" fill="url(#bottom-curb)" />
+      <line x1="0" y1="102" x2="1200" y2="102" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
+      <line x1="0" y1="110" x2="1200" y2="110" stroke="#083344" strokeWidth="2" opacity="0.9" />
     </svg>
   );
 }
@@ -352,14 +480,14 @@ export default function SpidermanWebAnimation({
   const tlRef = useRef<gsap.core.Timeline | null>(null);
 
   const [isRunning, setIsRunning] = useState(false);
-  const [isShooting, setIsShooting] = useState(false);
+  const [actionState, setActionState] = useState<SpiderAction>("run");
   const [allDone, setAllDone] = useState(false);
   const [revealedCount, setRevealedCount] = useState(0);
   const [web, setWeb] = useState<WebState | null>(null);
   const [frame, setFrame] = useState(0);
   const legIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Smooth 4-beat open-arm running cadence (125ms per phase)
+  // Smooth 4-beat running cadence
   const startRunningLegs = useCallback(() => {
     if (legIntervalRef.current) return;
     legIntervalRef.current = setInterval(() => {
@@ -374,14 +502,14 @@ export default function SpidermanWebAnimation({
     }
   }, []);
 
-  // Hide all cards initially on mount so they appear only upon being pulled
+  // Hide all cards initially on mount
   const hideAllCards = useCallback(() => {
     cardRefs.forEach((r) => {
       if (r.current) {
         gsap.set(r.current, {
           opacity: 0,
-          y: -220,
-          scale: 0.4,
+          y: -240,
+          scale: 0.35,
           pointerEvents: "none",
         });
       }
@@ -399,29 +527,26 @@ export default function SpidermanWebAnimation({
     tlRef.current?.kill();
     setIsRunning(true);
     setAllDone(false);
-    setIsShooting(false);
+    setActionState("run");
     setRevealedCount(0);
     setWeb(null);
 
-    // Ensure all cards are hidden at the start of a pull sequence
     hideAllCards();
 
     const runner = runnerRef.current;
     const road = roadTrackRef.current;
     const roadRect = road.getBoundingClientRect();
 
-    // Start off left of road
-    gsap.set(runner, { x: -90, opacity: 1 });
+    gsap.set(runner, { x: -90, y: 0, rotation: 0, opacity: 1 });
     startRunningLegs();
 
     const tl = gsap.timeline({
       onComplete: () => {
         setIsRunning(false);
-        setIsShooting(false);
+        setActionState("run");
         setAllDone(true);
         stopRunningLegs();
         setWeb(null);
-        // Spidey runs off the right side of the road
         gsap.to(runner, {
           x: roadRect.width + 120,
           duration: 0.75,
@@ -437,9 +562,9 @@ export default function SpidermanWebAnimation({
     validRefs.forEach((ref, i) => {
       const card = ref.current!;
 
-      // 1. Spiderman runs on the bottom road with pumping open arms
+      // 1. Spiderman sprints along the highway
       tl.add(() => {
-        setIsShooting(false);
+        setActionState("run");
         startRunningLegs();
       });
 
@@ -461,80 +586,105 @@ export default function SpidermanWebAnimation({
         },
       });
 
-      // 2. Open arms wide & shoot web directly from the outstretched PALM
+      // 2. AIM & SHOOT: Plants feet, shoots web from open palm straight up into empty sky
       tl.add(() => {
         stopRunningLegs();
-        setIsShooting(true);
+        setActionState("shoot");
 
         const runnerBox = runner.getBoundingClientRect();
         const cardBox = card.getBoundingClientRect();
 
-        // Exact Open Palm location (row 2, col 27 in the 32x32 grid => 84% width, 8% height)
         const startPalmX = runnerBox.left + runnerBox.width * 0.84;
         const startPalmY = runnerBox.top + runnerBox.height * 0.08;
-
-        // Web shoots up into the sky above the card destination
         const targetX = cardBox.left + cardBox.width / 2;
-        const targetSkyY = Math.max(20, cardBox.top - 180);
+        const targetSkyY = Math.max(20, cardBox.top - 190);
 
-        const webProgress = { t: 0 };
+        const shootProgress = { t: 0 };
 
-        // Phase A: Web flies up directly out of Spider-Man's palm
-        gsap.to(webProgress, {
+        // Web flies up to target
+        gsap.to(shootProgress, {
           t: 1,
-          duration: 0.2,
+          duration: 0.18,
           ease: "power3.out",
           onUpdate() {
             setWeb({
               x1: startPalmX,
               y1: startPalmY,
-              x2: startPalmX + (targetX - startPalmX) * webProgress.t,
-              y2: startPalmY + (targetSkyY - startPalmY) * webProgress.t,
+              x2: startPalmX + (targetX - startPalmX) * shootProgress.t,
+              y2: startPalmY + (targetSkyY - startPalmY) * shootProgress.t,
               opacity: 1,
+              isPulling: false,
             });
           },
           onComplete() {
-            // Phase B: Web attaches & pulls project card DOWN from top back towards palm
+            // 3. AUTHENTIC SUPERHERO HEAVE & PULL!
+            // Spidey switches to power pull stance, leans back hard, body recoils!
+            setActionState("pull");
+
+            // Spidey physical tug recoil
+            gsap.to(runner, {
+              y: 8,
+              x: "-=12",
+              rotation: -10,
+              duration: 0.12,
+              ease: "power4.out",
+            });
+
+            const pullProgress = { t: 0 };
             const finalCardTargetY = cardBox.top + 30;
 
-            // Retract web down with the card
-            gsap.to(webProgress, {
-              t: 0,
-              duration: 0.35,
-              ease: "power2.in",
+            // Retract web violently with heavy tension
+            gsap.to(pullProgress, {
+              t: 1,
+              duration: 0.38,
+              ease: "power3.in",
               onUpdate() {
+                // Hand moves down to chest/hip during pull
+                const pullHandX = runnerBox.left + runnerBox.width * 0.65;
+                const pullHandY = runnerBox.top + runnerBox.height * 0.40;
+
                 setWeb({
-                  x1: startPalmX,
-                  y1: startPalmY,
+                  x1: pullHandX,
+                  y1: pullHandY,
                   x2: targetX,
-                  y2: targetSkyY + (finalCardTargetY - targetSkyY) * (1 - webProgress.t),
-                  opacity: webProgress.t,
+                  y2: targetSkyY + (finalCardTargetY - targetSkyY) * pullProgress.t,
+                  opacity: 1 - pullProgress.t * 0.1,
+                  isPulling: true,
                 });
               },
               onComplete() {
+                // Pop back up from pull stance
+                gsap.to(runner, {
+                  y: 0,
+                  x: "+=12",
+                  rotation: 0,
+                  duration: 0.28,
+                  ease: "back.out(2)",
+                });
                 setWeb(null);
-                setIsShooting(false);
               },
             });
           },
         });
       });
 
-      // 3. Project card gets snatched DOWN from top out of nowhere into its slot!
+      // 4. Project Card gets snatched DOWN from top with superhero momentum!
       tl.fromTo(
         card,
         {
           opacity: 0,
-          y: -220,
-          scale: 0.4,
+          y: -240,
+          scale: 0.35,
+          rotation: -6,
           pointerEvents: "none",
         },
         {
           opacity: 1,
           y: 0,
           scale: 1,
-          duration: 0.55,
-          ease: "elastic.out(1.15, 0.45)",
+          rotation: 0,
+          duration: 0.58,
+          ease: "elastic.out(1.2, 0.45)",
           onStart: () => {
             setRevealedCount((prev) => prev + 1);
           },
@@ -542,16 +692,16 @@ export default function SpidermanWebAnimation({
             gsap.set(card, { pointerEvents: "auto" });
           },
         },
-        "<+0.2"
+        "<+0.22"
       );
 
-      // 4. Glow flash celebration on card border
+      // 5. Electric cyan impact flash celebration on card border
       tl.fromTo(
         card,
         { boxShadow: "0 0 0 0px rgba(56, 189, 248, 0)" },
         {
-          boxShadow: "0 0 35px 6px rgba(56, 189, 248, 0.75)",
-          duration: 0.28,
+          boxShadow: "0 0 40px 8px rgba(56, 189, 248, 0.8)",
+          duration: 0.3,
           yoyo: true,
           repeat: 1,
           ease: "power2.out",
@@ -559,9 +709,8 @@ export default function SpidermanWebAnimation({
         "<"
       );
 
-      // Short breath between project cards
       if (i < validRefs.length - 1) {
-        tl.to({}, { duration: 0.28 });
+        tl.to({}, { duration: 0.25 });
       }
     });
   }, [cardRefs, hideAllCards, startRunningLegs, stopRunningLegs]);
@@ -599,47 +748,29 @@ export default function SpidermanWebAnimation({
   };
 
   return (
-    <div className="relative w-full mt-10 mb-6 select-none">
-      {/* Full-screen SVG Web Overlay */}
+    <div className="relative w-full mt-12 mb-6 select-none">
+      {/* Full-screen SVG Web Overlay with Elastic Tension Curve */}
       <WebOverlay web={web} />
 
-      {/* ─── Retro 16/32-Bit Pixel Road Track at the Bottom ─── */}
+      {/* ─── 2.5D Horizontal Perspective Highway Track ─── */}
       <div
         ref={roadTrackRef}
-        className="relative w-full h-22 sm:h-26 bg-gradient-to-b from-[#151722] via-[#0d0f17] to-[#07080d] rounded-2xl border-2 border-indigo-500/30 overflow-hidden shadow-[0_12px_35px_rgba(0,0,0,0.85),inset_0_2px_4px_rgba(255,255,255,0.08)] flex items-center"
+        className="relative w-full h-24 sm:h-28 rounded-2xl border border-indigo-500/30 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.9),inset_0_1px_3px_rgba(255,255,255,0.1)] flex items-center"
       >
-        {/* Retro Grid / Pixel texture */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff0a_1px,transparent_1px),linear-gradient(to_bottom,#ffffff0a_1px,transparent_1px)] bg-[size:12px_12px] opacity-40 pointer-events-none" />
+        {/* Horizontal Perspective Road SVG */}
+        <GeometricPerspectiveRoad />
 
-        {/* Curb Stones Top / Bottom */}
-        <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-red-500 via-amber-400 via-emerald-400 via-cyan-400 to-red-500 opacity-70" />
-        <div className="absolute bottom-0 left-0 right-0 h-1.5 bg-gradient-to-r from-cyan-400 via-emerald-400 via-amber-400 via-red-500 to-cyan-400 opacity-70" />
-
-        {/* Road Center Dotted Line */}
-        <div className="absolute top-1/2 left-0 right-0 h-1 border-t-2 border-dashed border-amber-400/40 -translate-y-1/2" />
-
-        {/* Mini 16-Bit Road Horizon Traffic / Tech Deco */}
-        <div className="absolute left-6 text-[10px] font-mono font-bold text-indigo-400/60 flex items-center gap-1.5">
-          <span className="animate-pulse">🚦</span>
-          <span className="hidden sm:inline">HIGHWAY PATROL: SPIDER-BOT v2.4</span>
-        </div>
-
-        <div className="absolute right-6 text-[10px] font-mono font-bold text-red-400/60 flex items-center gap-1.5">
-          <span>🏁</span>
-          <span className="hidden sm:inline">
-            {revealedCount > 0
-              ? `UNLOCKED: ${revealedCount} / ${cardRefs.length}`
-              : "READY FOR LAUNCH"}
-          </span>
-        </div>
-
-        {/* ─── Spiderman High-Definition Sprite Running On Road At Bottom ─── */}
+        {/* ─── Spiderman High-Definition Sprite Running On Perspective Road ─── */}
         <div
           ref={runnerRef}
           className="absolute bottom-1 pointer-events-none z-20"
-          style={{ opacity: 0 }}
+          style={{ opacity: 0, transformOrigin: "bottom center" }}
         >
-          <SpiderManSprite frameIndex={frame} isShooting={isShooting} />
+          {/* Ground Contact Shadow */}
+          <div
+            className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-14 h-3 bg-black/70 rounded-full blur-[2px] pointer-events-none"
+          />
+          <SpiderManSprite frameIndex={frame} action={actionState} />
         </div>
       </div>
 
@@ -651,7 +782,7 @@ export default function SpidermanWebAnimation({
             {allDone
               ? "All projects pulled down & revealed! 🕸️✨"
               : isRunning
-              ? "Spidey pulling projects from the sky… 🕸️"
+              ? "Spidey heaving projects down from the sky… 🕸️"
               : "Scroll here — Spidey runs along the bottom road and pulls projects down!"}
           </span>
         </div>
@@ -663,7 +794,7 @@ export default function SpidermanWebAnimation({
           className="flex items-center gap-2 px-5 py-2 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-xs font-mono font-bold border border-red-400/50 shadow-[0_0_20px_rgba(239,68,68,0.4)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
         >
           <span>🕸️</span>
-          <span>{isRunning ? "PULLING PROJECTS…" : allDone ? "PULL AGAIN! 🕷️" : "PULL ALL PROJECTS!"}</span>
+          <span>{isRunning ? "HEAVING PROJECTS…" : allDone ? "PULL AGAIN! 🕷️" : "PULL ALL PROJECTS!"}</span>
         </button>
       </div>
     </div>
