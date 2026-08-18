@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, Variants } from "framer-motion";
-import { ChevronDown, ShieldCheck, Cpu, ArrowRight, Layers } from "lucide-react";
+import { ChevronDown, ArrowRight } from "lucide-react";
 import { COHORT_STATS } from "@/data/domains";
 import MorphingBlobBackground from "@/components/backgrounds/MorphingBlobBackground";
 
@@ -37,16 +37,6 @@ const wordVariants: Variants = {
   },
 };
 
-const badgeVariants: Variants = {
-  hidden: { opacity: 0, scale: 0.85, y: -20 },
-  visible: {
-    opacity: 1,
-    scale: 1,
-    y: 0,
-    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
-  },
-};
-
 export default function HeroSection() {
   const headlineWords = [
     "ENGINEERING",
@@ -73,22 +63,6 @@ export default function HeroSection() {
       {/* Main Content Container */}
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 my-auto text-center flex flex-col items-center">
         
-        {/* Recruiter Badge */}
-        <motion.div
-          variants={badgeVariants}
-          initial="hidden"
-          animate="visible"
-          className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-full bg-indigo-950/50 border border-indigo-500/30 backdrop-blur-md mb-8 shadow-[0_0_20px_rgba(99,102,241,0.2)]"
-        >
-          <span className="flex h-2 w-2 relative">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
-          </span>
-          <span className="text-xs font-mono tracking-wider text-indigo-200 uppercase">
-            Recruiter-Ready Cohort · Placement 2026
-          </span>
-        </motion.div>
-
         {/* 3D Staggered Perspective Reveal Headline */}
         <motion.h1
           variants={containerVariants}
@@ -129,39 +103,18 @@ export default function HeroSection() {
           <span className="font-semibold">{COHORT_STATS.totalProjects} Shipped Systems</span>
         </motion.div>
 
-        {/* Recruiter Value Proposition Statement */}
-        <motion.p
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.0, duration: 0.7 }}
-          className="text-sm sm:text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed mb-10 font-normal"
-        >
-          No fragmented individual resumes. A calibrated engineering unit ready to deploy
-          production microservices, multimodal AI pipelines, multi-cloud Kubernetes clusters,
-          and zero-trust security infrastructure immediately.
-        </motion.p>
-
-        {/* CTA Button Group */}
+        {/* CTA Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.2, duration: 0.7 }}
-          className="flex flex-col sm:flex-row items-center gap-4"
+          transition={{ delay: 1.0, duration: 0.7 }}
         >
           <a
             href="#domains"
-            className="group relative px-7 py-3.5 rounded-xl font-mono text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-3"
+            className="group relative px-8 py-4 rounded-xl font-mono text-sm font-semibold text-white bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-3"
           >
             <span>Explore Domain Capabilities</span>
             <ArrowRight className="w-4 h-4 text-cyan-200 group-hover:translate-x-1 transition-transform" />
-          </a>
-
-          <a
-            href="#stats"
-            className="px-6 py-3.5 rounded-xl font-mono text-sm font-medium text-slate-300 border border-slate-700/60 bg-slate-900/40 hover:bg-slate-800/60 hover:text-white transition-all duration-300 flex items-center gap-2"
-          >
-            <Layers className="w-4 h-4 text-indigo-400" />
-            <span>Cohort Benchmark Stats</span>
           </a>
         </motion.div>
       </div>
