@@ -28,6 +28,7 @@ import ProjectDetailModal from "@/components/projects/ProjectDetailModal";
 import { AndroidDemo } from "@/components/domain-themes/AndroidDemo";
 import CoffeePourAnimation from "@/components/domain-themes/CoffeePourAnimation";
 import SpidermanWebAnimation from "@/components/domain-themes/SpidermanWebAnimation";
+import AimlRobotExperience from "@/components/aiml-robot/AimlRobotExperience";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   Globe,
@@ -69,7 +70,6 @@ export default function DomainDetailPage({ params }: PageProps) {
   }
 
   const Icon = iconMap[domain.icon] || Terminal;
-  // (domainProjects is now derived in useMemo above before the null-guard)
 
   const handleBackNavigation = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -78,6 +78,17 @@ export default function DomainDetailPage({ params }: PageProps) {
       router.push("/#domains");
     }, 450);
   };
+
+  // Special Interactive 3D Spline Robot Experience for AI/ML
+  if (domain.id === "ai-ml") {
+    return (
+      <AimlRobotExperience
+        domain={domain}
+        projects={domainProjects}
+        onBack={handleBackNavigation}
+      />
+    );
+  }
 
   const isUiUx = domain.id === "ui-ux";
   const isWebDev = domain.id === "web-dev";
