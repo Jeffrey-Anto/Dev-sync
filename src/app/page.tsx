@@ -5,7 +5,6 @@ import StatStrip from "@/components/StatStrip";
 import DomainSelection from "@/components/DomainSelection";
 import AchievementSlider from "@/components/AchievementSlider";
 import Footer from "@/components/Footer";
-import { DynamicBackground } from "@/components/backgrounds";
 
 export default function HomePage() {
   return (
@@ -15,10 +14,8 @@ export default function HomePage() {
 
       {/* Main Content Sections */}
       <main className="flex-grow">
-        {/* Full-viewport 3D Hero — Aurora nebula backdrop */}
-        <DynamicBackground variant="aurora" intensity="medium" showGrid={true} showController={false}>
-          <HeroSection />
-        </DynamicBackground>
+        {/* Full-viewport 3D Hero — single focused animated node-graph scene */}
+        <HeroSection />
 
         {/* Animated Counting-Up Stat Strip */}
         <StatStrip />

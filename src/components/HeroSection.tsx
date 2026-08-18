@@ -3,10 +3,8 @@
 import React from "react";
 import { motion, Variants } from "framer-motion";
 import { ChevronDown, ShieldCheck, Cpu, ArrowRight, Layers } from "lucide-react";
-import dynamic from "next/dynamic";
 import { COHORT_STATS } from "@/data/domains";
-
-const SceneCanvas = dynamic(() => import("./canvas/SceneCanvas"), { ssr: false });
+import MorphingBlobBackground from "@/components/backgrounds/MorphingBlobBackground";
 
 const containerVariants: Variants = {
   hidden: { opacity: 0 },
@@ -63,13 +61,13 @@ export default function HeroSection() {
 
   return (
     <section className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden pt-24 pb-12">
-      {/* 3D Background Canvas */}
-      <div className="absolute inset-0 z-0 pointer-events-auto">
-        <SceneCanvas className="w-full h-full" />
-      </div>
+      {/* Tech Grid Under Blobs */}
+      <div className="absolute inset-0 tech-grid-bg pointer-events-none z-0 opacity-40" />
 
-      {/* Tech Grid & Radial Vignette Overlays */}
-      <div className="absolute inset-0 tech-grid-bg pointer-events-none z-1 opacity-60" />
+      {/* Morphing Organic Blobs */}
+      <MorphingBlobBackground className="z-1" />
+
+      {/* Radial Vignette On Top for Edge Focus */}
       <div className="absolute inset-0 radial-vignette pointer-events-none z-1" />
 
       {/* Main Content Container */}
