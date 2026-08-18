@@ -421,10 +421,39 @@ export default function SpidermanWebAnimation({
             rotation: currentRotation,
           });
 
-          // ─── Overhead Swinging Web Tether (Ceiling to Hand) ───
+          // ─── Exact Red Glove Gripping Hand Coordinates (Clean Sprite Hands) ───
+          const SWING_HAND_OFFSETS = [
+            { ox: -14.5, oy: -21.0 }, // frame 0: gloves reaching back into swing
+            { ox: 14.5,  oy: -19.0 }, // frame 1: gloves reaching forward
+            { ox: 9.5,   oy: -28.0 }, // frame 2: gloves holding web above
+            { ox: 5.0,   oy: -28.0 }, // frame 3: gloves at apex of swing
+            { ox: -2.0,  oy: -25.0 }, // frame 4: gloves ascending
+            { ox: -2.0,  oy: -27.0 }, // frame 5: gloves high kick
+            { ox: -16.0, oy: -24.0 }, // frame 6: gloves releasing
+            { ox: -21.5, oy: -29.0 }, // frame 7: gloves in somersault
+          ];
+
           const runnerBox = runner.getBoundingClientRect();
-          const handX = runnerBox.left + runnerBox.width * 0.52;
-          const handY = runnerBox.top + runnerBox.height * 0.22;
+          const cx = runnerBox.left + runnerBox.width / 2;
+          const cy = runnerBox.top + runnerBox.height / 2;
+
+          const rad = (currentRotation * Math.PI) / 180;
+          const hOff = SWING_HAND_OFFSETS[swingFrame] ?? { ox: 0, oy: -45 };
+          const scale = 1.25;
+
+          // Rotated exact gripping hand point
+          const handRotX = (hOff.ox * Math.cos(rad) - hOff.oy * Math.sin(rad)) * scale;
+          const handRotY = (hOff.ox * Math.sin(rad) + hOff.oy * Math.cos(rad)) * scale;
+          const handX = cx + handRotX;
+          const handY = cy + handRotY;
+
+          // Rotated wrist web-shooter point (fires down at card)
+          const shootOffX = 18;
+          const shootOffY = 6;
+          const shootRotX = (shootOffX * Math.cos(rad) - shootOffY * Math.sin(rad)) * scale;
+          const shootRotY = (shootOffX * Math.sin(rad) + shootOffY * Math.cos(rad)) * scale;
+          const shooterX = cx + shootRotX;
+          const shooterY = cy + shootRotY;
 
           // Ceiling anchor placed above the card in the viewport
           const anchorX = cardRect.left + cardRect.width / 2 + 10;
@@ -456,8 +485,8 @@ export default function SpidermanWebAnimation({
             const snatchBow = -14 * Math.sin(pullT * Math.PI);
 
             webs.push({
-              x1: handX,
-              y1: handY,
+              x1: shooterX,
+              y1: shooterY,
               x2: cardRect.left + cardRect.width / 2,
               y2: currentCardY,
               opacity: 1,
