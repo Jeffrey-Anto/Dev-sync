@@ -77,7 +77,7 @@ export default function StatStrip() {
       accent: "text-cyan-400",
     },
     {
-      label: "Deployed Products",
+      label: "Deployed Projects",
       icon: Rocket,
       value: COHORT_STATS.totalProjects,
       suffix: "+",

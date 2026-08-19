@@ -100,7 +100,7 @@ export default function HeroSection() {
           <span className="text-indigo-400">·</span>
           <span className="font-semibold">{COHORT_STATS.domainsCount} Specialized Capability Domains</span>
           <span className="text-indigo-400">·</span>
-          <span className="font-semibold">{COHORT_STATS.totalProjects}+ Deployed Products</span>
+          <span className="font-semibold">{COHORT_STATS.totalProjects}+ Deployed Projects</span>
         </motion.div>
 
         {/* CTA Button */}
