@@ -13,7 +13,7 @@ import {
   Terminal,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import { IconCloud } from "@/registry/magicui/icon-cloud";
+import { IconCloud } from "@/components/magicui/icon-cloud";
 
 const allSlugs = [
   // Core Languages & Foundations

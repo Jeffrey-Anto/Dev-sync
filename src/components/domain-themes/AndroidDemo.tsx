@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Android } from "@/registry/magicui/android";
+import { Android } from "@/components/magicui/android";
 import { Wifi, Signal, Battery, Activity, Database, Smartphone, Radio, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
 

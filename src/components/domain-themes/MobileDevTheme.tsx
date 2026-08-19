@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Android } from "@/registry/magicui/android";
+import { Android } from "@/components/magicui/android";
 import { Wifi, Signal, Battery, Activity, Database, Radio, Smartphone } from "lucide-react";
 
 export default function MobileDevTheme() {
