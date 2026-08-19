@@ -1,41 +1,11 @@
 "use client";
 
 import React from "react";
-import { motion, Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { ChevronDown, ArrowRight, Briefcase } from "lucide-react";
 import { COHORT_STATS } from "@/data/domains";
 import MorphingBlobBackground from "@/components/backgrounds/MorphingBlobBackground";
-
-const containerVariants: Variants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: {
-      staggerChildren: 0.08,
-      delayChildren: 0.15,
-    },
-  },
-};
-
-const wordVariants: Variants = {
-  hidden: {
-    opacity: 0,
-    y: 28,
-    rotateX: -30,
-    filter: "blur(6px)",
-  },
-  visible: {
-    opacity: 1,
-    y: 0,
-    rotateX: 0,
-    filter: "blur(0px)",
-    transition: {
-      type: "spring",
-      damping: 18,
-      stiffness: 100,
-    },
-  },
-};
+import ParticleText from "@/components/ParticleText";
 
 export default function HeroSection() {
   return (
@@ -52,12 +22,12 @@ export default function HeroSection() {
       {/* Main Content Container */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-auto text-center flex flex-col items-center">
         
-        {/* 1. College Identity — Top of Hero (Significantly Visible & Hierarchical) */}
+        {/* 1. College Identity — Top of Hero */}
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-6 sm:mb-8 flex flex-col items-center gap-1.5 px-6 py-3 rounded-2xl bg-slate-950/70 border border-white/10 backdrop-blur-xl shadow-xl max-w-3xl"
+          className="mb-4 sm:mb-6 flex flex-col items-center gap-1 px-6 py-2.5 rounded-2xl bg-slate-950/70 border border-white/10 backdrop-blur-xl shadow-xl max-w-3xl"
         >
           <span className="text-xs sm:text-sm md:text-base font-bold tracking-[0.14em] sm:tracking-[0.18em] uppercase text-slate-200">
             GOVERNMENT COLLEGE OF ENGINEERING, SRIRANGAM
@@ -67,53 +37,86 @@ export default function HeroSection() {
           </span>
         </motion.div>
 
-        {/* 2. Main Hero Headline (Rebalanced: ~25-35% Smaller with generous whitespace) */}
-        <motion.h1
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="text-3xl sm:text-5xl md:text-6xl lg:text-[4.75rem] font-black tracking-tight text-white mb-5 max-w-4xl leading-[1.08] perspective-container select-none"
+        {/* 2. Main Hero Headline with React Bits <ParticleText /> */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="w-full flex flex-col items-center justify-center my-1 sm:my-2 space-y-0.5 sm:space-y-1 select-none"
         >
           {/* Line 1: 60 MINDS. */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 mb-1.5 sm:mb-2">
-            <motion.span
-              variants={wordVariants}
-              className="inline-block bg-gradient-to-r from-indigo-400 via-cyan-300 to-pink-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(99,102,241,0.35)]"
-            >
-              60
-            </motion.span>
-            <motion.span variants={wordVariants} className="inline-block text-slate-100">
-              MINDS.
-            </motion.span>
+          <div className="w-full h-14 sm:h-20 md:h-24 max-w-3xl relative">
+            <ParticleText
+              text="60 MINDS."
+              particleSize={2.2}
+              density={3}
+              color="#ffffff"
+              highlightColor="#818cf8"
+              scatter={160}
+              gatherDuration={1500}
+              stagger={380}
+              pointerRepel={40}
+              repelRadius={120}
+              idleDrift={0.6}
+              trigger="mount"
+              fontSize="clamp(2.2rem, 5.5vw, 4.8rem)"
+              fontWeight={900}
+              fontFamily="inherit"
+              glow
+            />
           </div>
 
           {/* Line 2: ONE TECHNICAL */}
-          <div className="flex flex-wrap items-center justify-center gap-x-3 sm:gap-x-4 mb-1.5 sm:mb-2">
-            <motion.span variants={wordVariants} className="inline-block text-slate-100">
-              ONE
-            </motion.span>
-            <motion.span variants={wordVariants} className="inline-block text-slate-100">
-              TECHNICAL
-            </motion.span>
+          <div className="w-full h-14 sm:h-20 md:h-24 max-w-4xl relative">
+            <ParticleText
+              text="ONE TECHNICAL"
+              particleSize={2.2}
+              density={3}
+              color="#ffffff"
+              highlightColor="#06b6d4"
+              scatter={160}
+              gatherDuration={1600}
+              stagger={400}
+              pointerRepel={40}
+              repelRadius={120}
+              idleDrift={0.6}
+              trigger="mount"
+              fontSize="clamp(2.2rem, 5.5vw, 4.8rem)"
+              fontWeight={900}
+              fontFamily="inherit"
+              glow
+            />
           </div>
 
           {/* Line 3: COLLECTIVE. */}
-          <div className="flex flex-wrap items-center justify-center">
-            <motion.span
-              variants={wordVariants}
-              className="inline-block bg-gradient-to-r from-indigo-400 via-cyan-300 to-pink-400 bg-clip-text text-transparent drop-shadow-[0_0_40px_rgba(99,102,241,0.4)]"
-            >
-              COLLECTIVE.
-            </motion.span>
+          <div className="w-full h-14 sm:h-20 md:h-24 max-w-3xl relative">
+            <ParticleText
+              text="COLLECTIVE."
+              particleSize={2.4}
+              density={3}
+              color="#ffffff"
+              highlightColor="#ec4899"
+              scatter={180}
+              gatherDuration={1700}
+              stagger={420}
+              pointerRepel={40}
+              repelRadius={120}
+              idleDrift={0.7}
+              trigger="mount"
+              fontSize="clamp(2.2rem, 5.5vw, 4.8rem)"
+              fontWeight={900}
+              fontFamily="inherit"
+              glow
+            />
           </div>
-        </motion.h1>
+        </motion.div>
 
         {/* 3. Supporting Tagline */}
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5, duration: 0.6 }}
-          className="text-sm sm:text-base md:text-lg text-slate-300 font-sans max-w-2xl mx-auto leading-relaxed mb-6"
+          className="text-sm sm:text-base md:text-lg text-slate-300 font-sans max-w-2xl mx-auto leading-relaxed mt-4 mb-5"
         >
           Explore the projects, technologies and engineering capabilities of our 2027 CSE cohort.
         </motion.p>
@@ -123,7 +126,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm md:text-base font-mono text-cyan-300 mb-8 max-w-3xl"
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm md:text-base font-mono text-cyan-300 mb-7 max-w-3xl"
         >
           <span className="font-semibold">{COHORT_STATS.totalEngineers} CSE STUDENTS</span>
           <span className="text-indigo-400">·</span>
