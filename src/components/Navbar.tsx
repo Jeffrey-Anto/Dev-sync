@@ -57,11 +57,11 @@ export default function Navbar() {
                 COLLECTIVE<span className="text-indigo-400">.CS</span>
               </span>
               <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-indigo-500/10 border border-indigo-500/20 text-indigo-300">
-                CLASS OF 60
+                CSE · 2027
               </span>
             </div>
             <p className="text-[11px] text-slate-400 font-mono tracking-tight hidden sm:block">
-              Recruiter Showcase · Placement Drive 2026
+              Technical Showcase · Placement Drive 2027
             </p>
           </div>
         </Link>
