@@ -6,6 +6,7 @@ import { ChevronDown, ArrowRight, Briefcase } from "lucide-react";
 import { COHORT_STATS } from "@/data/domains";
 import MorphingBlobBackground from "@/components/backgrounds/MorphingBlobBackground";
 import ParticleText from "@/components/ParticleText";
+import StrokeText from "@/components/StrokeText";
 
 export default function HeroSection() {
   return (
@@ -22,17 +23,33 @@ export default function HeroSection() {
       {/* Main Content Container */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 my-auto text-center flex flex-col items-center">
         
-        {/* 1. College Identity — Top of Hero */}
+        {/* 1. College Identity — Top of Hero with React Bits <StrokeText /> */}
         <motion.div
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-4 sm:mb-6 flex flex-col items-center gap-1 px-6 py-2.5 rounded-2xl bg-slate-950/70 border border-white/10 backdrop-blur-xl shadow-xl max-w-3xl"
+          className="mb-4 sm:mb-6 flex flex-col items-center gap-1.5 px-6 sm:px-10 py-2.5 sm:py-3.5 rounded-2xl bg-slate-950/75 border border-white/10 backdrop-blur-xl shadow-xl max-w-4xl w-fit"
         >
-          <span className="text-xs sm:text-sm md:text-base font-bold tracking-[0.14em] sm:tracking-[0.18em] uppercase text-slate-200">
-            GOVERNMENT COLLEGE OF ENGINEERING, SRIRANGAM
-          </span>
-          <span className="text-[11px] sm:text-xs md:text-sm font-mono text-slate-400 tracking-wider">
+          {/* Animated StrokeText Outline Draw & Wipe for College Name (Larger font, No comma) */}
+          <div className="w-full h-8 sm:h-9 md:h-11 flex items-center justify-center">
+            <StrokeText
+              text="GOVERNMENT COLLEGE OF ENGINEERING SRIRANGAM"
+              strokeColor="#818CF8"
+              fillColor="#F8FAFC"
+              strokeWidth={1.3}
+              drawDuration={1.5}
+              fillDelay={0.2}
+              stagger={0.03}
+              ease="power2.out"
+              trigger="mount"
+              fillMode="wipe"
+              fontSize={27}
+              fontWeight={800}
+              letterSpacing={2}
+            />
+          </div>
+
+          <span className="text-[9.5px] sm:text-[11px] md:text-xs font-mono text-slate-400 tracking-wider whitespace-nowrap">
             DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING &nbsp;·&nbsp; TIRUCHIRAPPALLI &nbsp;·&nbsp; BATCH 2023–2027
           </span>
         </motion.div>
