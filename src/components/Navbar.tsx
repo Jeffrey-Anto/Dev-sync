@@ -4,34 +4,76 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
+import GooeyNav from "@/components/GooeyNav";
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<number>(0);
 
+  const navLinks = [
+    { label: "Home", href: "/" },
+    { label: "Domains", href: "/#domains" },
+    { label: "Tech Stack", href: "/tech-stack" },
+    { label: "Achievements", href: "/achievements" },
+    { label: "Recruit Us", href: "/recruit" },
+  ];
+
+  // Sync scroll and pathname
   useEffect(() => {
     const handleScroll = () => {
       setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Domains", href: "/#domains" },
-    { name: "Tech Stack", href: "/tech-stack" },
-    { name: "Achievements", href: "/achievements" },
-    { name: "Recruit Us", href: "/recruit" },
-  ];
+      if (pathname === "/") {
+        const domainsEl = document.getElementById("domains");
+        if (domainsEl) {
+          const rect = domainsEl.getBoundingClientRect();
+          if (rect.top <= 250 && rect.bottom >= 150) {
+            setActiveTab(1);
+          } else if (window.scrollY < 300) {
+            setActiveTab(0);
+          }
+        }
+      }
+    };
+
+    if (pathname === "/tech-stack") {
+      setActiveTab(2);
+    } else if (pathname === "/achievements") {
+      setActiveTab(3);
+    } else if (pathname === "/recruit") {
+      setActiveTab(4);
+    } else if (pathname === "/") {
+      if (typeof window !== "undefined" && window.location.hash === "#domains") {
+        setActiveTab(1);
+      } else if (window.scrollY < 300) {
+        setActiveTab(0);
+      }
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [pathname]);
+
+  const handleItemClick = (item: { label: string; href: string }, index: number) => {
+    setActiveTab(index);
+    if (item.href === "/#domains" || item.href === "#domains") {
+      if (pathname === "/") {
+        const el = document.getElementById("domains");
+        if (el) {
+          el.scrollIntoView({ behavior: "smooth" });
+        }
+      }
+    }
+  };
 
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled || mobileMenuOpen
-          ? "bg-[#050608]/85 backdrop-blur-2xl border-b border-white/[0.08] py-3.5 shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
-          : "bg-gradient-to-b from-[#050608]/90 via-[#050608]/40 to-transparent backdrop-blur-sm py-4 border-b border-white/[0.04]"
+          ? "bg-[#050608]/85 backdrop-blur-2xl border-b border-white/[0.08] py-3 shadow-[0_4px_30px_rgba(0,0,0,0.5)]"
+          : "bg-gradient-to-b from-[#050608]/90 via-[#050608]/40 to-transparent backdrop-blur-sm py-3.5 border-b border-white/[0.04]"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
@@ -60,36 +102,22 @@ export default function Navbar() {
           </div>
         </Link>
 
-        {/* Clean Modern Nav Links (Larger font size) */}
-        <nav className="hidden md:flex items-center gap-1.5">
-          {navLinks.map((link) => {
-            const isActive =
-              link.href === "/"
-                ? pathname === "/"
-                : link.href.startsWith("/#")
-                ? false
-                : pathname.startsWith(link.href);
+        {/* React Bits <GooeyNav /> Navigation Effect */}
+        <div className="hidden md:block">
+          <GooeyNav
+            items={navLinks}
+            activeIndex={activeTab}
+            particleCount={14}
+            particleDistances={[75, 10]}
+            particleR={90}
+            animationTime={550}
+            timeVariance={250}
+            colors={[1, 2, 3, 4]}
+            onItemClick={handleItemClick}
+          />
+        </div>
 
-            return (
-              <Link
-                key={link.name}
-                href={link.href}
-                className={`relative px-4 py-2 text-sm sm:text-[15px] font-medium tracking-wide transition-all rounded-xl ${
-                  isActive
-                    ? "text-white bg-white/[0.1] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.15)] font-semibold"
-                    : "text-slate-300 hover:text-white hover:bg-white/[0.05]"
-                }`}
-              >
-                {link.name}
-                {isActive && (
-                  <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-6 h-[2px] rounded-full bg-gradient-to-r from-indigo-400 to-cyan-400" />
-                )}
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Sleek Right Action CTA (Larger font size) */}
+        {/* Sleek Right Action CTA */}
         <div className="hidden sm:flex items-center gap-3">
           <Link
             href="/recruit"
@@ -116,14 +144,17 @@ export default function Navbar() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden px-4 pt-4 pb-6 space-y-2 border-t border-white/[0.08] bg-[#050608]/98 backdrop-blur-2xl animate-in fade-in duration-200">
-          {navLinks.map((link) => (
+          {navLinks.map((link, idx) => (
             <Link
-              key={link.name}
+              key={link.label}
               href={link.href}
-              onClick={() => setMobileMenuOpen(false)}
+              onClick={(e) => {
+                setMobileMenuOpen(false);
+                handleItemClick(link, idx);
+              }}
               className="block px-4 py-3 rounded-xl text-sm sm:text-base font-medium text-slate-200 hover:text-white hover:bg-white/[0.06] transition-colors"
             >
-              {link.name}
+              {link.label}
             </Link>
           ))}
           <div className="pt-2">

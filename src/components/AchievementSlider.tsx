@@ -326,12 +326,7 @@ function AchievementCard({
       </div>
 
       {/* Bottom Footer Line */}
-      <div className="pt-5 mt-6 border-t border-white/10 flex items-center justify-between text-[11px] font-mono">
-        <div className="flex items-center gap-1.5 text-amber-400 font-medium">
-          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-          <span>{achievement.factText}</span>
-        </div>
-
+      <div className="pt-4 mt-6 border-t border-white/10 flex items-center justify-end text-[11px] font-mono">
         <span className="text-slate-400 tracking-wider font-semibold">
           {achievement.institution}
         </span>

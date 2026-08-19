@@ -60,13 +60,9 @@ export default function Footer() {
                 <span>Core Domains</span>
                 <strong className="text-white">{COHORT_STATS.domainsCount} Disciplines</strong>
               </li>
-              <li className="flex items-center justify-between border-b border-white/5 pb-1.5">
+              <li className="flex items-center justify-between pb-1.5">
                 <span>Live Projects</span>
                 <strong className="text-white">{COHORT_STATS.totalProjects} Repositories</strong>
-              </li>
-              <li className="flex items-center justify-between border-b border-white/5 pb-1.5">
-                <span>Total Code Volume</span>
-                <strong className="text-white">{COHORT_STATS.linesOfCode}</strong>
               </li>
             </ul>
           </div>

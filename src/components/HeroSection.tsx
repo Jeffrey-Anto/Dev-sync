@@ -128,22 +128,12 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* 3. Supporting Tagline */}
-        <motion.p
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5, duration: 0.6 }}
-          className="text-sm sm:text-base md:text-lg text-slate-300 font-sans max-w-2xl mx-auto leading-relaxed mt-4 mb-5"
-        >
-          Explore the projects, technologies and engineering capabilities of our 2027 CSE cohort.
-        </motion.p>
-
         {/* 4. Stat Line: 60 CSE STUDENTS · 6 TECHNICAL DOMAINS · 18+ PROJECTS */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.7, duration: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm md:text-base font-mono text-cyan-300 mb-7 max-w-3xl"
+          transition={{ delay: 0.6, duration: 0.6 }}
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm md:text-base font-mono text-cyan-300 mt-4 mb-8 max-w-3xl"
         >
           <span className="font-semibold">{COHORT_STATS.totalEngineers} CSE STUDENTS</span>
           <span className="text-indigo-400">·</span>
