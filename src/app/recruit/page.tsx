@@ -105,7 +105,7 @@ export default function RecruiterContactPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-slate-300 mt-4 max-w-3xl mx-auto font-sans leading-relaxed">
-            Zero ramp-up friction. A calibrated cohort of {COHORT_STATS.totalEngineers} engineers with {COHORT_STATS.totalProjects} verified production repositories across {DOMAINS.length} core domains and {totalTechs}+ modern frameworks.
+            Zero ramp-up friction. A calibrated cohort of {COHORT_STATS.totalEngineers} engineers with {COHORT_STATS.totalProjects}+ verified deployed products across {DOMAINS.length} core domains and {totalTechs}+ modern frameworks.
           </p>
 
           {/* Download Placement Brochure Button */}

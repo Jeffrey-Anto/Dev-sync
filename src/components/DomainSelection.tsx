@@ -559,7 +559,7 @@ function CircularDomainCard({
               ✓
             </span>
             <span>
-              <strong className="text-white">{domain.projectCount}</strong> Verified Production Systems
+              <strong className="text-white">{domain.projectCount}</strong> Verified Deployed Products
             </span>
           </div>
         </div>
