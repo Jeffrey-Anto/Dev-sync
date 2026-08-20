@@ -101,7 +101,7 @@ const fontVariables = [
 ].join(" ");
 
 export const metadata: Metadata = {
-  title: "COLLECTIVE.CS // Class of 60 Engineers · Recruiter Showcase 2026",
+  title: "COLLECTIVE.CSE",
   description:
     "A collective engineering showcase of 60 Computer Science undergraduates across 6 core domains: Web Systems, AI/ML, Cloud DevOps, Embedded IoT, Mobile, and Cybersecurity.",
   keywords: [

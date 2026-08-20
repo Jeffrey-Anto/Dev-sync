@@ -181,7 +181,7 @@ export default function DomainDetailPage({ params }: PageProps) {
                 isUiUx ? "font-doodle text-sm text-black" : "text-xs font-mono text-slate-400"
               }`}
             >
-              <span className="hidden sm:inline">COLLECTIVE.CS</span>
+              <span className="hidden sm:inline">COLLECTIVE.CSE</span>
               <span className={`hidden sm:inline ${isUiUx ? "text-black font-black text-sm font-doodle" : "text-slate-600"}`}>
                 {isUiUx ? "\\" : "/"}
               </span>
@@ -499,7 +499,7 @@ export default function DomainDetailPage({ params }: PageProps) {
             : "border-t border-white/10 text-xs font-mono text-slate-500 bg-[#050608]"
         }`}
       >
-        <span>COLLECTIVE.CS // BATCH OF 2026 · VERIFIED CAMPUS TALENT</span>
+        <span>COLLECTIVE.CSE // BATCH OF 2026 · VERIFIED CAMPUS TALENT</span>
       </footer>
     </div>
   );

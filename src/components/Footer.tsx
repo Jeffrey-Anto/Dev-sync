@@ -29,7 +29,7 @@ export default function Footer() {
                   <Terminal className="w-5 h-5 text-indigo-400" />
                 </div>
                 <span className="font-mono text-sm tracking-widest font-bold text-white">
-                  COLLECTIVE<span className="text-indigo-400">.CS</span>
+                  COLLECTIVE<span className="text-indigo-400">.CSE</span>
                 </span>
               </div>
               <p className="text-xs text-slate-400 leading-relaxed max-w-sm mb-5 font-sans">

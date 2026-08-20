@@ -152,7 +152,7 @@ export default function UiUxTheme() {
                 animate={{ opacity: 1, scale: 1 }}
                 className="text-left font-mono text-black text-[9px] sm:text-[11px] leading-tight space-y-1 w-full"
               >
-                <p className="font-black text-indigo-700">COLLECTIVE.CS</p>
+                <p className="font-black text-indigo-700">COLLECTIVE.CSE</p>
                 <p className="text-black font-bold">UI/UX Design</p>
                 <div className="mt-1 px-1.5 py-0.5 border border-black text-center text-[8px] sm:text-[9px] bg-black text-white hover:bg-transparent hover:text-black transition-colors uppercase font-bold">
                   ABOUT_UI_UX
