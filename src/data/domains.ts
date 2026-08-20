@@ -37,7 +37,7 @@ export const DOMAINS: Domain[] = [
     id: "web-dev",
     name: "Web Development & Distributed Systems",
     shortName: "Web & Systems",
-    tagline: "High-throughput microservices, real-time architectures, and low-latency frontend applications.",
+    tagline: "From interactive frontend experiences to scalable full-stack applications built for real-world use.",
     colorTheme: {
       primary: "#6366F1",
       secondary: "#818CF8",

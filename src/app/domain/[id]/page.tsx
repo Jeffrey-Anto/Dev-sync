@@ -195,42 +195,6 @@ export default function DomainDetailPage({ params }: PageProps) {
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="text-center max-w-4xl mx-auto mb-16 sm:mb-20 flex flex-col items-center"
         >
-          {/* Domain Icon Badge */}
-          <motion.div
-            initial={{ scale: 0.7, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className={`w-20 h-20 flex items-center justify-center mb-6 transition-all duration-300 ${
-              isUiUx
-                ? "handdrawn-box bg-[#FFE600] text-black shadow-[6px_6px_0px_#000000] rotate-[-3deg]"
-                : "rounded-3xl shadow-2xl"
-            }`}
-            style={{
-              backgroundColor: !isUiUx ? `rgba(${domain.colorTheme.rgb}, 0.15)` : undefined,
-              border: !isUiUx ? `1px solid rgba(${domain.colorTheme.rgb}, 0.4)` : undefined,
-              boxShadow: !isUiUx ? `0 0 50px ${domain.colorTheme.glow}` : undefined,
-            }}
-          >
-            <Icon
-              className="w-10 h-10"
-              style={{ color: isUiUx ? "#000000" : domain.colorTheme.secondary }}
-            />
-          </motion.div>
-
-          <div
-            className={`inline-flex items-center gap-2 px-3.5 py-1 mb-3 ${
-              isUiUx
-                ? "handdrawn-box bg-[#00FF66] text-black font-doodle text-sm font-bold shadow-[3px_3px_0px_#000000]"
-                : "rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-slate-400"
-            }`}
-          >
-            <Terminal
-              className="w-3.5 h-3.5"
-              style={{ color: isUiUx ? "#000000" : domain.colorTheme.secondary }}
-            />
-            <span>SPECIALIZED COHORT CAPABILITY</span>
-          </div>
-
           <h1
             className={`tracking-tight leading-tight mb-4 ${
               isUiUx
@@ -269,7 +233,7 @@ export default function DomainDetailPage({ params }: PageProps) {
                 style={{ color: isUiUx ? "#000000" : domain.colorTheme.secondary }}
               />
               <span>
-                <strong>{domain.studentCount}</strong> CS Undergraduates
+                <strong>{domain.studentCount}</strong> Developers
               </span>
             </div>
 
@@ -289,7 +253,7 @@ export default function DomainDetailPage({ params }: PageProps) {
                 style={{ color: isUiUx ? "#000000" : domain.colorTheme.secondary }}
               />
               <span>
-                <strong>{domainProjects.length}</strong> Deployed Systems
+                <strong>{domainProjects.length}</strong> Deployed Projects
               </span>
             </div>
 
@@ -309,7 +273,7 @@ export default function DomainDetailPage({ params }: PageProps) {
                 style={{ color: isUiUx ? "#FFFFFF" : domain.colorTheme.secondary }}
               />
               <span>
-                <strong>{domain.techStack.length}</strong> Production Tech Stacks
+                <strong>{domain.techStack.length}</strong> Core Technologies
               </span>
             </div>
           </div>
