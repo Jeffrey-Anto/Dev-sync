@@ -423,13 +423,36 @@ export default function AchievementsPage() {
         </section>
 
         {/* CTA to Recruit Us */}
-        <div className="text-center">
+        <div className="text-center pt-6 pb-4">
           <Link
             href="/recruit"
-            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-2xl font-mono text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 shadow-[0_0_25px_rgba(99,102,241,0.4)] transition-all hover:scale-105"
+            className="group relative inline-flex items-center justify-center p-[2px] rounded-2xl transition-all duration-300 hover:scale-105 active:scale-[0.98] cursor-pointer"
           >
-            <span>Proceed to Recruiter Placement Desk</span>
-            <ArrowRight className="w-4 h-4" />
+            {/* Ambient Multi-Hue Pulsing Aura */}
+            <span className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-indigo-500 via-purple-500 to-cyan-400 opacity-60 group-hover:opacity-100 blur-xl transition-all duration-500 group-hover:blur-2xl animate-pulse" />
+
+            {/* Continuous Gradient Border Ring */}
+            <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 p-[1.5px]" />
+
+            {/* Inner Obsidian Glass Body */}
+            <span className="relative z-10 px-8 py-4 rounded-2xl bg-[#070a14]/90 text-white font-mono text-xs sm:text-sm font-bold tracking-wider flex items-center gap-3 overflow-hidden shadow-2xl backdrop-blur-2xl transition-colors duration-300 group-hover:bg-[#0c1022]">
+              {/* Top Glass Refraction Highlight */}
+              <span className="absolute top-0 left-0 right-0 h-[45%] bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-2xl" />
+
+              {/* Dynamic Sliding Light Gleam Streak */}
+              <span className="absolute -left-[100%] top-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-1000 ease-out pointer-events-none" />
+
+              {/* Live Cyan Radar Indicator */}
+              <span className="relative flex h-2 w-2 items-center justify-center flex-shrink-0">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
+              </span>
+
+              <span className="relative z-10 group-hover:text-cyan-200 transition-colors">
+                Proceed to Recruiter Placement Desk
+              </span>
+              <ArrowRight className="relative z-10 w-4 h-4 text-cyan-400 group-hover:text-white group-hover:translate-x-1.5 transition-all" />
+            </span>
           </Link>
         </div>
       </main>
