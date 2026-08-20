@@ -61,14 +61,14 @@ export default function HeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="w-full flex flex-col items-center justify-center my-1 sm:my-2 space-y-0.5 sm:space-y-1 select-none"
         >
-          {/* Line 1: 60 MINDS. */}
+          {/* Line 1: 60 MINDS. — Saffron */}
           <div className="w-full h-14 sm:h-20 md:h-24 max-w-3xl relative">
             <ParticleText
               text="60 MINDS."
-              particleSize={2.2}
+              particleSize={2.4}
               density={3}
-              color="#ffffff"
-              highlightColor="#818cf8"
+              color="#FF8800"
+              highlightColor="#FF9933"
               scatter={160}
               gatherDuration={1500}
               stagger={380}
@@ -83,14 +83,14 @@ export default function HeroSection() {
             />
           </div>
 
-          {/* Line 2: ONE TECHNICAL */}
+          {/* Line 2: ONE TECHNICAL — White */}
           <div className="w-full h-14 sm:h-20 md:h-24 max-w-4xl relative">
             <ParticleText
               text="ONE TECHNICAL"
-              particleSize={2.2}
+              particleSize={2.4}
               density={3}
-              color="#ffffff"
-              highlightColor="#06b6d4"
+              color="#FFFFFF"
+              highlightColor="#E2E8F0"
               scatter={160}
               gatherDuration={1600}
               stagger={400}
@@ -105,14 +105,14 @@ export default function HeroSection() {
             />
           </div>
 
-          {/* Line 3: COLLECTIVE. */}
+          {/* Line 3: COLLECTIVE. — Green */}
           <div className="w-full h-14 sm:h-20 md:h-24 max-w-3xl relative">
             <ParticleText
               text="COLLECTIVE."
               particleSize={2.4}
               density={3}
-              color="#ffffff"
-              highlightColor="#ec4899"
+              color="#16A34A"
+              highlightColor="#22C55E"
               scatter={180}
               gatherDuration={1700}
               stagger={420}
