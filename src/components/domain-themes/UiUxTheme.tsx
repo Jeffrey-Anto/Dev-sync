@@ -140,8 +140,8 @@ export default function UiUxTheme() {
                 className="font-mono font-bold text-xs sm:text-sm text-slate-300 tracking-wide"
               >
                 <span>Click to start</span>
-                <span className="block text-[9px] text-pink-400 mt-1 font-normal animate-pulse">
-                  ⚡ TAP COMPUTER
+                <span className="block text-[9px] text-pink-400 mt-1 font-normal">
+                  TAP COMPUTER
                 </span>
               </motion.div>
             ) : (

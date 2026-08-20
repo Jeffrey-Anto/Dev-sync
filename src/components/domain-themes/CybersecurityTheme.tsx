@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
-import { ShieldAlert, Terminal, Lock, Radio } from "lucide-react";
 
 export default function CybersecurityTheme() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -13,48 +12,93 @@ export default function CybersecurityTheme() {
     if (!ctx) return;
 
     let animationId: number;
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    let width = window.innerWidth;
+    let height = window.innerHeight;
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
     const handleResize = () => {
       if (!canvas) return;
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      width = window.innerWidth;
+      height = window.innerHeight;
+      canvas.width = width * dpr;
+      canvas.height = height * dpr;
+      ctx.scale(dpr, dpr);
+      initDrops();
     };
-    window.addEventListener("resize", handleResize);
 
-    // Matrix Rain Stream Characters
-    const chars = "01010101ABCDEF9876543210XYZKERNELPROBE_SHA256";
-    const fontSize = 14;
-    const columns = Math.floor(width / fontSize);
-    const drops: number[] = Array.from({ length: columns }, () => Math.random() * -100);
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+    ctx.scale(dpr, dpr);
+
+    // Cryptographic & binary characters
+    const CHARS = "01010101ABCDEF0123456789X_#/<>=+~";
+    const fontSize = 13;
+    let drops: { y: number; speed: number; length: number; brightness: number }[] = [];
+
+    const initDrops = () => {
+      const columns = Math.floor(width / (fontSize * 1.2));
+      drops = [];
+      for (let i = 0; i < columns; i++) {
+        drops.push({
+          y: Math.random() * -height,
+          speed: Math.random() * 0.6 + 0.3, // Soft, slow drift
+          length: Math.floor(Math.random() * 14) + 8,
+          brightness: Math.random() * 0.3 + 0.4,
+        });
+      }
+    };
+
+    initDrops();
 
     const render = () => {
-      // Semi-transparent fade for trailing effect
-      ctx.fillStyle = "rgba(4, 6, 8, 0.12)";
+      // Gentle trailing fade
+      ctx.fillStyle = "rgba(4, 5, 8, 0.1)";
       ctx.fillRect(0, 0, width, height);
 
-      ctx.fillStyle = "#EF4444"; // Crimson Threat Rain
-      ctx.font = `${fontSize}px monospace`;
+      ctx.font = `${fontSize}px "JetBrains Mono", "Fira Code", monospace`;
+      ctx.textBaseline = "top";
+
+      const colWidth = fontSize * 1.2;
 
       for (let i = 0; i < drops.length; i++) {
-        const text = chars[Math.floor(Math.random() * chars.length)];
-        const x = i * fontSize;
-        const y = drops[i] * fontSize;
+        const drop = drops[i];
+        const x = i * colWidth;
 
-        // Faint matrix text
-        ctx.fillStyle = i % 3 === 0 ? "rgba(239, 68, 68, 0.45)" : "rgba(248, 113, 113, 0.2)";
-        ctx.fillText(text, x, y);
+        // Render trail characters
+        for (let j = 0; j < drop.length; j++) {
+          const charY = (drop.y - j) * fontSize;
+          if (charY < -fontSize || charY > height) continue;
 
-        if (y > height && Math.random() > 0.985) {
-          drops[i] = 0;
+          const char = CHARS[Math.floor(Math.random() * CHARS.length)];
+          const progress = j / drop.length;
+
+          if (j === 0) {
+            // Soft white leader
+            ctx.fillStyle = "rgba(255, 255, 255, 0.7)";
+            ctx.fillText(char, x, charY);
+          } else {
+            // Subtle dark crimson trail
+            const alpha = Math.max(0.04, (1 - progress) * 0.35 * drop.brightness);
+            ctx.fillStyle = `rgba(239, 68, 68, ${alpha})`;
+            ctx.fillText(char, x, charY);
+          }
         }
-        drops[i]++;
+
+        // Slow advance
+        drop.y += drop.speed * 0.4;
+
+        // Reset drop when past bottom
+        if ((drop.y - drop.length) * fontSize > height) {
+          drop.y = Math.random() * -15;
+          drop.speed = Math.random() * 0.6 + 0.3;
+          drop.brightness = Math.random() * 0.3 + 0.4;
+        }
       }
 
       animationId = requestAnimationFrame(render);
     };
 
+    window.addEventListener("resize", handleResize);
     render();
 
     const handleVisibility = () => {
@@ -74,37 +118,18 @@ export default function CybersecurityTheme() {
   }, []);
 
   return (
-    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-[#080405]">
-      {/* Matrix Canvas Stream */}
-      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full opacity-40" />
-
-      {/* Crimson Ambiance */}
-      <div className="absolute inset-0 bg-radial from-red-950/25 via-transparent to-[#060405]" />
-
-      {/* CRT Scanline Horizontal Effect */}
-      <div
-        className="absolute inset-0 pointer-events-none opacity-20"
-        style={{
-          backgroundImage:
-            "repeating-linear-gradient(0deg, rgba(0, 0, 0, 0.6) 0px, rgba(0, 0, 0, 0.6) 1px, transparent 1px, transparent 2px)",
-        }}
+    <div className="fixed inset-0 pointer-events-none overflow-hidden z-0 bg-[#040507]">
+      {/* Subtle Low-Intensity Matrix Stream */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full opacity-25"
       />
 
-      {/* Terminal Radar Badge (Top Right) */}
-      <div className="absolute top-20 right-6 sm:right-16 w-80 rounded-2xl bg-red-950/20 border border-red-500/25 backdrop-blur-md p-4 opacity-40 shadow-[0_0_50px_rgba(239,68,68,0.15)] font-mono text-xs text-red-300">
-        <div className="flex items-center justify-between border-b border-red-500/20 pb-2 mb-2">
-          <div className="flex items-center gap-1.5">
-            <ShieldAlert className="w-4 h-4 text-red-400" />
-            <span>eBPF_PROBE_DAEMON</span>
-          </div>
-          <span className="text-[10px] text-emerald-400">DEFENSE_ACTIVE</span>
-        </div>
-        <div className="space-y-1 text-[10px] text-red-200/60">
-          <p>{`[0.0018s] syscall: execve() intercepted`}</p>
-          <p>{`[0.0021s] container_escape_score: 0.00`}</p>
-          <p className="text-emerald-400">{`[0.0025s] memory_integrity: 100% OK`}</p>
-        </div>
-      </div>
+      {/* Gentle Ambient Dark Vignette */}
+      <div className="absolute inset-0 bg-radial from-red-950/15 via-transparent to-[#040507]" />
     </div>
   );
 }
+
+
+
