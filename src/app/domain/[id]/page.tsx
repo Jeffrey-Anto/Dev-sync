@@ -28,6 +28,7 @@ import ProjectDetailModal from "@/components/projects/ProjectDetailModal";
 import { AndroidDemo } from "@/components/domain-themes/AndroidDemo";
 import CoffeePourAnimation from "@/components/domain-themes/CoffeePourAnimation";
 import SpidermanWebAnimation from "@/components/domain-themes/SpidermanWebAnimation";
+import FontSelector from "@/components/FontSelector";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   Globe,
@@ -157,26 +158,29 @@ export default function DomainDetailPage({ params }: PageProps) {
             <span>Return to Capability Matrix</span>
           </button>
 
-          {/* Breadcrumb Indicator */}
-          <div
-            className={`flex items-center gap-3 ${
-              isUiUx ? "font-doodle text-sm text-black" : "text-xs font-mono text-slate-400"
-            }`}
-          >
-            <span className="hidden sm:inline">COLLECTIVE.CS</span>
-            <span className="hidden sm:inline text-slate-600">/</span>
+          {/* Breadcrumb Indicator & Font Dropdown */}
+          <div className="flex items-center gap-3">
+            {!isUiUx && <FontSelector className="hidden sm:inline-block" />}
             <div
-              className={`flex items-center gap-2 px-3 py-1 ${
-                isUiUx
-                  ? "handdrawn-box bg-[#FF00AA] text-white font-bold"
-                  : "rounded-lg bg-slate-900/80 border border-white/10"
+              className={`flex items-center gap-3 ${
+                isUiUx ? "font-doodle text-sm text-black" : "text-xs font-mono text-slate-400"
               }`}
             >
-              <span
-                className={`w-2 h-2 rounded-full ${isUiUx ? "bg-white" : "animate-pulse"}`}
-                style={{ backgroundColor: !isUiUx ? domain.colorTheme.primary : undefined }}
-              />
-              <span className="font-semibold">{domain.name}</span>
+              <span className="hidden sm:inline">COLLECTIVE.CS</span>
+              <span className="hidden sm:inline text-slate-600">/</span>
+              <div
+                className={`flex items-center gap-2 px-3 py-1 ${
+                  isUiUx
+                    ? "handdrawn-box bg-[#FF00AA] text-white font-bold"
+                    : "rounded-lg bg-slate-900/80 border border-white/10"
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${isUiUx ? "bg-white" : "animate-pulse"}`}
+                  style={{ backgroundColor: !isUiUx ? domain.colorTheme.primary : undefined }}
+                />
+                <span className="font-semibold">{domain.name}</span>
+              </div>
             </div>
           </div>
         </div>

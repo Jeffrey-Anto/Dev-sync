@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
 import GooeyNav from "@/components/GooeyNav";
+import FontSelector from "@/components/FontSelector";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -117,8 +118,10 @@ export default function Navbar() {
           />
         </div>
 
-        {/* Sleek Right Action CTA */}
+        {/* Sleek Right Action CTA & Font Dropdown */}
         <div className="hidden sm:flex items-center gap-3">
+          <FontSelector />
+
           <Link
             href="/recruit"
             className="group relative px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-indigo-600/25 hover:bg-indigo-600/35 border border-indigo-500/40 hover:border-indigo-400/70 shadow-[0_0_20px_rgba(99,102,241,0.2)] hover:shadow-[0_0_25px_rgba(99,102,241,0.4)] transition-all duration-300 flex items-center gap-2.5"
@@ -130,7 +133,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Toggle Button */}
-        <div className="flex md:hidden items-center">
+        <div className="flex md:hidden items-center gap-2">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white"
@@ -157,7 +160,14 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="pt-2">
+          <div className="pt-2 flex flex-col gap-3">
+            <div className="px-1">
+              <label className="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase tracking-wider">
+                Select Font Trio
+              </label>
+              <FontSelector isMobileFullWidth align="left" />
+            </div>
+
             <Link
               href="/recruit"
               onClick={() => setMobileMenuOpen(false)}

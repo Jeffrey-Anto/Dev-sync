@@ -13,12 +13,62 @@
   --accent-indigo: #6366f1;
 }
 
+:root,
+html[data-font-group="hyper-tech"] {
+  --font-current-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-current-display: var(--font-outfit), var(--font-inter), sans-serif;
+  --font-current-mono: var(--font-jetbrains-mono), "Fira Code", monospace;
+}
+
+html[data-font-group="cyber-futuristic"] {
+  --font-current-sans: var(--font-dm-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-current-display: var(--font-space-grotesk), sans-serif;
+  --font-current-mono: var(--font-space-mono), "Courier New", monospace;
+}
+
+html[data-font-group="modern-editorial"] {
+  --font-current-sans: var(--font-manrope), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-current-display: var(--font-sora), sans-serif;
+  --font-current-mono: var(--font-ibm-plex-mono), monospace;
+}
+
+html[data-font-group="geist"] {
+  --font-current-sans: var(--font-geist-sans), -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-current-display: var(--font-geist-sans), sans-serif;
+  --font-current-mono: var(--font-geist-mono), monospace;
+}
+
+@theme {
+  --font-sans: var(--font-current-sans);
+  --font-mono: var(--font-current-mono);
+  --font-display: var(--font-current-display);
+}
+
+.font-sans {
+  font-family: var(--font-current-sans) !important;
+}
+
+.font-mono {
+  font-family: var(--font-current-mono) !important;
+}
+
+.font-display {
+  font-family: var(--font-current-display) !important;
+}
+
+h1:not(.font-mono):not(.font-doodle):not(.font-caveat),
+h2:not(.font-mono):not(.font-doodle):not(.font-caveat),
+h3:not(.font-mono):not(.font-doodle):not(.font-caveat),
+.font-heading {
+  font-family: var(--font-current-display);
+}
+
 .font-doodle {
-  font-family: 'Patrick Hand', 'Caveat', 'Chalkboard SE', 'Comic Sans MS', cursive, sans-serif;
+  font-family: 'Patrick Hand', 'Caveat', 'Chalkboard SE', 'Comic Sans MS', cursive, sans-serif !important;
 }
 
 .font-caveat {
-  font-family: 'Caveat', cursive, sans-serif;
+  font-family: 'Caveat', cursive, sans-serif !important;
 }
 
 .handdrawn-box {
@@ -58,6 +108,7 @@ html {
 }
 
 body {
+  font-family: var(--font-current-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
   overflow-x: hidden;
