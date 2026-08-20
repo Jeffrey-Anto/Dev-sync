@@ -147,25 +147,50 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-4"
+          className="flex flex-wrap items-center justify-center gap-5 mt-2"
         >
-          {/* Primary CTA: Explore Projects */}
+          {/* Primary CTA: Explore Projects (Luminous Obsidian + Prismatic Border Aura) */}
           <a
             href="#domains"
-            className="group relative px-7 py-3.5 rounded-xl font-mono text-xs sm:text-sm font-bold tracking-wider text-white bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 shadow-[0_0_30px_rgba(99,102,241,0.4)] hover:shadow-[0_0_40px_rgba(6,182,212,0.6)] transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-2.5 cursor-pointer"
+            className="group relative inline-flex items-center justify-center p-0.5 rounded-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
           >
-            <span>EXPLORE PROJECTS</span>
-            <ArrowRight className="w-4 h-4 text-cyan-200 group-hover:translate-x-1 transition-transform" />
+            {/* Ambient Multi-Hue Pulsing Glow Behind Button */}
+            <span className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-400 opacity-50 group-hover:opacity-100 blur-lg transition-all duration-500 group-hover:blur-xl animate-pulse" />
+            
+            {/* Prismatic Border Ring */}
+            <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-amber-400 via-indigo-500 to-cyan-400 p-[1.5px]" />
+
+            {/* Inner Obsidian Button Body */}
+            <span className="relative px-7 py-3.5 rounded-2xl bg-[#080b12] text-white font-mono text-xs sm:text-sm font-black tracking-wider flex items-center gap-2.5 overflow-hidden shadow-2xl transition-colors duration-300 group-hover:bg-[#0c101c]">
+              {/* Top Glass Refraction Sheen */}
+              <span className="absolute top-0 left-0 right-0 h-[45%] bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-2xl" />
+              
+              {/* Dynamic Sliding Light Gleam Beam */}
+              <span className="absolute -left-[100%] top-0 w-full h-full bg-gradient-to-r from-transparent via-white/25 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-1000 ease-out pointer-events-none" />
+
+              <span className="relative z-10 text-white group-hover:text-amber-200 transition-colors">
+                EXPLORE PROJECTS
+              </span>
+              <ArrowRight className="relative z-10 w-4 h-4 text-cyan-300 group-hover:text-amber-300 group-hover:translate-x-1 transition-all" />
+            </span>
           </a>
 
-          {/* Secondary CTA: Recruit Our Cohort */}
+          {/* Secondary CTA: Recruit Our Cohort (Frosted Obsidian Glass + Live Beacon) */}
           <a
             href="/recruit"
-            className="group relative px-7 py-3.5 rounded-xl font-mono text-xs sm:text-sm font-bold tracking-wider text-slate-200 hover:text-white bg-slate-900/80 hover:bg-slate-800/90 border border-white/15 hover:border-cyan-400/50 shadow-lg backdrop-blur-md transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-2.5 cursor-pointer"
+            className="group relative px-7 py-3.5 rounded-2xl font-mono text-xs sm:text-sm font-bold tracking-wider text-slate-200 hover:text-white bg-slate-950/70 hover:bg-slate-900/90 border border-white/15 hover:border-amber-400/60 shadow-xl backdrop-blur-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-3 overflow-hidden cursor-pointer"
           >
-            <Briefcase className="w-4 h-4 text-slate-400 group-hover:text-cyan-300 transition-colors" />
-            <span>RECRUIT OUR COHORT</span>
-            <ArrowRight className="w-4 h-4 text-slate-400 group-hover:text-cyan-300 group-hover:translate-x-1 transition-all" />
+            {/* Hover Ambient Warm Glow */}
+            <span className="absolute -inset-full bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-md" />
+
+            {/* Live Green Status Dot */}
+            <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#34d399] animate-pulse flex-shrink-0" />
+
+            <Briefcase className="w-4 h-4 text-slate-400 group-hover:text-amber-300 transition-colors flex-shrink-0" />
+            <span className="relative z-10 group-hover:text-slate-100 transition-colors">
+              RECRUIT OUR COHORT
+            </span>
+            <ArrowRight className="relative z-10 w-4 h-4 text-slate-400 group-hover:text-amber-300 group-hover:translate-x-1 transition-all flex-shrink-0" />
           </a>
         </motion.div>
       </div>
