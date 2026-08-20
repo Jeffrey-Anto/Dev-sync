@@ -182,7 +182,9 @@ export default function DomainDetailPage({ params }: PageProps) {
               }`}
             >
               <span className="hidden sm:inline">COLLECTIVE.CS</span>
-              <span className="hidden sm:inline text-slate-600">/</span>
+              <span className={`hidden sm:inline ${isUiUx ? "text-black font-black text-sm font-doodle" : "text-slate-600"}`}>
+                {isUiUx ? "\\" : "/"}
+              </span>
               <div
                 className={`flex items-center gap-2 px-3 py-1 ${
                   isUiUx
@@ -214,7 +216,7 @@ export default function DomainDetailPage({ params }: PageProps) {
             className={`tracking-tight leading-tight mb-4 ${
               isUiUx
                 ? "font-doodle text-4xl sm:text-6xl lg:text-7xl font-black text-black drop-shadow-[0_0_20px_rgba(255,255,255,1)] [text-shadow:_0_0_10px_#ffffff,_0_0_20px_#ffffff,_0_0_30px_#ffffff,_3px_3px_0_#FFE600]"
-                : "text-3xl sm:text-5xl lg:text-6xl font-black text-white"
+                : "text-3xl sm:text-5xl lg:text-6xl font-black text-white drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]"
             }`}
           >
             {domain.name}
@@ -224,7 +226,7 @@ export default function DomainDetailPage({ params }: PageProps) {
             className={`max-w-3xl leading-relaxed mb-8 ${
               isUiUx
                 ? "font-doodle text-xl sm:text-2xl text-black font-black drop-shadow-[0_0_16px_rgba(255,255,255,1)] [text-shadow:_0_0_8px_#ffffff,_0_0_16px_#ffffff,_0_0_24px_#ffffff]"
-                : "text-base sm:text-xl text-slate-300 font-sans font-normal"
+                : "text-base sm:text-xl text-slate-200 font-sans font-normal drop-shadow-[0_1px_10px_rgba(0,0,0,0.85)]"
             }`}
           >
             {domain.tagline}
