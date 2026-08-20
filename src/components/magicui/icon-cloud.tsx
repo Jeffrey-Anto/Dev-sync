@@ -2,9 +2,16 @@
 
 import React, { useEffect, useRef, useState } from "react";
 
+export interface IconCloudGroup {
+  label: string;
+  slugs: string[];
+}
+
 export interface IconCloudProps {
   images?: string[];
   iconSlugs?: string[];
+  groups?: IconCloudGroup[];
+  onUnbox?: () => void;
 }
 
 interface IconData {
@@ -16,11 +23,25 @@ interface IconData {
   image: HTMLImageElement;
   loaded: boolean;
   name: string;
+  slug: string;
+  tx: number;
+  ty: number;
+  tz: number;
+  tScale: number;
+  delay: number;
 }
 
-export function IconCloud({ images, iconSlugs }: IconCloudProps) {
+const INTRO_SPIN_SPEED = 0.05;
+
+export function IconCloud({
+  images,
+  iconSlugs,
+  groups,
+  onUnbox,
+}: IconCloudProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [hoveredTech, setHoveredTech] = useState<string | null>(null);
+  const phaseRef = useRef<"intro" | "columns">("intro");
 
   // Generate image URLs from iconSlugs or images
   const allImages = React.useMemo(() => {
@@ -45,16 +66,15 @@ export function IconCloud({ images, iconSlugs }: IconCloudProps) {
     let startX = 0;
     let startY = 0;
 
-    // Responsive Canvas Resizing
+    // Responsive Canvas Resizing (fill the full parent, no square cap)
     const resizeCanvas = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
-      const size = Math.min(parent.clientWidth, parent.clientHeight, 720);
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = size * dpr;
-      canvas.height = size * dpr;
-      canvas.style.width = `${size}px`;
-      canvas.style.height = `${size}px`;
+      canvas.width = parent.clientWidth * dpr;
+      canvas.height = parent.clientHeight * dpr;
+      canvas.style.width = `${parent.clientWidth}px`;
+      canvas.style.height = `${parent.clientHeight}px`;
       ctx.scale(dpr, dpr);
     };
 
@@ -70,40 +90,118 @@ export function IconCloud({ images, iconSlugs }: IconCloudProps) {
       const radiusAtY = Math.sqrt(1 - y * y);
       const theta = phi * i;
 
-      const x = Math.cos(theta) * radiusAtY;
-      const z = Math.sin(theta) * radiusAtY;
-
       const img = new Image();
       img.crossOrigin = "anonymous";
       img.src = src;
 
-      // Extract tech name from url for hover
+      // Extract tech slug + name from url
       const parts = src.split("/");
-      const slugName = parts[parts.length - 1] || "tech";
+      const slug = parts[parts.length - 1] || "tech";
 
-      const icon: IconData = {
-        x,
+      return {
+        x: Math.cos(theta) * radiusAtY,
         y,
-        z,
+        z: Math.sin(theta) * radiusAtY,
         scale: 1,
         opacity: 1,
         image: img,
         loaded: false,
-        name: slugName.toUpperCase(),
+        name: slug.toUpperCase(),
+        slug,
+        tx: 0,
+        ty: 0,
+        tz: 0,
+        tScale: 1,
+        delay: 0,
       };
+    });
 
-      img.onload = () => {
+    icons.forEach((icon) => {
+      icon.image.onload = () => {
         icon.loaded = true;
       };
-
-      return icon;
     });
+
+    // Column layout targets in normalized [-1,1] space (mapped to pixels at draw time)
+    let columnHeaders: {
+      x: number;
+      y: number;
+      label: string;
+      font: number;
+    }[] = [];
+
+    const computeColumnTargets = (stagger: boolean) => {
+      const width = parseFloat(canvas.style.width) || 500;
+      const height = parseFloat(canvas.style.height) || 500;
+      const iconRenderSize = Math.max(Math.min(width, height) * 0.085, 34);
+
+      const activeGroups = (groups || [])
+        .map((g) => ({
+          label: g.label,
+          items: icons.filter((i) => g.slugs.includes(i.slug)),
+        }))
+        .filter((g) => g.items.length > 0);
+
+      if (activeGroups.length === 0) return;
+
+      const n = activeGroups.length;
+      const colW = 2 / n;
+      const maxCount = Math.max(...activeGroups.map((g) => g.items.length));
+      const cellH = 1.9 / maxCount;
+
+      columnHeaders = [];
+      activeGroups.forEach((g, gi) => {
+        const cx = -1 + colW * (gi + 0.5);
+        const topY = (-(g.items.length - 1) * cellH) / 2;
+        const tScale = Math.min(
+          0.46,
+          (cellH * height * 0.46 * 0.72) / (iconRenderSize * 1.2)
+        );
+
+        g.items.forEach((icon, ji) => {
+          icon.tx = cx;
+          icon.ty = topY + ji * cellH;
+          icon.tz = 1;
+          icon.tScale = tScale;
+          icon.delay = stagger ? gi * 8 + ji * 3 : 0;
+        });
+
+        const font = Math.max(8, Math.min(10, colW * width * 0.07));
+        columnHeaders.push({
+          x: cx,
+          y: topY - cellH * 0.6,
+          label: g.label.toUpperCase(),
+          font,
+        });
+      });
+    };
+
+    let mode: "intro" | "columns" | "cloud" =
+      groups && groups.length > 0 ? phaseRef.current : "cloud";
+
+    let currentRadiusX = 0;
+    let currentRadiusY = 0;
+
+    // Already unboxed before (filter/search changed) -> snap straight to columns.
+    if (mode === "columns") {
+      computeColumnTargets(false);
+      const snapW = parseFloat(canvas.style.width) || 500;
+      const snapH = parseFloat(canvas.style.height) || 500;
+      currentRadiusX = snapW * 0.4;
+      currentRadiusY = snapH * 0.46;
+      icons.forEach((icon) => {
+        icon.x = icon.tx;
+        icon.y = icon.ty;
+        icon.z = icon.tz;
+        icon.scale = icon.tScale;
+      });
+    }
 
     let activeHoveredName: string | null = null;
     let mousePos = { x: -1000, y: -1000 };
 
     const BASE_SPEED_Y = 0.003;
-    const BASE_SPEED_X = 0.0010;
+    const BASE_SPEED_X = 0.001;
     const SLOW_SPEED_Y = 0.0004;
     const SLOW_SPEED_X = 0.0002;
 
@@ -111,6 +209,9 @@ export function IconCloud({ images, iconSlugs }: IconCloudProps) {
     let targetRotationY = BASE_SPEED_Y;
     let rotationX = BASE_SPEED_X;
     let rotationY = BASE_SPEED_Y;
+
+    let frameCount = 0;
+    let totalSpin = 0;
 
     // 3D rotation matrix calculation
     const rotate = () => {
@@ -140,18 +241,80 @@ export function IconCloud({ images, iconSlugs }: IconCloudProps) {
       }
     };
 
+    const beginUnbox = () => {
+      mode = "columns";
+      phaseRef.current = "columns";
+      computeColumnTargets(true);
+      onUnbox?.();
+    };
+
     // Render loop
     const render = () => {
-      const size = parseFloat(canvas.style.width) || 500;
-      const radius = size * 0.40;
-      const centerX = size / 2;
-      const centerY = size / 2;
-      const iconRenderSize = Math.max(size * 0.085, 34);
+      const width = parseFloat(canvas.style.width) || 500;
+      const height = parseFloat(canvas.style.height) || 500;
+      const minDim = Math.min(width, height);
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const iconRenderSize = Math.max(minDim * 0.085, 34);
 
-      ctx.clearRect(0, 0, size, size);
+      frameCount++;
 
-      if (!isDragging) {
+      // True sphere while spinning; stretch to full canvas only when unboxed.
+      if (currentRadiusX === 0) {
+        currentRadiusX = minDim * 0.4;
+        currentRadiusY = minDim * 0.4;
+      }
+      const targetRadiusX = mode === "columns" ? width * 0.4 : minDim * 0.4;
+      const targetRadiusY = mode === "columns" ? height * 0.46 : minDim * 0.4;
+      currentRadiusX += (targetRadiusX - currentRadiusX) * 0.03;
+      currentRadiusY += (targetRadiusY - currentRadiusY) * 0.03;
+      const radiusX = currentRadiusX;
+      const radiusY = currentRadiusY;
+
+      if (mode === "intro") {
+        // Spin twice, easing to a stop, then unbox.
+        if (totalSpin < Math.PI * 4 - 0.6) {
+          rotationY = INTRO_SPIN_SPEED;
+        } else {
+          rotationY = Math.max(0.02, (Math.PI * 4 - totalSpin) * 0.15);
+        }
+        rotationX = 0;
+        totalSpin += rotationY;
         rotate();
+        if (totalSpin >= Math.PI * 4) beginUnbox();
+      } else if (mode === "columns") {
+        // Fly each icon from the sphere to its column slot.
+        for (const icon of icons) {
+          if (frameCount < icon.delay) continue;
+          const k = 0.03;
+          icon.x += (icon.tx - icon.x) * k;
+          icon.y += (icon.ty - icon.y) * k;
+          icon.z += (icon.tz - icon.z) * k;
+          icon.scale += (icon.tScale - icon.scale) * k;
+        }
+      } else if (!isDragging) {
+        // Ambient cloud (no groups provided) — original behavior.
+        rotate();
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Draw column headers
+      if (mode === "columns") {
+        ctx.save();
+        for (const h of columnHeaders) {
+          ctx.globalAlpha = 0.85;
+          ctx.font = `bold ${h.font}px monospace`;
+          ctx.textAlign = "center";
+          ctx.textBaseline = "alphabetic";
+          ctx.fillStyle = "rgba(165, 180, 252, 0.95)";
+          ctx.fillText(
+            h.label,
+            centerX + h.x * radiusX,
+            centerY + h.y * radiusY
+          );
+        }
+        ctx.restore();
       }
 
       // Sort icons by Z depth so front icons draw over back icons
@@ -162,12 +325,12 @@ export function IconCloud({ images, iconSlugs }: IconCloudProps) {
         const icon = sortedIcons[i];
 
         // Map [-1, 1] to screen coords
-        const screenX = centerX + icon.x * radius;
-        const screenY = centerY + icon.y * radius;
+        const screenX = centerX + icon.x * radiusX;
+        const screenY = centerY + icon.y * radiusY;
 
         // Depth scaling: front (z=1) is bigger, back (z=-1) is smaller
         const depth = (icon.z + 1) / 2; // 0 to 1
-        const scale = 0.55 + depth * 0.65;
+        const scale = icon.scale * (0.55 + depth * 0.65);
         const opacity = 0.25 + depth * 0.75;
         const currentSize = iconRenderSize * scale;
 
@@ -183,7 +346,7 @@ export function IconCloud({ images, iconSlugs }: IconCloudProps) {
 
         // Glow badge background behind icon
         ctx.beginPath();
-        ctx.arc(screenX, screenY, currentSize * (isIconHovered ? 0.75 : 0.65), 0, Math.PI * 2);
+        ctx.arc(screenX, screenY, currentSize * (isIconHovered ? 0.68 : 0.56), 0, Math.PI * 2);
         ctx.fillStyle = isIconHovered ? "rgba(30, 41, 59, 0.95)" : "rgba(15, 23, 42, 0.75)";
         ctx.fill();
         ctx.lineWidth = isIconHovered ? 2 : 1;
@@ -331,7 +494,7 @@ export function IconCloud({ images, iconSlugs }: IconCloudProps) {
       window.removeEventListener("touchmove", handleTouchMove);
       window.removeEventListener("touchend", handleTouchEnd);
     };
-  }, [allImages]);
+  }, [allImages, groups, onUnbox]);
 
   return (
     <div className="relative flex size-full items-center justify-center overflow-hidden select-none cursor-grab active:cursor-grabbing">
