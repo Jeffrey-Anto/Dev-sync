@@ -93,25 +93,25 @@ export default function RecruiterModal({ isOpen, onClose }: RecruiterModalProps)
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="relative w-full max-w-2xl rounded-3xl bg-[#090c15] border border-white/15 p-6 sm:p-8 shadow-2xl z-10 my-auto text-white"
+            className="relative w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl bg-[#090c15] border border-white/15 p-4 sm:p-8 shadow-2xl z-10 my-auto text-white"
           >
             {/* Top Close Button */}
             <button
               onClick={onClose}
               aria-label="Close Modal"
-              className="absolute top-6 right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
+              className="absolute top-4 sm:top-6 right-4 sm:right-6 p-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-slate-400 hover:text-white transition-all cursor-pointer"
             >
               <X className="w-4 h-4" />
             </button>
 
             {/* Header */}
-            <div className="mb-6 pr-8">
+            <div className="mb-5 sm:mb-6 pr-6 sm:pr-8">
               <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-amber-400 font-bold mb-2">
                 <Building2 className="w-4 h-4 text-amber-400" />
                 <span>RECRUITER ENGAGEMENT DESK</span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+              <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight">
                 Invite GCE Srirangam to Placement Drive
               </h2>
 

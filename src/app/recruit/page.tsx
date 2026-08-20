@@ -142,7 +142,7 @@ export default function RecruiterContactPage() {
           
           {/* Left Column: Interactive Recruiter Engagement Desk Form */}
           <div className="lg:col-span-7">
-            <div className="p-7 sm:p-10 rounded-3xl bg-[#090c15]/90 border border-white/15 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+            <div className="p-4 sm:p-10 rounded-3xl bg-[#090c15]/90 border border-white/15 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
               <div className="mb-6">
                 <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-amber-400 font-bold mb-2">
                   <Building2 className="w-4 h-4 text-amber-400" />

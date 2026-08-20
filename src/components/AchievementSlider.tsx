@@ -101,7 +101,7 @@ export default function AchievementSlider() {
     <section id="achievements-showcase" className="relative z-20 bg-[#040507] border-t border-white/10">
       {/* ── 1. NORMAL SCROLLING SECTION TITLE (Scrolls away naturally; NOT locked) ── */}
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-4 sm:pb-6">
-        <div className="flex items-center gap-2 mb-3">
+        <div className="flex items-center gap-2 mb-2.5 sm:mb-3">
           <span className="h-[2px] w-6 bg-amber-400" />
           <span className="font-mono text-xs tracking-widest text-amber-400 font-bold uppercase">
             EXCELLENCE IN ACTION
@@ -109,7 +109,7 @@ export default function AchievementSlider() {
         </div>
 
         {/* Display Headline */}
-        <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight uppercase leading-[0.95] font-sans">
+        <h2 className="text-3xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight uppercase leading-[0.95] font-sans">
           OUR STUDENT <br />
           <span className="inline-block animate-deep-color-flow">
             ACHIEVEMENTS
@@ -131,9 +131,9 @@ export default function AchievementSlider() {
           <div className="absolute bottom-1/4 left-1/4 w-[600px] h-[350px] bg-cyan-500/5 rounded-full blur-[140px] pointer-events-none" />
 
           {/* Sticky Top Navigation Controls Capsule */}
-          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-end">
+          <div className="relative z-10 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 flex items-center justify-end">
             {/* Controls Capsule */}
-            <div className="flex items-center gap-3 px-3.5 py-1.5 sm:py-2 rounded-full bg-[#0a0d16]/90 border border-white/15 backdrop-blur-xl shadow-2xl">
+            <div className="flex items-center gap-2 sm:gap-3 px-2.5 sm:px-3.5 py-1 sm:py-2 rounded-full bg-[#0a0d16]/90 border border-white/15 backdrop-blur-xl shadow-2xl">
               {/* Prev Button */}
               <button
                 onClick={handlePrev}
@@ -145,18 +145,18 @@ export default function AchievementSlider() {
                     : "text-slate-600 cursor-not-allowed"
                 }`}
               >
-                <ChevronLeft className="w-4 h-4" />
+                <ChevronLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
 
               {/* Number Counter */}
-              <div className="font-mono text-xs font-bold text-amber-400 tracking-wider flex items-center gap-1">
+              <div className="font-mono text-[11px] sm:text-xs font-bold text-amber-400 tracking-wider flex items-center gap-0.5 sm:gap-1">
                 <span>{String(activeIndex + 1).padStart(2, "0")}</span>
                 <span className="text-slate-500">/</span>
                 <span className="text-slate-400">{String(totalCards).padStart(2, "0")}</span>
               </div>
 
               {/* Dot Indicators */}
-              <div className="flex items-center gap-1 px-1">
+              <div className="hidden sm:flex items-center gap-1 px-1">
                 {STUDENT_ACHIEVEMENTS.map((_, idx) => (
                   <button
                     key={idx}
@@ -182,17 +182,17 @@ export default function AchievementSlider() {
                     : "text-slate-600 cursor-not-allowed"
                 }`}
               >
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               </button>
             </div>
           </div>
 
           {/* Full-Height Horizontal Sticky Cards Track (Driven by vertical scroll) */}
-          <div className="relative z-10 w-full overflow-visible my-auto py-2">
+          <div className="relative z-10 w-full overflow-visible my-auto py-1 sm:py-2">
             <motion.div
               ref={trackRef}
               style={{ x }}
-              className="flex gap-6 sm:gap-8 px-4 sm:px-8 lg:px-16 items-stretch will-change-transform"
+              className="flex gap-4 sm:gap-8 px-3 sm:px-8 lg:px-16 items-stretch will-change-transform"
             >
               {STUDENT_ACHIEVEMENTS.map((item, index) => (
                 <AchievementCard
@@ -206,8 +206,8 @@ export default function AchievementSlider() {
           </div>
 
           {/* Bottom Horizontal Scroll Progress Bar */}
-          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-end text-[10px] font-mono text-slate-400">
-            <div className="flex items-center gap-3 w-40 sm:w-56">
+          <div className="relative z-10 max-w-7xl mx-auto w-full px-3 sm:px-6 lg:px-8 flex items-center justify-end text-[9px] sm:text-[10px] font-mono text-slate-400">
+            <div className="flex items-center gap-2 sm:gap-3 w-32 sm:w-56">
               <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
                 <motion.div
                   style={{ width: progressPercent }}
@@ -257,32 +257,32 @@ function AchievementCard({
 
   return (
     <div
-      className={`min-w-[310px] sm:min-w-[370px] md:min-w-[420px] max-w-[420px] flex-shrink-0 rounded-3xl backdrop-blur-2xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-500 relative overflow-hidden border ${
+      className={`w-[85vw] max-w-[340px] sm:min-w-[370px] md:min-w-[420px] sm:max-w-[420px] flex-shrink-0 rounded-3xl backdrop-blur-2xl p-4 sm:p-7 flex flex-col justify-between transition-all duration-500 relative overflow-hidden border ${
         isActive
-          ? "bg-gradient-to-br from-[#121829]/95 via-[#0b101f]/95 to-[#171128]/95 border-amber-500/60 shadow-[0_25px_60px_rgba(245,158,11,0.22)] scale-[1.02]"
-          : "bg-[#090c15]/90 border-white/10 hover:border-white/25 shadow-xl opacity-80 hover:opacity-100"
+          ? "bg-gradient-to-br from-[#121829]/95 via-[#0b101f]/95 to-[#171128]/95 border-amber-500/60 shadow-[0_25px_60px_rgba(245,158,11,0.22)] scale-[1.01] sm:scale-[1.02]"
+          : "bg-[#090c15]/90 border-white/10 hover:border-white/25 shadow-xl opacity-75 hover:opacity-100"
       }`}
     >
       {/* Top Header: Tag Pill & Index */}
       <div>
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-2.5 sm:mb-4">
           {/* Badge Tag */}
           <div
-            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl border text-[10.5px] font-mono font-bold tracking-wider uppercase ${achievement.tagColor.bg} ${achievement.tagColor.text} ${achievement.tagColor.border}`}
+            className={`inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-xl border text-[9.5px] sm:text-[10.5px] font-mono font-bold tracking-wider uppercase ${achievement.tagColor.bg} ${achievement.tagColor.text} ${achievement.tagColor.border}`}
           >
-            <IconComponent className="w-3.5 h-3.5" />
+            <IconComponent className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
             <span>{achievement.tag}</span>
           </div>
 
           {/* Index Number */}
-          <span className="font-mono text-sm text-slate-500 font-semibold">
+          <span className="font-mono text-xs sm:text-sm text-slate-500 font-semibold">
             {achievement.indexStr}
           </span>
         </div>
 
         {/* Visual Graphic Banner */}
         <div
-          className={`relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden mb-5 border border-white/10 bg-gradient-to-br ${achievement.gradientTheme} p-4 flex flex-col justify-between shadow-inner`}
+          className={`relative h-28 sm:h-48 w-full rounded-2xl overflow-hidden mb-3 sm:mb-5 border border-white/10 bg-gradient-to-br ${achievement.gradientTheme} p-2.5 sm:p-4 flex flex-col justify-between shadow-inner`}
         >
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
@@ -295,51 +295,51 @@ function AchievementCard({
 
           {/* Top Status inside Visual */}
           <div className="relative z-10 flex items-center justify-between">
-            <span className="text-[9.5px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-md bg-black/60 border border-white/10 text-slate-300 backdrop-blur-md">
+            <span className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-md bg-black/60 border border-white/10 text-slate-300 backdrop-blur-md">
               HONORS ARCHIVE
             </span>
-            <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34D399]" />
+            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34D399]" />
           </div>
 
           {/* Center Trophy / Stage Emblem Mock */}
           <div className="relative z-10 my-auto flex flex-col items-center justify-center text-center">
             <div
-              className="w-13 h-13 rounded-2xl flex items-center justify-center mb-1.5 shadow-2xl transition-transform duration-300"
+              className="w-9 h-9 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl flex items-center justify-center mb-1 shadow-2xl transition-transform duration-300"
               style={{
                 backgroundColor: `${achievement.accentColor}20`,
                 border: `1px solid ${achievement.accentColor}50`,
-                boxShadow: `0 0 25px ${achievement.accentColor}40`,
+                boxShadow: `0 0 20px ${achievement.accentColor}40`,
               }}
             >
-              <IconComponent className="w-6 h-6 text-white" />
+              <IconComponent className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
             </div>
-            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-300 font-semibold">
-              COLLECTIVE COHORT RECOGNITION
+            <span className="text-[8.5px] sm:text-[10px] font-mono uppercase tracking-wider text-slate-300 font-semibold">
+              COLLECTIVE RECOGNITION
             </span>
           </div>
 
           {/* Bottom Accreditation Tag */}
-          <div className="relative z-10 flex items-center justify-between text-[9.5px] font-mono text-slate-400">
+          <div className="relative z-10 flex items-center justify-between text-[8.5px] sm:text-[9.5px] font-mono text-slate-400">
             <span className="flex items-center gap-1 text-slate-300">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-              VERIFIED PODIUM
+              <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400" />
+              VERIFIED
             </span>
-            <span className="text-amber-400/90 font-bold">STATE & NATIONAL</span>
+            <span className="text-amber-400/90 font-bold">STATE &amp; NATIONAL</span>
           </div>
         </div>
 
         {/* Title */}
-        <h3 className="text-lg sm:text-xl font-extrabold text-white tracking-tight leading-snug mb-1">
+        <h3 className="text-base sm:text-xl font-extrabold text-white tracking-tight leading-snug mb-1 line-clamp-2">
           {achievement.title}
         </h3>
 
         {/* Subtitle in Gold/Yellow Accent */}
-        <h4 className="text-xs sm:text-[13px] font-semibold text-amber-400/95 font-sans mb-2.5">
+        <h4 className="text-[11px] sm:text-[13px] font-semibold text-amber-400/95 font-sans mb-1.5 sm:mb-2.5 truncate">
           {achievement.subTitle}
         </h4>
 
         {/* Description Text */}
-        <p className="text-xs text-slate-300 leading-relaxed font-sans font-normal line-clamp-3">
+        <p className="text-[11px] sm:text-xs text-slate-300 leading-relaxed font-sans font-normal line-clamp-2 sm:line-clamp-3">
           {achievement.description}
         </p>
       </div>

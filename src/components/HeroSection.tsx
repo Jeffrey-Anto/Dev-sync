@@ -28,10 +28,10 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: -15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: "easeOut" }}
-          className="mb-4 sm:mb-6 flex flex-col items-center gap-1.5 px-6 sm:px-10 py-2.5 sm:py-3.5 rounded-2xl bg-slate-950/75 border border-white/10 backdrop-blur-xl shadow-xl max-w-4xl w-fit"
+          className="mb-4 sm:mb-6 flex flex-col items-center gap-1.5 px-4 sm:px-10 py-2 sm:py-3.5 rounded-2xl bg-slate-950/75 border border-white/10 backdrop-blur-xl shadow-xl max-w-4xl w-full sm:w-fit"
         >
-          {/* Animated StrokeText Outline Draw & Wipe for College Name (Larger font, No comma) */}
-          <div className="w-full h-8 sm:h-9 md:h-11 flex items-center justify-center">
+          {/* Animated StrokeText Outline Draw & Wipe for College Name */}
+          <div className="w-full h-7 sm:h-9 md:h-11 flex items-center justify-center overflow-hidden">
             <StrokeText
               text="GOVERNMENT COLLEGE OF ENGINEERING SRIRANGAM"
               strokeColor="#818CF8"
@@ -49,7 +49,7 @@ export default function HeroSection() {
             />
           </div>
 
-          <span className="text-[9.5px] sm:text-[11px] md:text-xs font-mono text-slate-400 tracking-wider whitespace-nowrap">
+          <span className="text-[9px] sm:text-[11px] md:text-xs font-mono text-slate-400 tracking-wider text-center leading-relaxed">
             DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING &nbsp;·&nbsp; TIRUCHIRAPPALLI &nbsp;·&nbsp; BATCH 2023–2027
           </span>
         </motion.div>
@@ -62,7 +62,7 @@ export default function HeroSection() {
           className="w-full flex flex-col items-center justify-center my-1 sm:my-2 space-y-0.5 sm:space-y-1 select-none"
         >
           {/* Line 1: 60 MINDS. — Saffron */}
-          <div className="w-full h-14 sm:h-20 md:h-24 max-w-3xl relative">
+          <div className="w-full h-12 sm:h-20 md:h-24 max-w-3xl relative">
             <ParticleText
               text="60 MINDS."
               particleSize={2.4}
@@ -84,7 +84,7 @@ export default function HeroSection() {
           </div>
 
           {/* Line 2: ONE TECHNICAL — White */}
-          <div className="w-full h-14 sm:h-20 md:h-24 max-w-4xl relative">
+          <div className="w-full h-12 sm:h-20 md:h-24 max-w-4xl relative">
             <ParticleText
               text="ONE TECHNICAL"
               particleSize={2.4}
@@ -106,7 +106,7 @@ export default function HeroSection() {
           </div>
 
           {/* Line 3: COLLECTIVE. — Green */}
-          <div className="w-full h-14 sm:h-20 md:h-24 max-w-3xl relative">
+          <div className="w-full h-12 sm:h-20 md:h-24 max-w-3xl relative">
             <ParticleText
               text="COLLECTIVE."
               particleSize={2.4}
@@ -133,7 +133,7 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6, duration: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm md:text-base font-mono text-cyan-300 mt-4 mb-8 max-w-3xl"
+          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm md:text-base font-mono text-cyan-300 mt-4 mb-6 sm:mb-8 max-w-3xl px-2"
         >
           <span className="font-semibold">{COHORT_STATS.totalEngineers} CSE STUDENTS</span>
           <span className="text-indigo-400">·</span>
@@ -147,12 +147,12 @@ export default function HeroSection() {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.9, duration: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-5 mt-2"
+          className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-5 mt-2 w-full sm:w-auto px-4 sm:px-0 max-w-md sm:max-w-none"
         >
           {/* Primary CTA: Explore Projects (Luminous Obsidian + Prismatic Border Aura) */}
           <a
             href="#domains"
-            className="group relative inline-flex items-center justify-center p-0.5 rounded-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] cursor-pointer"
+            className="group relative inline-flex items-center justify-center p-0.5 rounded-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] cursor-pointer w-full sm:w-auto"
           >
             {/* Ambient Multi-Hue Pulsing Glow Behind Button */}
             <span className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-amber-500 via-pink-500 to-cyan-400 opacity-50 group-hover:opacity-100 blur-lg transition-all duration-500 group-hover:blur-xl animate-pulse" />
@@ -161,7 +161,7 @@ export default function HeroSection() {
             <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-amber-400 via-indigo-500 to-cyan-400 p-[1.5px]" />
 
             {/* Inner Obsidian Button Body */}
-            <span className="relative px-7 py-3.5 rounded-2xl bg-[#080b12] text-white font-mono text-xs sm:text-sm font-black tracking-wider flex items-center gap-2.5 overflow-hidden shadow-2xl transition-colors duration-300 group-hover:bg-[#0c101c]">
+            <span className="relative w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 rounded-2xl bg-[#080b12] text-white font-mono text-xs sm:text-sm font-black tracking-wider flex items-center justify-center gap-2.5 overflow-hidden shadow-2xl transition-colors duration-300 group-hover:bg-[#0c101c]">
               {/* Top Glass Refraction Sheen */}
               <span className="absolute top-0 left-0 right-0 h-[45%] bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-2xl" />
               
@@ -178,7 +178,7 @@ export default function HeroSection() {
           {/* Secondary CTA: Recruit Our Cohort (Frosted Obsidian Glass + Live Beacon) */}
           <a
             href="/recruit"
-            className="group relative px-7 py-3.5 rounded-2xl font-mono text-xs sm:text-sm font-bold tracking-wider text-slate-200 hover:text-white bg-slate-950/70 hover:bg-slate-900/90 border border-white/15 hover:border-amber-400/60 shadow-xl backdrop-blur-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] flex items-center gap-3 overflow-hidden cursor-pointer"
+            className="group relative w-full sm:w-auto px-5 sm:px-7 py-3 sm:py-3.5 rounded-2xl font-mono text-xs sm:text-sm font-bold tracking-wider text-slate-200 hover:text-white bg-slate-950/70 hover:bg-slate-900/90 border border-white/15 hover:border-amber-400/60 shadow-xl backdrop-blur-2xl transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] flex items-center justify-center gap-3 overflow-hidden cursor-pointer"
           >
             {/* Hover Ambient Warm Glow */}
             <span className="absolute -inset-full bg-gradient-to-r from-amber-500/10 via-pink-500/10 to-indigo-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none blur-md" />

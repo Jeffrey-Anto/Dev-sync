@@ -203,36 +203,37 @@ export default function DomainDetailPage({ params }: PageProps) {
             : "-translate-y-full opacity-0 pointer-events-none shadow-none"
         } ${
           isUiUx
-            ? "bg-[#FFE600] border-b-4 border-black px-4 sm:px-8 py-3.5 shadow-[0_4px_0_#000000]"
-            : "border-b backdrop-blur-xl px-4 sm:px-8 py-3.5 shadow-2xl"
+            ? "bg-[#FFE600] border-b-4 border-black px-3 sm:px-8 py-2.5 sm:py-3.5 shadow-[0_4px_0_#000000]"
+            : "border-b backdrop-blur-xl px-3 sm:px-8 py-2.5 sm:py-3.5 shadow-2xl"
         }`}
         style={{
           backgroundColor: !isUiUx ? `rgba(4, 7, 6, 0.85)` : undefined,
           borderColor: !isUiUx ? `rgba(${domain.colorTheme.rgb}, 0.25)` : undefined,
         }}
       >
-        <div className="max-w-[1440px] mx-auto flex items-center justify-between">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between gap-2">
           <button
             onClick={handleBackNavigation}
-            className={`group flex items-center gap-2.5 transition-all cursor-pointer ${
+            className={`group flex items-center gap-1.5 sm:gap-2.5 transition-all cursor-pointer ${
               isUiUx
-                ? "handdrawn-btn bg-white text-black font-doodle text-sm font-bold px-4 py-1.5"
-                : "text-xs font-mono text-slate-300 hover:text-white px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/25 shadow-sm"
+                ? "handdrawn-btn bg-white text-black font-doodle text-xs sm:text-sm font-bold px-3 sm:px-4 py-1.5"
+                : "text-xs font-mono text-slate-300 hover:text-white px-2.5 sm:px-3.5 py-1.5 rounded-xl bg-white/5 border border-white/10 hover:border-white/25 shadow-sm"
             }`}
           >
             <ArrowLeft
-              className="w-4 h-4 group-hover:-translate-x-1 transition-transform"
+              className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:-translate-x-1 transition-transform"
               style={{ color: isUiUx ? "#000000" : domain.colorTheme.secondary }}
             />
-            <span>Return to Capability Matrix</span>
+            <span className="hidden sm:inline">Return to Capability Matrix</span>
+            <span className="sm:hidden font-semibold">Back</span>
           </button>
 
           {/* Breadcrumb Indicator & Font Dropdown */}
-          <div className="flex items-center gap-3">
-            {!isUiUx && <FontSelector className="hidden sm:inline-block" />}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {!isUiUx && <FontSelector className="hidden md:inline-block" />}
             <div
-              className={`flex items-center gap-3 ${
-                isUiUx ? "font-doodle text-sm text-black" : "text-xs font-mono text-slate-400"
+              className={`flex items-center gap-2 sm:gap-3 ${
+                isUiUx ? "font-doodle text-xs sm:text-sm text-black" : "text-[11px] sm:text-xs font-mono text-slate-400"
               }`}
             >
               <span className="hidden sm:inline">COLLECTIVE.CSE</span>
@@ -240,17 +241,17 @@ export default function DomainDetailPage({ params }: PageProps) {
                 {isUiUx ? "\\" : "/"}
               </span>
               <div
-                className={`flex items-center gap-2 px-3 py-1 ${
+                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 ${
                   isUiUx
                     ? "handdrawn-box bg-[#FF00AA] text-white font-bold"
                     : "rounded-lg bg-slate-900/80 border border-white/10"
                 }`}
               >
                 <span
-                  className={`w-2 h-2 rounded-full ${isUiUx ? "bg-white" : "animate-pulse"}`}
+                  className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full ${isUiUx ? "bg-white" : "animate-pulse"}`}
                   style={{ backgroundColor: !isUiUx ? domain.colorTheme.primary : undefined }}
                 />
-                <span className="font-semibold">{domain.name}</span>
+                <span className="font-semibold truncate max-w-[120px] sm:max-w-none">{domain.name}</span>
               </div>
             </div>
           </div>
@@ -258,40 +259,40 @@ export default function DomainDetailPage({ params }: PageProps) {
       </header>
 
       {/* 4. MAIN DOMAIN SHOWCASE VIEWPORT */}
-      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex-grow w-full">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-3 sm:px-6 lg:px-8 py-8 sm:py-16 flex-grow w-full">
         {/* Domain Hero Header with Motion Settle */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="text-center max-w-4xl mx-auto mb-16 sm:mb-20 flex flex-col items-center"
+          className="text-center max-w-4xl mx-auto mb-10 sm:mb-20 flex flex-col items-center px-2"
         >
           <h1
-            className={`tracking-tight leading-tight mb-4 ${
+            className={`tracking-tight leading-tight mb-3 sm:mb-4 ${
               isUiUx
-                ? "font-doodle text-4xl sm:text-6xl lg:text-7xl font-black text-black drop-shadow-[0_0_20px_rgba(255,255,255,1)] [text-shadow:_0_0_10px_#ffffff,_0_0_20px_#ffffff,_0_0_30px_#ffffff,_3px_3px_0_#FFE600]"
-                : "text-3xl sm:text-5xl lg:text-6xl font-black text-white drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]"
+                ? "font-doodle text-3xl sm:text-6xl lg:text-7xl font-black text-black drop-shadow-[0_0_20px_rgba(255,255,255,1)] [text-shadow:_0_0_10px_#ffffff,_0_0_20px_#ffffff,_0_0_30px_#ffffff,_3px_3px_0_#FFE600]"
+                : "text-2xl sm:text-5xl lg:text-6xl font-black text-white drop-shadow-[0_2px_16px_rgba(0,0,0,0.9)]"
             }`}
           >
             {domain.name}
           </h1>
 
           <p
-            className={`max-w-3xl leading-relaxed mb-8 ${
+            className={`max-w-3xl leading-relaxed mb-6 sm:mb-8 ${
               isUiUx
-                ? "font-doodle text-xl sm:text-2xl text-black font-black drop-shadow-[0_0_16px_rgba(255,255,255,1)] [text-shadow:_0_0_8px_#ffffff,_0_0_16px_#ffffff,_0_0_24px_#ffffff]"
-                : "text-base sm:text-xl text-slate-200 font-sans font-normal drop-shadow-[0_1px_10px_rgba(0,0,0,0.85)]"
+                ? "font-doodle text-base sm:text-2xl text-black font-black drop-shadow-[0_0_16px_rgba(255,255,255,1)] [text-shadow:_0_0_8px_#ffffff,_0_0_16px_#ffffff,_0_0_24px_#ffffff]"
+                : "text-sm sm:text-xl text-slate-200 font-sans font-normal drop-shadow-[0_1px_10px_rgba(0,0,0,0.85)]"
             }`}
           >
             {domain.tagline}
           </p>
 
           {/* Aggregate Telemetry Metrics for this Domain */}
-          <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-4">
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
             <div
-              className={`flex items-center gap-2 px-4 py-2.5 transition-all shadow-sm ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 transition-all shadow-sm ${
                 isUiUx
-                  ? "handdrawn-box bg-[#FFE600] text-black shadow-[4px_4px_0_#000] font-doodle text-lg font-bold"
+                  ? "handdrawn-box bg-[#FFE600] text-black shadow-[4px_4px_0_#000] font-doodle text-sm sm:text-lg font-bold"
                   : "rounded-2xl border text-slate-200 backdrop-blur-md font-mono text-xs sm:text-sm"
               }`}
               style={{
@@ -300,7 +301,7 @@ export default function DomainDetailPage({ params }: PageProps) {
               }}
             >
               <Users
-                className="w-4 h-4"
+                className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                 style={{ color: isUiUx ? "#000000" : domain.colorTheme.secondary }}
               />
               <span>
@@ -309,9 +310,9 @@ export default function DomainDetailPage({ params }: PageProps) {
             </div>
 
             <div
-              className={`flex items-center gap-2 px-4 py-2.5 transition-all shadow-sm ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 transition-all shadow-sm ${
                 isUiUx
-                  ? "handdrawn-box-alt bg-[#00E5FF] text-black shadow-[4px_4px_0_#000] font-doodle text-lg font-bold"
+                  ? "handdrawn-box-alt bg-[#00E5FF] text-black shadow-[4px_4px_0_#000] font-doodle text-sm sm:text-lg font-bold"
                   : "rounded-2xl border text-slate-200 backdrop-blur-md font-mono text-xs sm:text-sm"
               }`}
               style={{
@@ -320,7 +321,7 @@ export default function DomainDetailPage({ params }: PageProps) {
               }}
             >
               <FolderGit2
-                className="w-4 h-4"
+                className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                 style={{ color: isUiUx ? "#000000" : domain.colorTheme.secondary }}
               />
               <span>
@@ -329,9 +330,9 @@ export default function DomainDetailPage({ params }: PageProps) {
             </div>
 
             <div
-              className={`flex items-center gap-2 px-4 py-2.5 transition-all shadow-sm ${
+              className={`flex items-center gap-2 px-3 sm:px-4 py-2 sm:py-2.5 transition-all shadow-sm ${
                 isUiUx
-                  ? "handdrawn-box bg-[#FF00AA] text-white shadow-[4px_4px_0_#000] font-doodle text-lg font-bold"
+                  ? "handdrawn-box bg-[#FF00AA] text-white shadow-[4px_4px_0_#000] font-doodle text-sm sm:text-lg font-bold"
                   : "rounded-2xl border text-slate-200 backdrop-blur-md font-mono text-xs sm:text-sm"
               }`}
               style={{
@@ -340,7 +341,7 @@ export default function DomainDetailPage({ params }: PageProps) {
               }}
             >
               <Layers
-                className="w-4 h-4"
+                className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                 style={{ color: isUiUx ? "#FFFFFF" : domain.colorTheme.secondary }}
               />
               <span>

@@ -729,7 +729,7 @@ export default function MobileStickyProjectShowcase({
       </div>
 
       {/* ── MOBILE / TABLET RESPONSIVE FALLBACK (Stacked cards with in-card live preview) ── */}
-      <div className="lg:hidden space-y-12 pb-16">
+      <div className="lg:hidden space-y-8 sm:space-y-12 pb-16">
         {projects.map((project, idx) => {
           const isActive = activeProjectIndex === idx;
 
@@ -741,15 +741,15 @@ export default function MobileStickyProjectShowcase({
                   cardRefs.current[idx] = el;
                 }
               }}
-              className={`p-5 sm:p-6 rounded-3xl border transition-all duration-300 ${
+              className={`p-4 sm:p-6 rounded-3xl border transition-all duration-300 ${
                 isActive
                   ? "bg-gradient-to-br from-[#121829] via-[#0b101f] to-[#171128] border-amber-500/60 shadow-2xl"
                   : "bg-[#0b0e18]/80 border-white/10"
               }`}
             >
               {/* Header */}
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-mono uppercase tracking-widest font-bold text-amber-300">
+              <div className="flex items-center justify-between mb-2 sm:mb-3">
+                <span className="text-[11px] sm:text-xs font-mono uppercase tracking-widest font-bold text-amber-300">
                   PROJECT #{idx + 1} · {project.title.split(" ")[0]}
                 </span>
               </div>
@@ -757,13 +757,13 @@ export default function MobileStickyProjectShowcase({
               <h3 className="text-lg sm:text-xl font-black text-white tracking-tight mb-1.5">
                 {project.title}
               </h3>
-              <p className="text-xs text-slate-300 mb-5 font-sans">
+              <p className="text-xs text-slate-300 mb-4 sm:mb-5 font-sans leading-relaxed">
                 {project.oneLiner}
               </p>
 
-              {/* Mobile Phone Mockup View with Dynamic Fitting Height */}
-              <div className="flex justify-center my-4">
-                <PhoneFrame className="!h-[550px] sm:!h-[590px] !w-[290px] sm:!w-[320px] !rounded-[46px] !p-3">
+              {/* Mobile Phone Mockup View with Dynamic Fitting Dimensions */}
+              <div className="flex justify-center my-3 sm:my-4">
+                <PhoneFrame className="!h-[480px] sm:!h-[590px] !w-full max-w-[275px] sm:max-w-[320px] !rounded-[40px] sm:!rounded-[46px] !p-2 sm:!p-3">
                   {idx === 0 && <FleetNavScreen />}
                   {idx === 1 && <CineSyncScreen />}
                   {idx === 2 && <PulsePayScreen />}
@@ -771,27 +771,27 @@ export default function MobileStickyProjectShowcase({
               </div>
 
               {/* Problem / Solution */}
-              <div className="space-y-2 p-3.5 rounded-2xl bg-black/50 border border-white/5 font-sans text-xs text-slate-300 mb-4">
+              <div className="space-y-2 p-3 sm:p-3.5 rounded-2xl bg-black/50 border border-white/5 font-sans text-xs text-slate-300 mb-4">
                 <div className="flex items-start gap-1.5">
-                  <span className="px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 font-mono text-[8.5px] font-bold shrink-0">
+                  <span className="px-1.5 py-0.5 rounded bg-red-500/20 text-red-300 font-mono text-[8px] sm:text-[8.5px] font-bold shrink-0 mt-0.5">
                     PROBLEM
                   </span>
-                  <p className="text-[11.5px]">{project.problem}</p>
+                  <p className="text-[11px] sm:text-[11.5px] leading-relaxed">{project.problem}</p>
                 </div>
                 <div className="flex items-start gap-1.5 pt-2 border-t border-white/5">
-                  <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[8.5px] font-bold shrink-0">
+                  <span className="px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-mono text-[8px] sm:text-[8.5px] font-bold shrink-0 mt-0.5">
                     SOLUTION
                   </span>
-                  <p className="text-[11.5px]">{project.solution}</p>
+                  <p className="text-[11px] sm:text-[11.5px] leading-relaxed">{project.solution}</p>
                 </div>
               </div>
 
               {/* Metrics */}
-              <div className="grid grid-cols-3 gap-2 font-mono text-xs mb-4">
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 font-mono text-xs mb-4">
                 {project.metrics?.map((m, mIdx) => (
                   <div key={mIdx} className="p-2 rounded-xl bg-white/[0.04] border border-white/10 text-center">
-                    <span className="text-slate-400 text-[7.5px] block truncate">{m.label}</span>
-                    <span className="text-amber-300 font-bold text-[11px] block truncate">{m.value}</span>
+                    <span className="text-slate-400 text-[7px] sm:text-[7.5px] block truncate">{m.label}</span>
+                    <span className="text-amber-300 font-bold text-[10.5px] sm:text-[11px] block truncate">{m.value}</span>
                   </div>
                 ))}
               </div>
@@ -799,7 +799,7 @@ export default function MobileStickyProjectShowcase({
               {/* CTA */}
               <button
                 onClick={() => onSelectProject(project)}
-                className="w-full inline-flex items-center justify-center gap-2 text-xs font-mono font-bold bg-amber-500 hover:bg-amber-400 text-black px-4 py-2 rounded-xl transition-all shadow-lg cursor-pointer"
+                className="w-full inline-flex items-center justify-center gap-2 text-xs font-mono font-bold bg-amber-500 hover:bg-amber-400 text-black px-4 py-2.5 rounded-xl transition-all shadow-lg cursor-pointer"
               >
                 <span>Inspect Full Architecture</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />

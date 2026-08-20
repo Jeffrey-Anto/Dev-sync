@@ -118,8 +118,8 @@ export default function Navbar() {
           />
         </div>
 
-        {/* Sleek Right Action CTA & Font Dropdown */}
-        <div className="hidden sm:flex items-center gap-3">
+        {/* Sleek Right Action CTA & Font Dropdown (Desktop Only) */}
+        <div className="hidden md:flex items-center gap-3">
           <FontSelector />
 
           <Link
@@ -153,8 +153,8 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Mobile Menu Toggle Button */}
-        <div className="flex md:hidden items-center gap-2">
+        {/* Mobile Menu Toggle Button (Mobile Top Bar) */}
+        <div className="flex md:hidden items-center">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white"
@@ -181,7 +181,7 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          <div className="pt-2 flex flex-col gap-3">
+          <div className="pt-3 flex flex-col gap-3">
             <div className="px-1">
               <label className="block text-[11px] font-mono text-slate-400 mb-1.5 uppercase tracking-wider">
                 Select Font Trio
@@ -189,13 +189,38 @@ export default function Navbar() {
               <FontSelector isMobileFullWidth align="left" />
             </div>
 
+            {/* Full-width Glowing Conic Beam Placement Desk CTA in Mobile Drawer */}
             <Link
               href="/recruit"
               onClick={() => setMobileMenuOpen(false)}
-              className="w-full py-3 rounded-xl text-sm text-center font-semibold text-white bg-indigo-600 hover:bg-indigo-500 flex items-center justify-center gap-2 transition-colors shadow-lg"
+              className="group relative w-full inline-flex items-center justify-center p-[1.5px] rounded-full overflow-hidden transition-all duration-300 hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_25px_rgba(16,185,129,0.25)] hover:shadow-[0_0_35px_rgba(16,185,129,0.5)]"
             >
-              <span>Placement Desk &amp; Schedule Drive</span>
-              <ArrowRight className="w-4 h-4" />
+              {/* Rotating Conic Glowing Green Border Beam */}
+              <span className="absolute inset-[-150%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0deg,transparent_200deg,#059669_270deg,#10b981_320deg,#34d399_350deg,#10b981_360deg)]" />
+
+              {/* Ambient Rotating Green Glow behind the border */}
+              <span className="absolute inset-[-100%] animate-[spin_3s_linear_infinite] bg-[conic-gradient(from_0deg_at_50%_50%,transparent_0deg,transparent_240deg,#10b981_320deg,#34d399_360deg)] blur-md opacity-75" />
+
+              {/* Inner Pill Body */}
+              <span className="relative z-10 w-full flex items-center justify-between px-4 py-2.5 rounded-full bg-[#070a12] text-xs sm:text-sm font-medium text-white transition-colors duration-300 group-hover:bg-[#0b101c]">
+                <div className="flex items-center gap-2.5">
+                  {/* Live Emerald Radar Beacon */}
+                  <span className="relative flex h-2.5 w-2.5 items-center justify-center flex-shrink-0">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400 shadow-[0_0_8px_#34d399]" />
+                  </span>
+
+                  {/* Button Label */}
+                  <span className="font-semibold tracking-wide text-slate-100 group-hover:text-white transition-colors">
+                    Placement Desk &amp; Schedule Drive
+                  </span>
+                </div>
+
+                {/* Circular Arrow Chip */}
+                <span className="w-6 h-6 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 group-hover:bg-emerald-400 group-hover:text-black group-hover:border-emerald-400 transition-all duration-300 flex-shrink-0">
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </span>
+              </span>
             </Link>
           </div>
         </div>

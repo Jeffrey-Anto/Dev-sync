@@ -44,6 +44,19 @@ export default function DomainSelection() {
   const [hoveredDomainId, setHoveredDomainId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
+  const [isMobile, setIsMobile] = useState(false);
+  const touchStartX = useRef<number | null>(null);
+  const touchEndX = useRef<number | null>(null);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 640);
+    };
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const total = DOMAINS.length;
 
   // Restore active domain from sessionStorage on client mount (prevents SSR hydration mismatch)
@@ -158,6 +171,29 @@ export default function DomainSelection() {
     setActiveIndex((prev) => (prev + 1) % total);
   }, [isWarping, total]);
 
+  // Touch Swipe Handlers for mobile users
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.targetTouches[0].clientX;
+    touchEndX.current = null;
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    touchEndX.current = e.targetTouches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+    const diff = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 40;
+    if (diff > minSwipeDistance) {
+      handleNext();
+    } else if (diff < -minSwipeDistance) {
+      handlePrev();
+    }
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -195,7 +231,7 @@ export default function DomainSelection() {
       id="domains"
       ref={containerRef}
       tabIndex={0}
-      className="relative z-20 min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#050608] overflow-hidden flex flex-col justify-center select-none outline-none"
+      className="relative z-20 min-h-screen py-20 sm:py-32 px-3 sm:px-6 lg:px-8 bg-[#050608] overflow-hidden flex flex-col justify-center select-none outline-none"
     >
       {/* Ambient Neural Background (Throttles during warp for 120 FPS lock) */}
       <NeuralPulseBackground opacity={isWarping ? 0.15 : 0.65} />
@@ -211,13 +247,13 @@ export default function DomainSelection() {
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-16 px-2">
           <motion.div
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-cyan-400 mb-4 shadow-md backdrop-blur-md"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-cyan-400 mb-3 sm:mb-4 shadow-md backdrop-blur-md"
           >
             <Compass className="w-3.5 h-3.5 text-indigo-400" />
             <span>3D CIRCULAR CAPABILITY ORBIT</span>
@@ -228,7 +264,7 @@ export default function DomainSelection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.08 }}
-            className="text-3xl sm:text-5xl font-black text-white tracking-tight"
+            className="text-2xl sm:text-5xl font-black text-white tracking-tight"
           >
             Select a{" "}
             <span className="bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
@@ -241,14 +277,19 @@ export default function DomainSelection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.15 }}
-            className="text-sm sm:text-base text-slate-400 mt-3 font-sans"
+            className="text-xs sm:text-base text-slate-400 mt-2.5 sm:mt-3 font-sans"
           >
-            Click any surrounding card to orbit. Click the focused card to launch space-time warp.
+            Swipe or click surrounding cards to orbit. Tap center card to launch space-time warp.
           </motion.p>
         </div>
 
-        {/* 3D Circular Deck / Spatial Viewport */}
-        <div className="relative w-full h-[520px] sm:h-[550px] flex items-center justify-center perspective-[1200px]">
+        {/* 3D Circular Deck / Spatial Viewport with Touch Gesture Support */}
+        <div
+          onTouchStart={handleTouchStart}
+          onTouchMove={handleTouchMove}
+          onTouchEnd={handleTouchEnd}
+          className="relative w-full h-[470px] sm:h-[550px] flex items-center justify-center perspective-[1200px] touch-pan-y"
+        >
           {DOMAINS.map((domain, index) => {
             const Icon = iconMap[domain.icon] || Terminal;
             const offset = getCircularOffset(index);
@@ -263,6 +304,7 @@ export default function DomainSelection() {
                 index={index}
                 offset={offset}
                 isCenter={isCenter}
+                isMobile={isMobile}
                 Icon={Icon}
                 isHovered={isHovered}
                 isSelected={isSelected}
@@ -276,23 +318,23 @@ export default function DomainSelection() {
           })}
 
           {/* Floating Left / Right Arrow Controls */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between px-2 sm:px-6 pointer-events-none z-40">
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between px-1 sm:px-6 pointer-events-none z-40">
             <button
               onClick={handlePrev}
               disabled={isWarping}
               aria-label="Previous Domain"
-              className="pointer-events-auto p-3.5 rounded-full bg-slate-950/85 border border-white/15 text-slate-300 hover:text-white hover:border-white/40 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group disabled:opacity-0"
+              className="pointer-events-auto p-2.5 sm:p-3.5 rounded-full bg-slate-950/90 border border-white/20 text-slate-300 hover:text-white hover:border-white/40 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group disabled:opacity-0"
             >
-              <ChevronLeft className="w-6 h-6 group-hover:-translate-x-0.5 transition-transform" />
+              <ChevronLeft className="w-5 h-5 sm:w-6 sm:h-6 group-hover:-translate-x-0.5 transition-transform" />
             </button>
 
             <button
               onClick={handleNext}
               disabled={isWarping}
               aria-label="Next Domain"
-              className="pointer-events-auto p-3.5 rounded-full bg-slate-950/85 border border-white/15 text-slate-300 hover:text-white hover:border-white/40 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group disabled:opacity-0"
+              className="pointer-events-auto p-2.5 sm:p-3.5 rounded-full bg-slate-950/90 border border-white/20 text-slate-300 hover:text-white hover:border-white/40 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group disabled:opacity-0"
             >
-              <ChevronRight className="w-6 h-6 group-hover:translate-x-0.5 transition-transform" />
+              <ChevronRight className="w-5 h-5 sm:w-6 sm:h-6 group-hover:translate-x-0.5 transition-transform" />
             </button>
           </div>
         </div>
@@ -516,6 +558,7 @@ interface WarpDomainCardProps {
   index: number;
   offset: number;
   isCenter: boolean;
+  isMobile?: boolean;
   Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   isHovered: boolean;
   isSelected: boolean;
@@ -531,6 +574,7 @@ function WarpDomainCard({
   index,
   offset,
   isCenter,
+  isMobile = false,
   Icon,
   isHovered,
   isSelected,
@@ -546,7 +590,7 @@ function WarpDomainCard({
   const [spotlightPos, setSpotlightPos] = useState({ x: 50, y: 50 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || isWarping || !isCenter) return;
+    if (!cardRef.current || isWarping || !isCenter || isMobile) return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -589,7 +633,7 @@ function WarpDomainCard({
     if (isWarping && !isSelected) {
       // Surrounding cards are deflected outward by gravitational lensing
       return {
-        x: offset * 450,
+        x: offset * (isMobile ? 260 : 450),
         y: 50,
         z: -350,
         scale: 0.35,
@@ -599,6 +643,73 @@ function WarpDomainCard({
       };
     }
 
+    if (isMobile) {
+      // Mobile-optimized tighter offsets to avoid offscreen cutoffs and horizontal overflow
+      switch (offset) {
+        case 0:
+          return {
+            x: 0,
+            y: 0,
+            z: 50,
+            scale: 1.0,
+            rotateY: 0,
+            opacity: 1,
+            zIndex: 30,
+          };
+        case -1:
+          return {
+            x: -190,
+            y: 0,
+            z: -50,
+            scale: 0.76,
+            rotateY: 18,
+            opacity: 0.35,
+            zIndex: 20,
+          };
+        case 1:
+          return {
+            x: 190,
+            y: 0,
+            z: -50,
+            scale: 0.76,
+            rotateY: -18,
+            opacity: 0.35,
+            zIndex: 20,
+          };
+        case -2:
+          return {
+            x: -330,
+            y: 0,
+            z: -140,
+            scale: 0.55,
+            rotateY: 26,
+            opacity: 0.1,
+            zIndex: 10,
+          };
+        case 2:
+          return {
+            x: 330,
+            y: 0,
+            z: -140,
+            scale: 0.55,
+            rotateY: -26,
+            opacity: 0.1,
+            zIndex: 10,
+          };
+        default:
+          return {
+            x: offset < 0 ? -480 : 480,
+            y: 0,
+            z: -260,
+            scale: 0.4,
+            rotateY: offset < 0 ? 35 : -35,
+            opacity: 0,
+            zIndex: 0,
+          };
+      }
+    }
+
+    // Desktop transforms
     switch (offset) {
       case 0:
         return {
@@ -692,7 +803,7 @@ function WarpDomainCard({
         willChange: "transform, opacity",
         backfaceVisibility: "hidden",
       }}
-      className={`w-[360px] sm:w-[410px] h-[470px] cursor-pointer rounded-3xl select-none transition-shadow duration-300 ${
+      className={`w-[calc(100vw-36px)] max-w-[340px] sm:w-[410px] h-[430px] sm:h-[470px] cursor-pointer rounded-3xl select-none transition-shadow duration-300 ${
         isCenter ? "cursor-pointer" : "cursor-pointer hover:brightness-125"
       }`}
     >
@@ -711,7 +822,7 @@ function WarpDomainCard({
 
       {/* Main Glass Card Surface */}
       <div
-        className={`relative h-full rounded-3xl backdrop-blur-xl p-7 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
+        className={`relative h-full rounded-3xl backdrop-blur-xl p-5 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
           isCenter
             ? "bg-[#070a13]/95 shadow-2xl"
             : "bg-[#06080e]/90 hover:bg-[#090d18]/95"
@@ -742,7 +853,7 @@ function WarpDomainCard({
 
         {/* Top Header: Domain Index */}
         <div>
-          <div className="flex items-start justify-end mb-5">
+          <div className="flex items-start justify-end mb-3 sm:mb-5">
             <span
               className="font-mono text-xs font-bold tracking-wider"
               style={{ color: isCenter ? domain.colorTheme.secondary : "rgba(148, 163, 184, 0.7)" }}
@@ -753,7 +864,7 @@ function WarpDomainCard({
 
           {/* Domain Title */}
           <h3
-            className="text-2xl sm:text-3xl font-black text-white tracking-tight leading-snug mb-3"
+            className="text-xl sm:text-3xl font-black text-white tracking-tight leading-snug mb-2 sm:mb-3"
             style={{
               textShadow: isCenter ? `0 0 30px ${domain.colorTheme.glow}` : "none",
             }}
@@ -762,16 +873,16 @@ function WarpDomainCard({
           </h3>
 
           {/* Tagline */}
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans line-clamp-3">
+          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans line-clamp-2 sm:line-clamp-3">
             {domain.tagline}
           </p>
         </div>
 
         {/* Middle Feature Highlights */}
-        <div className="space-y-2.5 py-2">
-          <div className="flex items-center gap-2.5 text-xs font-mono text-slate-200">
+        <div className="space-y-2 py-1 sm:py-2">
+          <div className="flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-xs font-mono text-slate-200">
             <span
-              className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
+              className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
               style={{
                 backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.25)`,
                 color: domain.colorTheme.secondary,
@@ -781,14 +892,14 @@ function WarpDomainCard({
             >
               ✓
             </span>
-            <span>
+            <span className="truncate">
               <strong className="text-white">{domain.studentCount}</strong> Dedicated Undergraduates
             </span>
           </div>
 
-          <div className="flex items-center gap-2.5 text-xs font-mono text-slate-200">
+          <div className="flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-xs font-mono text-slate-200">
             <span
-              className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
+              className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
               style={{
                 backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.25)`,
                 color: domain.colorTheme.secondary,
@@ -798,7 +909,7 @@ function WarpDomainCard({
             >
               ✓
             </span>
-            <span>
+            <span className="truncate">
               <strong className="text-white">{domain.projectCount}</strong> Verified Production Systems
             </span>
           </div>
