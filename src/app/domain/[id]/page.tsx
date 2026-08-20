@@ -1,6 +1,6 @@
 "use client";
 
-import React, { use, useState, useRef, useMemo } from "react";
+import React, { use, useState, useRef, useMemo, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
@@ -53,6 +53,21 @@ export default function DomainDetailPage({ params }: PageProps) {
   const [isNavigatingBack, setIsNavigatingBack] = useState(false);
   const [pourCount, setPourCount] = useState(0);
   const [swingCount, setSwingCount] = useState(0);
+
+  // Sync active domain so matrix orbit restores to this domain upon returning
+  useEffect(() => {
+    if (resolvedParams.id) {
+      try {
+        sessionStorage.setItem("devsync_active_domain", resolvedParams.id);
+        const idx = DOMAINS.findIndex((d) => d.id === resolvedParams.id);
+        if (idx !== -1) {
+          sessionStorage.setItem("devsync_active_domain_index", String(idx));
+        }
+      } catch {
+        // ignore storage errors
+      }
+    }
+  }, [resolvedParams.id]);
 
   // Stable per-card refs so GSAP can target each card DOM node
   const domainProjects = useMemo(

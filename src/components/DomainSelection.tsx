@@ -12,14 +12,11 @@ import {
   ShieldAlert,
   ArrowUpRight,
   Sparkles,
-  Users,
-  FolderGit2,
   Terminal,
   ChevronLeft,
   ChevronRight,
   Compass,
   Palette,
-  CheckCircle2,
   Zap,
 } from "lucide-react";
 import { DOMAINS, Domain } from "@/data/domains";
@@ -36,15 +33,69 @@ const iconMap: Record<string, React.ComponentType<{ className?: string; style?: 
   ShieldAlert,
 };
 
+// In-memory module cache to persist state across client-side route transitions
+let cachedActiveDomainIndex = 0;
+
 export default function DomainSelection() {
   const router = useRouter();
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState<number>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const savedDomainId = sessionStorage.getItem("devsync_active_domain");
+        if (savedDomainId) {
+          const idx = DOMAINS.findIndex((d) => d.id === savedDomainId);
+          if (idx !== -1) {
+            cachedActiveDomainIndex = idx;
+            return idx;
+          }
+        }
+        const savedIdx = sessionStorage.getItem("devsync_active_domain_index");
+        if (savedIdx !== null) {
+          const parsed = parseInt(savedIdx, 10);
+          if (!isNaN(parsed) && parsed >= 0 && parsed < DOMAINS.length) {
+            cachedActiveDomainIndex = parsed;
+            return parsed;
+          }
+        }
+      } catch {
+        // ignore storage errors
+      }
+    }
+    return cachedActiveDomainIndex;
+  });
   const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
   const [isWarping, setIsWarping] = useState(false);
   const [hoveredDomainId, setHoveredDomainId] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
   const total = DOMAINS.length;
+
+  // Handle hash scrolling on mount
+  useEffect(() => {
+    if (typeof window !== "undefined" && window.location.hash === "#domains") {
+      const el = document.getElementById("domains");
+      if (el) {
+        const timer = setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 120);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, []);
+
+  // Synchronize state changes to cache and sessionStorage
+  useEffect(() => {
+    cachedActiveDomainIndex = activeIndex;
+    try {
+      const currentDomain = DOMAINS[activeIndex];
+      if (currentDomain) {
+        sessionStorage.setItem("devsync_active_domain", currentDomain.id);
+        sessionStorage.setItem("devsync_active_domain_index", String(activeIndex));
+      }
+    } catch {
+      // ignore
+    }
+  }, [activeIndex]);
 
   // Proactively prefetch all domain routes to guarantee instant route transitions
   useEffect(() => {
@@ -56,6 +107,17 @@ export default function DomainSelection() {
   const triggerSpaceTimeWarp = useCallback(
     (domain: Domain) => {
       if (isWarping) return;
+
+      const domainIdx = DOMAINS.findIndex((d) => d.id === domain.id);
+      if (domainIdx !== -1) {
+        cachedActiveDomainIndex = domainIdx;
+        try {
+          sessionStorage.setItem("devsync_active_domain", domain.id);
+          sessionStorage.setItem("devsync_active_domain_index", String(domainIdx));
+        } catch {
+          // ignore
+        }
+      }
 
       setSelectedDomain(domain);
       setIsWarping(true);
