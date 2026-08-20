@@ -207,7 +207,7 @@ export default function StatStrip() {
 
   return (
     <section id="stats" className="relative z-20 py-16 sm:py-24 bg-[#05070d]/90 border-y border-white/10 overflow-hidden">
-      <FluidWaveBackground opacity={0.4} intensity="subtle" />
+      <FluidWaveBackground opacity={0.75} intensity="medium" speed={1.1} />
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
           <span className="text-xs font-mono tracking-widest text-indigo-400 uppercase bg-indigo-500/10 px-3.5 py-1 rounded-full border border-indigo-500/20">
