@@ -86,7 +86,7 @@ export default function UiUxTheme() {
       <motion.div
         animate={{ x: mousePos.x * 0.4, y: mousePos.y * 0.4 }}
         transition={{ type: "spring", damping: 25, stiffness: 120 }}
-        className="absolute top-16 left-1/2 -translate-x-1/2 sm:left-24 sm:translate-x-0 w-80 sm:w-[420px] pointer-events-auto cursor-pointer drop-shadow-2xl"
+        className="absolute top-20 sm:top-24 lg:top-28 left-4 sm:left-12 lg:left-16 w-56 sm:w-72 md:w-80 pointer-events-auto cursor-pointer drop-shadow-2xl opacity-60 lg:opacity-80"
         onClick={() => setIsPoweredOn(!isPoweredOn)}
       >
         <div className="relative">
@@ -114,10 +114,12 @@ export default function UiUxTheme() {
               fill="#FF00AA"
             />
 
-            {/* Screen Inner Display Area */}
+            {/* Screen Inner Display Area — White Background */}
             <path
               d="M 114 62 C 190 54, 248 54, 324 64 C 331 132, 337 170, 342 208 C 305 217, 212 217, 108 208 C 110 166, 112 128, 114 62 Z"
-              fill={isPoweredOn ? "#0033FF" : "#05081C"}
+              fill={isPoweredOn ? "#F0FDF4" : "#FFFFFF"}
+              stroke="#000000"
+              strokeWidth="1.5"
               className="transition-colors duration-300"
             />
 
@@ -137,10 +139,10 @@ export default function UiUxTheme() {
               <motion.div
                 animate={{ scale: [1, 1.05, 1] }}
                 transition={{ repeat: Infinity, duration: 1.6 }}
-                className="font-mono font-bold text-xs sm:text-sm text-slate-300 tracking-wide"
+                className="font-mono font-bold text-xs sm:text-sm text-black tracking-wide"
               >
-                <span>Click to start</span>
-                <span className="block text-[9px] text-pink-400 mt-1 font-normal animate-pulse">
+                <span className="font-extrabold text-black block">Click to start</span>
+                <span className="block text-[9px] text-pink-600 mt-1 font-bold animate-pulse">
                   ⚡ TAP COMPUTER
                 </span>
               </motion.div>
@@ -148,11 +150,11 @@ export default function UiUxTheme() {
               <motion.div
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="text-left font-mono text-white text-[9px] sm:text-[11px] leading-tight space-y-1 w-full"
+                className="text-left font-mono text-black text-[9px] sm:text-[11px] leading-tight space-y-1 w-full"
               >
-                <p className="font-bold text-yellow-300">COLLECTIVE.CS</p>
-                <p className="text-white">UI/UX Craft &amp; Interaction</p>
-                <div className="mt-1 px-1.5 py-0.5 border border-white text-center text-[8px] sm:text-[9px] hover:bg-white hover:text-blue-700 transition-colors uppercase font-bold">
+                <p className="font-black text-indigo-700">COLLECTIVE.CS</p>
+                <p className="text-black font-bold">UI/UX Design</p>
+                <div className="mt-1 px-1.5 py-0.5 border border-black text-center text-[8px] sm:text-[9px] bg-black text-white hover:bg-transparent hover:text-black transition-colors uppercase font-bold">
                   ABOUT_UI_UX
                 </div>
               </motion.div>
@@ -222,19 +224,6 @@ export default function UiUxTheme() {
         </svg>
       </motion.div>
 
-      {/* 5. BOTTOM RIGHT: HAND-DRAWN PLAYFUL RETRO STICKERS & JELLY LAB BADGES */}
-      <motion.div
-        animate={{ y: [0, 8, 0], rotate: [-2, 2, -2] }}
-        transition={{ repeat: Infinity, duration: 6.5, ease: "easeInOut" }}
-        className="absolute bottom-12 right-6 sm:right-20 pointer-events-auto flex flex-col items-end gap-3 drop-shadow-xl"
-      >
-        <div className="handdrawn-box bg-[#FFE600] text-black font-doodle text-base sm:text-lg font-black px-4 py-2 shadow-[4px_4px_0_#000000] rotate-[-2deg]">
-          ✨ 60 FPS JELLY ENGINE
-        </div>
-        <div className="handdrawn-box-alt bg-[#FF00AA] text-white font-doodle text-sm sm:text-base font-black px-4 py-1.5 shadow-[4px_4px_0_#000000] rotate-[3deg]">
-          🎨 POP-ART DESIGN SYSTEM
-        </div>
-      </motion.div>
     </div>
   );
 }

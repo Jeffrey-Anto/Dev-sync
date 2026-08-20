@@ -234,7 +234,7 @@ export default function DomainDetailPage({ params }: PageProps) {
           <h1
             className={`tracking-tight leading-tight mb-4 ${
               isUiUx
-                ? "font-doodle text-4xl sm:text-6xl lg:text-7xl font-black text-black drop-shadow-[2px_2px_0px_#FFE600]"
+                ? "font-doodle text-4xl sm:text-6xl lg:text-7xl font-black text-black drop-shadow-[0_0_20px_rgba(255,255,255,1)] [text-shadow:_0_0_10px_#ffffff,_0_0_20px_#ffffff,_0_0_30px_#ffffff,_3px_3px_0_#FFE600]"
                 : "text-3xl sm:text-5xl lg:text-6xl font-black text-white"
             }`}
           >
@@ -244,7 +244,7 @@ export default function DomainDetailPage({ params }: PageProps) {
           <p
             className={`max-w-3xl leading-relaxed mb-8 ${
               isUiUx
-                ? "font-doodle text-xl sm:text-2xl text-slate-900 font-bold"
+                ? "font-doodle text-xl sm:text-2xl text-black font-black drop-shadow-[0_0_16px_rgba(255,255,255,1)] [text-shadow:_0_0_8px_#ffffff,_0_0_16px_#ffffff,_0_0_24px_#ffffff]"
                 : "text-base sm:text-xl text-slate-300 font-sans font-normal"
             }`}
           >
@@ -326,7 +326,7 @@ export default function DomainDetailPage({ params }: PageProps) {
               <h2
                 className={`tracking-tight ${
                   isUiUx
-                    ? "font-doodle text-3xl sm:text-4xl font-black text-black"
+                    ? "font-doodle text-3xl sm:text-4xl font-black text-black drop-shadow-[0_0_16px_rgba(255,255,255,1)] [text-shadow:_0_0_8px_#ffffff,_0_0_16px_#ffffff,_2px_2px_0_#FFE600]"
                     : "text-xl sm:text-2xl font-black text-white"
                 }`}
               >
@@ -335,7 +335,7 @@ export default function DomainDetailPage({ params }: PageProps) {
               <p
                 className={`mt-1 ${
                   isUiUx
-                    ? "font-doodle text-base text-slate-800 font-bold"
+                    ? "font-doodle text-base sm:text-lg text-black font-black drop-shadow-[0_0_12px_rgba(255,255,255,1)] [text-shadow:_0_0_6px_#ffffff,_0_0_12px_#ffffff]"
                     : "text-xs sm:text-sm text-slate-400 font-mono"
                 }`}
               >

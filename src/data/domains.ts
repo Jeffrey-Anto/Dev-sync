@@ -83,9 +83,9 @@ export const DOMAINS: Domain[] = [
   },
   {
     id: "ui-ux",
-    name: "UI/UX Design & Product Systems",
+    name: "UI/UX Design",
     shortName: "UI/UX Design",
-    tagline: "Design systems, micro-interactions, responsive prototypes, WCAG accessibility, and user-centric frontend architectures.",
+    tagline: "Crafting intuitive interfaces, responsive experiences, and production-ready design systems.",
     colorTheme: {
       primary: "#10B981",
       secondary: "#34D399",
@@ -318,7 +318,7 @@ export const PROJECTS: Project[] = [
     ],
   },
 
-  // UI/UX Design & Product Systems Projects
+  // UI/UX Design Projects
   {
     id: "ui-p1",
     domainId: "ui-ux",

@@ -200,9 +200,6 @@ function UiUxCard({
             <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-slate-700">
               ARTIFACT #{index + 1}
             </span>
-            <span className="text-[10px] font-doodle font-black px-1.5 bg-[#00FF66] text-black border border-black rounded shadow-[1px_1px_0_#000]">
-              ✓ POURED
-            </span>
           </div>
           <div className="w-8 h-8 rounded-full flex items-center justify-center bg-yellow-300 border-2 border-black text-black group-hover:bg-pink-400 group-hover:rotate-45 transition-all">
             <ArrowUpRight className="w-4 h-4" />
