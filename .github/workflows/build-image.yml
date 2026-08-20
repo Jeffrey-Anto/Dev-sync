@@ -27,4 +27,4 @@ jobs:
           push: true
           tags: ${{ steps.repo.outputs.image }}
       - name: Trigger Fedora Webhook Deployment
-        run: curl -X POST "https://fedora.tail9454e5.ts.net/deploy.sh?token=${{ secrets.FEDORA_WEBHOOK_TOKEN }}&async=true"
+        run: curl -X POST "https://fedora.tail9454e5.ts.net/deploy_gces_portfolio.sh?token=${{ secrets.FEDORA_WEBHOOK_TOKEN }}&async=true"
