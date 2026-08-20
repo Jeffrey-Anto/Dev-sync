@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -19,6 +19,8 @@ import {
   ChevronRight,
   Compass,
   Palette,
+  CheckCircle2,
+  Zap,
 } from "lucide-react";
 import { DOMAINS, Domain } from "@/data/domains";
 import { NeuralPulseBackground } from "@/components/backgrounds";
@@ -38,40 +40,82 @@ export default function DomainSelection() {
   const router = useRouter();
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedDomain, setSelectedDomain] = useState<Domain | null>(null);
-  const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isWarping, setIsWarping] = useState(false);
   const [hoveredDomainId, setHoveredDomainId] = useState<string | null>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const total = DOMAINS.length;
 
-  const handleDomainClick = (domain: Domain, index: number) => {
-    if (isTransitioning) return;
+  // Proactively prefetch all domain routes to guarantee instant route transitions
+  useEffect(() => {
+    DOMAINS.forEach((domain) => {
+      router.prefetch(`/domain/${domain.id}`);
+    });
+  }, [router]);
 
-    // If clicking a side card, bring it to the center
+  const triggerSpaceTimeWarp = useCallback(
+    (domain: Domain) => {
+      if (isWarping) return;
+
+      setSelectedDomain(domain);
+      setIsWarping(true);
+
+      // Punchy, exhilarating space-time warp timing: 700ms before seamless router push
+      setTimeout(() => {
+        router.push(`/domain/${domain.id}`);
+      }, 700);
+    },
+    [isWarping, router]
+  );
+
+  const handleDomainClick = (domain: Domain, index: number) => {
+    if (isWarping) return;
+
+    // If clicking a side card, bring it smoothly to the center
     if (index !== activeIndex) {
       setActiveIndex(index);
       return;
     }
 
-    // If clicking the active center card, trigger the cinematic transition
-    setSelectedDomain(domain);
-    setIsTransitioning(true);
-
-    setTimeout(() => {
-      router.push(`/domain/${domain.id}`);
-    }, 850);
+    // If clicking the active center card, trigger the space-time warp
+    triggerSpaceTimeWarp(domain);
   };
 
-  const handlePrev = () => {
-    if (isTransitioning) return;
+  const handlePrev = useCallback(() => {
+    if (isWarping) return;
     setActiveIndex((prev) => (prev - 1 + total) % total);
-  };
+  }, [isWarping, total]);
 
-  const handleNext = () => {
-    if (isTransitioning) return;
+  const handleNext = useCallback(() => {
+    if (isWarping) return;
     setActiveIndex((prev) => (prev + 1) % total);
-  };
+  }, [isWarping, total]);
 
-  // Helper to compute circular shortest distance offset (-2, -1, 0, 1, 2, 3)
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (isWarping) return;
+
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        handlePrev();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        handleNext();
+      } else if (e.key === "Enter" || e.key === " ") {
+        const activeDomain = DOMAINS[activeIndex];
+        if (activeDomain) {
+          e.preventDefault();
+          triggerSpaceTimeWarp(activeDomain);
+        }
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeIndex, handleNext, handlePrev, isWarping, triggerSpaceTimeWarp]);
+
+  // Circular shortest distance offset (-3, -2, -1, 0, 1, 2, 3)
   const getCircularOffset = (index: number) => {
     let offset = index - activeIndex;
     if (offset > total / 2) offset -= total;
@@ -82,69 +126,19 @@ export default function DomainSelection() {
   return (
     <section
       id="domains"
-      className="relative z-20 min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#050608] overflow-hidden flex flex-col justify-center select-none"
+      ref={containerRef}
+      tabIndex={0}
+      className="relative z-20 min-h-screen py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#050608] overflow-hidden flex flex-col justify-center select-none outline-none"
     >
-      {/* Dynamic Background Grid & Ambient Glow */}
-      <NeuralPulseBackground opacity={0.65} />
-      <div className="absolute inset-0 tech-grid-bg opacity-40 pointer-events-none" />
+      {/* Ambient Neural Background (Throttles during warp for 120 FPS lock) */}
+      <NeuralPulseBackground opacity={isWarping ? 0.15 : 0.65} />
+      <div className="absolute inset-0 tech-grid-bg opacity-35 pointer-events-none" />
       <div className="absolute inset-0 bg-radial from-indigo-950/20 via-transparent to-[#050608] pointer-events-none" />
 
-      {/* Cinematic Hyper-Drive Zoom Warp Overlay on Click */}
+      {/* 🌌 CINEMATIC SPACE-TIME WARP & WORMHOLE ENGINE 🌌 */}
       <AnimatePresence>
-        {isTransitioning && selectedDomain && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center overflow-hidden"
-            style={{
-              backgroundColor: `rgba(${selectedDomain.colorTheme.rgb}, 0.15)`,
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
-            }}
-          >
-            {/* Speed Warp Tunnel Lines */}
-            <motion.div
-              initial={{ scale: 0.2, opacity: 0, rotate: 0 }}
-              animate={{ scale: 6, opacity: [0, 1, 0.8], rotate: 25 }}
-              transition={{ duration: 0.85, ease: "easeOut" }}
-              className="absolute w-[600px] h-[600px] rounded-full border-4"
-              style={{
-                borderColor: selectedDomain.colorTheme.primary,
-                boxShadow: `0 0 120px 40px ${selectedDomain.colorTheme.primary}`,
-              }}
-            />
-
-            <motion.div
-              initial={{ scale: 0.5, opacity: 0 }}
-              animate={{ scale: 12, opacity: [0, 0.8, 1] }}
-              transition={{ duration: 0.85, ease: "easeIn" }}
-              className="absolute w-96 h-96 rounded-full"
-              style={{
-                background: `radial-gradient(circle, ${selectedDomain.colorTheme.primary} 0%, transparent 70%)`,
-              }}
-            />
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2, duration: 0.4 }}
-              className="relative z-10 text-center font-mono text-white"
-            >
-              <div className="text-xs uppercase tracking-widest text-cyan-300 mb-2">
-                ENTERING SPECIALIZATION MATRIX //
-              </div>
-              <div
-                className="text-3xl sm:text-5xl font-black tracking-tight"
-                style={{ color: selectedDomain.colorTheme.secondary }}
-              >
-                {selectedDomain.name}
-              </div>
-              <div className="text-sm text-slate-300 mt-2 font-mono">
-                INITIALIZING WORKSPACE TELEMETRY...
-              </div>
-            </motion.div>
-          </motion.div>
+        {isWarping && selectedDomain && (
+          <SpaceTimeWarpOverlay domain={selectedDomain} />
         )}
       </AnimatePresence>
 
@@ -152,39 +146,42 @@ export default function DomainSelection() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-cyan-400 mb-4"
+            transition={{ duration: 0.5 }}
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-cyan-400 mb-4 shadow-md backdrop-blur-md"
           >
             <Compass className="w-3.5 h-3.5 text-indigo-400" />
             <span>3D CIRCULAR CAPABILITY ORBIT</span>
           </motion.div>
 
           <motion.h2
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
+            transition={{ duration: 0.5, delay: 0.08 }}
             className="text-3xl sm:text-5xl font-black text-white tracking-tight"
           >
-            Select a <span className="bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">Specialized Domain</span>
+            Select a{" "}
+            <span className="bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
+              Specialized Domain
+            </span>
           </motion.h2>
 
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-sm sm:text-base text-slate-400 mt-3 font-mono"
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="text-sm sm:text-base text-slate-400 mt-3 font-sans"
           >
-            Click any surrounding card to bring it to center. Click the focused card to explore details.
+            Click any surrounding card to orbit. Click the focused card to launch space-time warp.
           </motion.p>
         </div>
 
-        {/* 3D Circular Deck / Coverflow Viewport */}
-        <div className="relative w-full h-[520px] sm:h-[540px] flex items-center justify-center perspective-[1400px]">
+        {/* 3D Circular Deck / Spatial Viewport */}
+        <div className="relative w-full h-[520px] sm:h-[550px] flex items-center justify-center perspective-[1200px]">
           {DOMAINS.map((domain, index) => {
             const Icon = iconMap[domain.icon] || Terminal;
             const offset = getCircularOffset(index);
@@ -193,7 +190,7 @@ export default function DomainSelection() {
             const isSelected = selectedDomain?.id === domain.id;
 
             return (
-              <CircularDomainCard
+              <WarpDomainCard
                 key={domain.id}
                 domain={domain}
                 index={index}
@@ -202,28 +199,31 @@ export default function DomainSelection() {
                 Icon={Icon}
                 isHovered={isHovered}
                 isSelected={isSelected}
-                isTransitioning={isTransitioning}
+                isWarping={isWarping}
                 onHover={() => setHoveredDomainId(domain.id)}
                 onLeave={() => setHoveredDomainId(null)}
                 onClick={() => handleDomainClick(domain, index)}
+                onLaunch={() => triggerSpaceTimeWarp(domain)}
               />
             );
           })}
 
           {/* Floating Left / Right Arrow Controls */}
-          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between px-2 sm:px-8 pointer-events-none z-40">
+          <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex items-center justify-between px-2 sm:px-6 pointer-events-none z-40">
             <button
               onClick={handlePrev}
+              disabled={isWarping}
               aria-label="Previous Domain"
-              className="pointer-events-auto p-3 rounded-full bg-slate-950/80 border border-white/15 text-slate-300 hover:text-white hover:border-white/30 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group"
+              className="pointer-events-auto p-3.5 rounded-full bg-slate-950/85 border border-white/15 text-slate-300 hover:text-white hover:border-white/40 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group disabled:opacity-0"
             >
               <ChevronLeft className="w-6 h-6 group-hover:-translate-x-0.5 transition-transform" />
             </button>
 
             <button
               onClick={handleNext}
+              disabled={isWarping}
               aria-label="Next Domain"
-              className="pointer-events-auto p-3 rounded-full bg-slate-950/80 border border-white/15 text-slate-300 hover:text-white hover:border-white/30 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group"
+              className="pointer-events-auto p-3.5 rounded-full bg-slate-950/85 border border-white/15 text-slate-300 hover:text-white hover:border-white/40 hover:scale-110 active:scale-95 transition-all shadow-2xl backdrop-blur-xl cursor-pointer group disabled:opacity-0"
             >
               <ChevronRight className="w-6 h-6 group-hover:translate-x-0.5 transition-transform" />
             </button>
@@ -235,37 +235,239 @@ export default function DomainSelection() {
           {DOMAINS.map((domain, idx) => (
             <button
               key={domain.id}
+              disabled={isWarping}
               onClick={() => setActiveIndex(idx)}
               aria-label={`Select domain ${domain.name}`}
               className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
-                activeIndex === idx
-                  ? "w-8 shadow-[0_0_12px_rgba(99,102,241,0.8)]"
-                  : "w-2 bg-slate-800 hover:bg-slate-600"
+                activeIndex === idx ? "w-8 opacity-100" : "w-2 bg-slate-800 hover:bg-slate-700 opacity-60"
               }`}
               style={{
                 backgroundColor: activeIndex === idx ? domain.colorTheme.primary : undefined,
+                boxShadow:
+                  activeIndex === idx ? `0 0 12px ${domain.colorTheme.primary}` : "none",
               }}
             />
           ))}
         </div>
 
-        {/* Recruiter Navigation Footer Cue */}
+        {/* Action Cue */}
         <motion.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ delay: 0.6 }}
-          className="mt-10 text-center text-xs font-mono text-slate-500 flex items-center justify-center gap-2"
+          className="mt-8 text-center text-xs font-mono text-slate-500 flex items-center justify-center gap-2"
         >
           <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Click centered card to deep-dive into verified pipelines</span>
+          <span>Click centered card or press Enter to warp to domain</span>
         </motion.div>
       </div>
     </section>
   );
 }
 
-interface CircularDomainCardProps {
+/* =========================================================================
+   SPACE-TIME WARP & WORMHOLE CANVAS OVERLAY (120 FPS ZERO-LAG)
+   ========================================================================= */
+
+interface SpaceTimeWarpOverlayProps {
+  domain: Domain;
+}
+
+function SpaceTimeWarpOverlay({ domain }: SpaceTimeWarpOverlayProps) {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const Icon = iconMap[domain.icon] || Terminal;
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d", { alpha: false });
+    if (!ctx) return;
+
+    let animId: number;
+    const width = (canvas.width = window.innerWidth);
+    const height = (canvas.height = window.innerHeight);
+    const cx = width / 2;
+    const cy = height / 2;
+
+    const [r, g, b] = domain.colorTheme.rgb.split(",").map((v) => parseInt(v.trim(), 10));
+
+    // Generate 320 Relativistic Stars in 3D Hyperbolic Space
+    const stars = Array.from({ length: 320 }, () => ({
+      x: (Math.random() - 0.5) * width * 2,
+      y: (Math.random() - 0.5) * height * 2,
+      z: Math.random() * 1000 + 200,
+      pz: 1000,
+      size: Math.random() * 2 + 1,
+    }));
+
+    const startTime = performance.now();
+    const duration = 700; // ms
+
+    const render = (now: number) => {
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Exponential Relativistic Warp Acceleration Curve
+      const warpSpeed = 4 + Math.pow(progress, 3) * 80;
+
+      // Dark space canvas clear with motion-blur persistence
+      ctx.fillStyle = "rgba(4, 6, 12, 0.25)";
+      ctx.fillRect(0, 0, width, height);
+
+      // 1. Draw Relativistic Light Speed Streaks (Ultra-Fast 0-GC draw)
+      for (let i = 0; i < stars.length; i++) {
+        const s = stars[i];
+        s.pz = s.z;
+        s.z -= warpSpeed;
+
+        if (s.z <= 15) {
+          s.z = Math.random() * 800 + 400;
+          s.pz = s.z + warpSpeed;
+          s.x = (Math.random() - 0.5) * width * 1.5;
+          s.y = (Math.random() - 0.5) * height * 1.5;
+        }
+
+        const k = 350 / Math.max(10, s.z);
+        const pk = 350 / Math.max(10, s.pz);
+        const px = cx + s.x * pk;
+        const py = cy + s.y * pk;
+        const sx = cx + s.x * k;
+        const sy = cy + s.y * k;
+
+        if (
+          !Number.isFinite(px) ||
+          !Number.isFinite(py) ||
+          !Number.isFinite(sx) ||
+          !Number.isFinite(sy)
+        ) {
+          continue;
+        }
+
+        if (sx < -200 || sx > width + 200 || sy < -200 || sy > height + 200) continue;
+
+        // Draw relativistic trail in domain glow
+        ctx.lineWidth = Math.min(3, 1 + progress * 2);
+        ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${Math.min(1, 0.4 + progress * 0.6)})`;
+        ctx.beginPath();
+        ctx.moveTo(px, py);
+        ctx.lineTo(sx, sy);
+        ctx.stroke();
+
+        // Draw glowing white-hot tip
+        ctx.fillStyle = "#ffffff";
+        ctx.beginPath();
+        ctx.arc(sx, sy, Math.min(2.5, 0.8 + progress * 1.5), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // 2. Gravitational Lens Waves (Expanding Einstein Concentric Rings)
+      const ringCount = 3;
+      for (let i = 0; i < ringCount; i++) {
+        const ringProgress = (progress + i * 0.3) % 1;
+        const radius = Math.pow(ringProgress, 1.4) * Math.max(width, height) * 0.8;
+        const ringAlpha = Math.max(0, (1 - ringProgress) * 0.85);
+
+        if (Number.isFinite(radius) && radius > 0) {
+          ctx.strokeStyle = `rgba(${r}, ${g}, ${b}, ${ringAlpha})`;
+          ctx.lineWidth = Math.max(1, 3 - ringProgress * 2);
+          ctx.beginPath();
+          ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+          ctx.stroke();
+        }
+      }
+
+      // 3. Central Event Horizon Singularity & Accretion Core
+      const coreRadius = Math.min(width, height) * (0.05 + Math.pow(progress, 2.5) * 1.5);
+      if (Number.isFinite(coreRadius) && coreRadius > 0.5) {
+        const coreGrad = ctx.createRadialGradient(cx, cy, 0, cx, cy, coreRadius);
+        coreGrad.addColorStop(0, `rgba(${r}, ${g}, ${b}, ${0.85 + progress * 0.15})`);
+        coreGrad.addColorStop(0.4, `rgba(${r}, ${g}, ${b}, ${0.4 * (1 - progress)})`);
+        coreGrad.addColorStop(1, "transparent");
+
+        ctx.fillStyle = coreGrad;
+        ctx.beginPath();
+        ctx.arc(cx, cy, coreRadius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Continue loop until warp completes
+      if (progress < 1) {
+        animId = requestAnimationFrame(render);
+      }
+    };
+
+    animId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animId);
+    };
+  }, [domain]);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.15 }}
+      className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center overflow-hidden"
+    >
+      {/* 1. High-Performance Hardware-Accelerated Space-Time Canvas */}
+      <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
+
+      {/* 2. Cinematic Singularity Centerpiece (Orb & Surge Typography) */}
+      <motion.div
+        initial={{ scale: 0.7, opacity: 0, z: 0 }}
+        animate={{ scale: [0.7, 1.1, 1.45], opacity: [0, 1, 0.95], z: 200 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="relative z-20 text-center flex flex-col items-center justify-center px-4"
+      >
+        {/* Glowing Singularity Icon Capsule */}
+        <motion.div
+          animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.2, 1.35] }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
+          className="w-22 h-22 sm:w-24 sm:h-24 rounded-3xl flex items-center justify-center mb-5 shadow-2xl"
+          style={{
+            backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.35)`,
+            border: `2px solid ${domain.colorTheme.primary}`,
+            boxShadow: `0 0 70px 25px ${domain.colorTheme.primary}`,
+          }}
+        >
+          <Icon className="w-11 h-11 sm:w-12 sm:h-12" style={{ color: domain.colorTheme.secondary }} />
+        </motion.div>
+
+        {/* Warp Header Text */}
+        <div
+          className="text-xs sm:text-sm uppercase tracking-widest font-mono font-bold mb-2"
+          style={{ color: domain.colorTheme.secondary }}
+        >
+          SPACE-TIME WARP ENGAGED // 0{DOMAINS.findIndex((d) => d.id === domain.id) + 1}
+        </div>
+
+        {/* Scaled Domain Title */}
+        <h2
+          className="text-3xl sm:text-5xl lg:text-7xl font-black text-white tracking-tight leading-tight mb-2"
+          style={{
+            textShadow: `0 0 45px ${domain.colorTheme.primary}, 0 0 90px ${domain.colorTheme.secondary}`,
+          }}
+        >
+          {domain.name}
+        </h2>
+
+        <div className="text-xs sm:text-sm text-slate-200 font-mono flex items-center gap-2 mt-2">
+          <Zap className="w-4 h-4 animate-bounce" style={{ color: domain.colorTheme.secondary }} />
+          <span>ENTERING SPECIALIZATION MATRIX...</span>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+/* =========================================================================
+   3D CIRCULAR DOMAIN CARD
+   ========================================================================= */
+
+interface WarpDomainCardProps {
   domain: Domain;
   index: number;
   offset: number;
@@ -273,13 +475,14 @@ interface CircularDomainCardProps {
   Icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   isHovered: boolean;
   isSelected: boolean;
-  isTransitioning: boolean;
+  isWarping: boolean;
   onHover: () => void;
   onLeave: () => void;
   onClick: () => void;
+  onLaunch: () => void;
 }
 
-function CircularDomainCard({
+function WarpDomainCard({
   domain,
   index,
   offset,
@@ -287,18 +490,19 @@ function CircularDomainCard({
   Icon,
   isHovered,
   isSelected,
-  isTransitioning,
+  isWarping,
   onHover,
   onLeave,
   onClick,
-}: CircularDomainCardProps) {
+  onLaunch,
+}: WarpDomainCardProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [rotateX, setRotateX] = useState(0);
   const [rotateYTilt, setRotateYTilt] = useState(0);
   const [spotlightPos, setSpotlightPos] = useState({ x: 50, y: 50 });
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || isTransitioning || !isCenter) return;
+    if (!cardRef.current || isWarping || !isCenter) return;
     const rect = cardRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -306,8 +510,8 @@ function CircularDomainCard({
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotX = ((y - centerY) / centerY) * -8;
-    const rotY = ((x - centerX) / centerX) * 8;
+    const rotX = ((y - centerY) / centerY) * -5;
+    const rotY = ((x - centerX) / centerX) * 5;
 
     setRotateX(rotX);
     setRotateYTilt(rotY);
@@ -326,23 +530,25 @@ function CircularDomainCard({
   // 3D Spatial Circular Arc Transformation Coordinates
   const getTransformStyles = () => {
     if (isSelected) {
+      // Selected card plunges into the wormhole singularity
       return {
         x: 0,
         y: 0,
-        z: 300,
-        scale: 1.6,
+        z: 400,
+        scale: 1.65,
         rotateY: 0,
-        opacity: 1,
+        opacity: 0,
         zIndex: 50,
       };
     }
 
-    if (isTransitioning && !isSelected) {
+    if (isWarping && !isSelected) {
+      // Surrounding cards are deflected outward by gravitational lensing
       return {
         x: offset * 450,
-        y: offset === 0 ? 0 : 50,
-        z: -300,
-        scale: 0.4,
+        y: 50,
+        z: -350,
+        scale: 0.35,
         rotateY: offset * -25,
         opacity: 0,
         zIndex: 0,
@@ -355,7 +561,7 @@ function CircularDomainCard({
           x: 0,
           y: 0,
           z: 80,
-          scale: 1.05,
+          scale: 1.04,
           rotateY: 0,
           opacity: 1,
           zIndex: 30,
@@ -364,47 +570,47 @@ function CircularDomainCard({
         return {
           x: -310,
           y: 0,
-          z: -80,
-          scale: 0.76,
+          z: -70,
+          scale: 0.78,
           rotateY: 22,
-          opacity: 0.55,
+          opacity: 0.65,
           zIndex: 20,
         };
       case 1:
         return {
           x: 310,
           y: 0,
-          z: -80,
-          scale: 0.76,
+          z: -70,
+          scale: 0.78,
           rotateY: -22,
-          opacity: 0.55,
+          opacity: 0.65,
           zIndex: 20,
         };
       case -2:
         return {
           x: -560,
           y: 0,
-          z: -220,
-          scale: 0.60,
-          rotateY: 36,
-          opacity: 0.22,
+          z: -200,
+          scale: 0.62,
+          rotateY: 34,
+          opacity: 0.3,
           zIndex: 10,
         };
       case 2:
         return {
           x: 560,
           y: 0,
-          z: -220,
-          scale: 0.60,
-          rotateY: -36,
-          opacity: 0.22,
+          z: -200,
+          scale: 0.62,
+          rotateY: -34,
+          opacity: 0.3,
           zIndex: 10,
         };
       default:
         return {
           x: offset < 0 ? -780 : 780,
           y: 0,
-          z: -380,
+          z: -360,
           scale: 0.45,
           rotateY: offset < 0 ? 45 : -45,
           opacity: 0,
@@ -422,7 +628,8 @@ function CircularDomainCard({
         x: transform.x,
         y: transform.y,
         scale: transform.scale,
-        rotateY: transform.rotateY,
+        rotateY: transform.rotateY + (isCenter ? rotateYTilt : 0),
+        rotateX: isCenter ? rotateX : 0,
         opacity: transform.opacity,
         zIndex: transform.zIndex,
       }}
@@ -438,28 +645,31 @@ function CircularDomainCard({
       style={{
         transformStyle: "preserve-3d",
         position: "absolute",
+        willChange: "transform, opacity",
+        backfaceVisibility: "hidden",
       }}
-      className={`w-[360px] sm:w-[420px] h-[460px] cursor-pointer rounded-3xl select-none transition-shadow duration-300 ${
+      className={`w-[360px] sm:w-[410px] h-[470px] cursor-pointer rounded-3xl select-none transition-shadow duration-300 ${
         isCenter ? "cursor-pointer" : "cursor-pointer hover:brightness-125"
       }`}
     >
       {/* Outer Glow Halo for Center or Hovered Card */}
       <div
-        className={`absolute -inset-1 rounded-3xl transition-opacity duration-500 blur-lg pointer-events-none ${
-          isCenter ? "opacity-100" : isHovered ? "opacity-80" : "opacity-30"
+        className={`absolute -inset-1 rounded-3xl transition-opacity duration-300 blur-xl pointer-events-none ${
+          isCenter ? "opacity-90" : isHovered ? "opacity-60" : "opacity-20"
         }`}
         style={{
           background: isCenter
             ? `radial-gradient(circle, ${domain.colorTheme.primary} 0%, rgba(${domain.colorTheme.rgb}, 0.5) 45%, transparent 75%)`
             : `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, ${domain.colorTheme.primary}, transparent 70%)`,
+          transform: "translateZ(0)",
         }}
       />
 
-      {/* Main Glass Card Surface with Saturated Colored Border */}
+      {/* Main Glass Card Surface */}
       <div
-        className={`relative h-full rounded-3xl backdrop-blur-2xl p-7 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
+        className={`relative h-full rounded-3xl backdrop-blur-xl p-7 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
           isCenter
-            ? "bg-[#070a12]/95"
+            ? "bg-[#070a13]/95 shadow-2xl"
             : "bg-[#06080e]/90 hover:bg-[#090d18]/95"
         }`}
         style={{
@@ -469,9 +679,9 @@ function CircularDomainCard({
             ? `1.5px solid rgba(${domain.colorTheme.rgb}, 0.7)`
             : `1px solid rgba(${domain.colorTheme.rgb}, 0.35)`,
           boxShadow: isCenter
-            ? `0 20px 60px -10px rgba(${domain.colorTheme.rgb}, 0.65), 0 0 35px rgba(${domain.colorTheme.rgb}, 0.35), inset 0 0 25px rgba(${domain.colorTheme.rgb}, 0.18)`
+            ? `0 22px 60px -10px rgba(${domain.colorTheme.rgb}, 0.6), 0 0 30px rgba(${domain.colorTheme.rgb}, 0.3), inset 0 0 20px rgba(${domain.colorTheme.rgb}, 0.15)`
             : isHovered
-            ? `0 15px 40px -10px rgba(${domain.colorTheme.rgb}, 0.5), 0 0 20px rgba(${domain.colorTheme.rgb}, 0.25)`
+            ? `0 16px 40px -10px rgba(${domain.colorTheme.rgb}, 0.45), 0 0 20px rgba(${domain.colorTheme.rgb}, 0.2)`
             : `0 10px 30px -10px rgba(0, 0, 0, 0.8)`,
           backgroundImage: `linear-gradient(180deg, rgba(${domain.colorTheme.rgb}, ${isCenter ? 0.16 : 0.08}) 0%, rgba(6, 8, 14, 0.95) 45%, #05070c 100%)`,
         }}
@@ -488,7 +698,7 @@ function CircularDomainCard({
 
         {/* Top Header: Domain Category Badge & Index */}
         <div>
-          <div className="flex items-start justify-between mb-6">
+          <div className="flex items-start justify-between mb-5">
             {/* Category Tag Pill */}
             <div
               className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold tracking-wider uppercase"
@@ -527,8 +737,8 @@ function CircularDomainCard({
           </p>
         </div>
 
-        {/* Middle Feature Highlights List */}
-        <div className="space-y-2.5 py-3">
+        {/* Middle Feature Highlights */}
+        <div className="space-y-2.5 py-2">
           <div className="flex items-center gap-2.5 text-xs font-mono text-slate-200">
             <span
               className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
@@ -571,21 +781,31 @@ function CircularDomainCard({
             borderTop: `1px solid rgba(${domain.colorTheme.rgb}, 0.25)`,
           }}
         >
-          <span className="text-slate-400">
+          <span className="text-slate-400 text-[11px] truncate max-w-[140px]">
             {domain.techStack[0]} · {domain.techStack[1]}
           </span>
 
           {isCenter ? (
-            <div
-              className="flex items-center gap-1.5 font-bold tracking-wider uppercase transition-transform group-hover:scale-105"
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onLaunch();
+              }}
+              className="group/btn relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold tracking-wider uppercase text-[11px] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer shadow-lg"
               style={{
+                backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.28)`,
+                border: `1.5px solid ${domain.colorTheme.primary}`,
                 color: domain.colorTheme.secondary,
-                textShadow: `0 0 15px ${domain.colorTheme.primary}`,
+                boxShadow: `0 0 20px rgba(${domain.colorTheme.rgb}, 0.4)`,
               }}
             >
-              <span>EXPLORE DETAILS</span>
-              <Sparkles className="w-3.5 h-3.5 animate-pulse" />
-            </div>
+              <span className="relative z-10">ENGAGE WARP</span>
+              <ArrowUpRight className="w-3.5 h-3.5 relative z-10 group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5 transition-transform" />
+              <div
+                className="absolute inset-0 rounded-xl opacity-0 group-hover/btn:opacity-100 transition-opacity blur-sm pointer-events-none"
+                style={{ backgroundColor: domain.colorTheme.primary }}
+              />
+            </button>
           ) : (
             <span
               className="uppercase tracking-wider text-[11px] font-semibold transition-colors"
