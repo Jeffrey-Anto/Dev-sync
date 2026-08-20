@@ -20,12 +20,15 @@ import {
   Layers,
   Sparkles,
   ChevronRight,
+  RotateCcw,
 } from "lucide-react";
 import { DOMAINS, PROJECTS, Project } from "@/data/domains";
 import DomainBackground from "@/components/domain-themes/DomainBackground";
 import ProjectCard from "@/components/projects/ProjectCard";
 import ProjectDetailModal from "@/components/projects/ProjectDetailModal";
 import { AndroidDemo } from "@/components/domain-themes/AndroidDemo";
+import MobileDevCinematicIntro from "@/components/domain-themes/MobileDevCinematicIntro";
+import MobileStickyProjectShowcase from "@/components/domain-themes/MobileStickyProjectShowcase";
 import CoffeePourAnimation from "@/components/domain-themes/CoffeePourAnimation";
 import SpidermanWebAnimation from "@/components/domain-themes/SpidermanWebAnimation";
 import FontSelector from "@/components/FontSelector";
@@ -53,6 +56,7 @@ export default function DomainDetailPage({ params }: PageProps) {
   const [isNavigatingBack, setIsNavigatingBack] = useState(false);
   const [pourCount, setPourCount] = useState(0);
   const [swingCount, setSwingCount] = useState(0);
+  const [mobileReplayCount, setMobileReplayCount] = useState(0);
 
   // Sync active domain so matrix orbit restores to this domain upon returning
   useEffect(() => {
@@ -132,8 +136,13 @@ export default function DomainDetailPage({ params }: PageProps) {
         )}
       </AnimatePresence>
 
-      {/* 2. CINEMATIC ENTRY WASH ANIMATION OVERLAY (Only on dark domains) */}
-      {!isUiUx && (
+      {/* 1.5. SPECIALIZED FULLSCREEN CINEMATIC INTRO FOR MOBILE DOMAIN */}
+      {domain.id === "mobile-dev" && (
+        <MobileDevCinematicIntro replayTrigger={mobileReplayCount} />
+      )}
+
+      {/* 2. CINEMATIC ENTRY WASH ANIMATION OVERLAY (Only on other dark domains) */}
+      {!isUiUx && domain.id !== "mobile-dev" && (
         <motion.div
           initial={{ opacity: 1, scale: 1.2 }}
           animate={{ opacity: 0, scale: 1 }}
@@ -348,18 +357,26 @@ export default function DomainDetailPage({ params }: PageProps) {
             />
           )}
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 perspective-container">
-            {domainProjects.map((project, index) => (
-              <ProjectCard
-                key={project.id}
-                ref={(isUiUx || isWebDev) ? cardRefs[index] : undefined}
-                project={project}
-                domain={domain}
-                index={index}
-                onSelect={(proj) => setSelectedProject(proj)}
-              />
-            ))}
-          </div>
+          {domain.id === "mobile-dev" ? (
+            <MobileStickyProjectShowcase
+              projects={domainProjects}
+              domain={domain}
+              onSelectProject={(proj) => setSelectedProject(proj)}
+            />
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 perspective-container">
+              {domainProjects.map((project, index) => (
+                <ProjectCard
+                  key={project.id}
+                  ref={(isUiUx || isWebDev) ? cardRefs[index] : undefined}
+                  project={project}
+                  domain={domain}
+                  index={index}
+                  onSelect={(proj) => setSelectedProject(proj)}
+                />
+              ))}
+            </div>
+          )}
 
           {/* If Web Dev domain, Spidey runs on the bottom road & shoots webs to pull projects down from top */}
           {isWebDev && (
@@ -404,6 +421,16 @@ export default function DomainDetailPage({ params }: PageProps) {
                     <span className="text-slate-400 text-[10px] block">BRIDGE TYPE</span>
                     <span className="text-cyan-300 font-bold text-sm">JSI TurboModules</span>
                   </div>
+                </div>
+
+                <div className="pt-2">
+                  <button
+                    onClick={() => setMobileReplayCount((c) => c + 1)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-xs font-mono text-emerald-300 hover:text-white hover:bg-emerald-500/25 transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
+                  >
+                    <RotateCcw className="w-3.5 h-3.5" />
+                    <span>Replay Landscape Boot Animation 📱</span>
+                  </button>
                 </div>
               </div>
 
