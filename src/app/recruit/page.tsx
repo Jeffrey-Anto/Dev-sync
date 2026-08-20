@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Building2,
   Mail,
-  UserCheck,
+  User,
   Send,
   Download,
   Calendar,
@@ -30,36 +30,34 @@ export default function RecruiterContactPage() {
   // Form State
   const [formData, setFormData] = useState({
     companyName: "",
-    contactPerson: "",
-    workEmail: "",
-    roleType: "Full-Time Software Engineer (SDE)",
-    message: "",
+    contactRep: "",
+    corporateEmail: "",
+    phone: "",
+    engagementType: "Full-Time Campus Drive",
+    preferredDate: "",
+    additionalReqs: "",
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const roleOptions = [
-    "Full-Time Software Engineer (SDE)",
-    "Distributed Systems / Backend Engineer",
-    "AI / Machine Learning Engineer",
-    "Cloud Architecture & DevOps Engineer",
-    "Embedded Systems & Firmware Engineer",
-    "Cybersecurity / Threat Analyst",
-    "Bulk Cohort Hiring / Placement Drive (Multiple Roles)",
+  const engagementOptions = [
+    "Full-Time Campus Drive",
+    "Internship + PPO Hiring",
+    "Virtual Campus Drive",
+    "Hackathon / Technical Challenge Sponsorship",
   ];
 
   const validate = () => {
     const errs: Record<string, string> = {};
     if (!formData.companyName.trim()) errs.companyName = "Company name is required";
-    if (!formData.contactPerson.trim()) errs.contactPerson = "Contact person / title is required";
-    if (!formData.workEmail.trim()) {
-      errs.workEmail = "Work email is required";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.workEmail)) {
-      errs.workEmail = "Please enter a valid work email address";
+    if (!formData.contactRep.trim()) errs.contactRep = "Contact representative is required";
+    if (!formData.corporateEmail.trim()) {
+      errs.corporateEmail = "Corporate email is required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.corporateEmail)) {
+      errs.corporateEmail = "Please enter a valid work email address";
     }
-    if (!formData.message.trim()) errs.message = "Please include a brief message or tentative drive timeline";
     setErrors(errs);
     return Object.keys(errs).length === 0;
   };
@@ -69,12 +67,25 @@ export default function RecruiterContactPage() {
     if (!validate()) return;
 
     setIsSubmitting(true);
-    // Simulate client-side submission logic
     setTimeout(() => {
       console.log("Recruiter Drive Request Submitted:", formData);
       setIsSubmitting(false);
       setIsSubmitted(true);
-    }, 1000);
+    }, 900);
+  };
+
+  const handleReset = () => {
+    setIsSubmitted(false);
+    setFormData({
+      companyName: "",
+      contactRep: "",
+      corporateEmail: "",
+      phone: "",
+      engagementType: "Full-Time Campus Drive",
+      preferredDate: "",
+      additionalReqs: "",
+    });
+    setErrors({});
   };
 
   return (
@@ -129,19 +140,22 @@ export default function RecruiterContactPage() {
         {/* 2-Column Grid: Contact Form & Placement Coordinator Info */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 mb-16">
           
-          {/* Left Column: Interactive Contact & Drive Request Form */}
+          {/* Left Column: Interactive Recruiter Engagement Desk Form */}
           <div className="lg:col-span-7">
-            <div className="p-7 sm:p-10 rounded-3xl bg-[#0c0f1a]/85 border border-white/15 backdrop-blur-xl shadow-2xl relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-white/10 pb-4 mb-6">
-                <div>
-                  <h3 className="text-xl font-bold text-white">Schedule a Recruitment Drive</h3>
-                  <p className="text-xs text-slate-400 font-mono mt-0.5">
-                    Connect with our placement cell for slot reservations & candidate shortlisting.
-                  </p>
+            <div className="p-7 sm:p-10 rounded-3xl bg-[#090c15]/90 border border-white/15 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
+              <div className="mb-6">
+                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-amber-400 font-bold mb-2">
+                  <Building2 className="w-4 h-4 text-amber-400" />
+                  <span>RECRUITER ENGAGEMENT DESK</span>
                 </div>
-                <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                  <Building2 className="w-5 h-5" />
-                </div>
+
+                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                  Invite GCE Srirangam to Placement Drive
+                </h2>
+
+                <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed font-sans">
+                  Coordinate pre-placement talks, technical assessments, and interview drives with our 2026–2027 batch.
+                </p>
               </div>
 
               {isSubmitted ? (
@@ -150,149 +164,181 @@ export default function RecruiterContactPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   className="py-12 text-center flex flex-col items-center"
                 >
-                  <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(16,185,129,0.3)]">
+                  <div className="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-400 flex items-center justify-center mb-4 shadow-[0_0_30px_rgba(245,158,11,0.3)]">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h4 className="text-2xl font-bold text-white mb-2">Drive Request Received</h4>
+                  <h4 className="text-2xl font-bold text-white mb-2">Placement Inquiry Received</h4>
                   <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed mb-6 font-sans">
-                    Thank you, <strong>{formData.contactPerson}</strong> ({formData.companyName}). Our placement coordination cell will review your criteria and respond with slot confirmations within 24 business hours.
+                    Thank you, <strong>{formData.contactRep}</strong> ({formData.companyName}). Our placement coordination cell will review your criteria and respond with slot confirmations within 24 business hours.
                   </p>
                   <button
-                    onClick={() => {
-                      setIsSubmitted(false);
-                      setFormData({
-                        companyName: "",
-                        contactPerson: "",
-                        workEmail: "",
-                        roleType: "Full-Time Software Engineer (SDE)",
-                        message: "",
-                      });
-                    }}
-                    className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-xs font-mono text-white transition-all"
+                    onClick={handleReset}
+                    className="px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold font-mono text-xs transition-all shadow-lg cursor-pointer"
                   >
                     Submit Another Inquiry
                   </button>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {/* Company Name */}
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1.5">
-                      COMPANY / ORGANIZATION NAME *
-                    </label>
-                    <input
-                      type="text"
-                      value={formData.companyName}
-                      onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
-                      placeholder="e.g., Stripe, Datadog, Meta, Citadel"
-                      className={`w-full px-4 py-3 rounded-xl bg-black/40 border text-xs font-mono text-white placeholder-slate-500 focus:outline-none transition-all ${
-                        errors.companyName ? "border-rose-500 focus:ring-1 focus:ring-rose-500" : "border-white/10 focus:border-indigo-400"
-                      }`}
-                    />
-                    {errors.companyName && (
-                      <span className="text-[11px] font-mono text-rose-400 mt-1 flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3" /> {errors.companyName}
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Contact Person & Work Email Grid */}
+                <form onSubmit={handleSubmit} className="space-y-4 font-mono text-xs">
+                  {/* Row 1: Company Name & Contact Representative */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-mono text-slate-300 mb-1.5">
-                        CONTACT PERSON / TITLE *
+                      <label className="block text-slate-300 font-semibold mb-1.5">
+                        Company / Organization *
                       </label>
-                      <input
-                        type="text"
-                        value={formData.contactPerson}
-                        onChange={(e) => setFormData({ ...formData, contactPerson: e.target.value })}
-                        placeholder="e.g., Jane Doe, University Recruiter"
-                        className={`w-full px-4 py-3 rounded-xl bg-black/40 border text-xs font-mono text-white placeholder-slate-500 focus:outline-none transition-all ${
-                          errors.contactPerson ? "border-rose-500 focus:ring-1 focus:ring-rose-500" : "border-white/10 focus:border-indigo-400"
-                        }`}
-                      />
-                      {errors.contactPerson && (
-                        <span className="text-[11px] font-mono text-rose-400 mt-1 flex items-center gap-1">
-                          <AlertCircle className="w-3 h-3" /> {errors.contactPerson}
+                      <div className="relative flex items-center">
+                        <Building2 className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                        <input
+                          type="text"
+                          value={formData.companyName}
+                          onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                          placeholder="e.g. Google, Zoho, TCS"
+                          className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-black/40 border text-white placeholder-slate-500 focus:outline-none transition-all ${
+                            errors.companyName ? "border-rose-500 focus:ring-1 focus:ring-rose-500" : "border-white/10 focus:border-amber-400"
+                          }`}
+                        />
+                      </div>
+                      {errors.companyName && (
+                        <span className="text-[10px] text-rose-400 mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" /> {errors.companyName}
                         </span>
                       )}
                     </div>
 
                     <div>
-                      <label className="block text-xs font-mono text-slate-300 mb-1.5">
-                        CORPORATE WORK EMAIL *
+                      <label className="block text-slate-300 font-semibold mb-1.5">
+                        Contact Representative *
                       </label>
-                      <input
-                        type="email"
-                        value={formData.workEmail}
-                        onChange={(e) => setFormData({ ...formData, workEmail: e.target.value })}
-                        placeholder="recruiting@company.com"
-                        className={`w-full px-4 py-3 rounded-xl bg-black/40 border text-xs font-mono text-white placeholder-slate-500 focus:outline-none transition-all ${
-                          errors.workEmail ? "border-rose-500 focus:ring-1 focus:ring-rose-500" : "border-white/10 focus:border-indigo-400"
-                        }`}
-                      />
-                      {errors.workEmail && (
-                        <span className="text-[11px] font-mono text-rose-400 mt-1 flex items-center gap-1">
-                          <AlertCircle className="w-3 h-3" /> {errors.workEmail}
+                      <div className="relative flex items-center">
+                        <User className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                        <input
+                          type="text"
+                          value={formData.contactRep}
+                          onChange={(e) => setFormData({ ...formData, contactRep: e.target.value })}
+                          placeholder="HR Manager / Campus Recruiter"
+                          className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-black/40 border text-white placeholder-slate-500 focus:outline-none transition-all ${
+                            errors.contactRep ? "border-rose-500 focus:ring-1 focus:ring-rose-500" : "border-white/10 focus:border-amber-400"
+                          }`}
+                        />
+                      </div>
+                      {errors.contactRep && (
+                        <span className="text-[10px] text-rose-400 mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" /> {errors.contactRep}
                         </span>
                       )}
                     </div>
                   </div>
 
-                  {/* Role Type */}
-                  <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1.5">
-                      PRIMARY ROLE TYPE / DOMAIN FOCUS
-                    </label>
-                    <select
-                      value={formData.roleType}
-                      onChange={(e) => setFormData({ ...formData, roleType: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-900 border border-white/10 text-xs font-mono text-white focus:outline-none focus:border-indigo-400"
-                    >
-                      {roleOptions.map((opt, idx) => (
-                        <option key={idx} value={opt} className="bg-slate-900 text-white">
-                          {opt}
-                        </option>
-                      ))}
-                    </select>
+                  {/* Row 2: Corporate Email & Phone Number */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1.5">
+                        Corporate Email *
+                      </label>
+                      <div className="relative flex items-center">
+                        <Mail className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                        <input
+                          type="email"
+                          value={formData.corporateEmail}
+                          onChange={(e) => setFormData({ ...formData, corporateEmail: e.target.value })}
+                          placeholder="recruiter@company.com"
+                          className={`w-full pl-10 pr-3.5 py-3 rounded-xl bg-black/40 border text-white placeholder-slate-500 focus:outline-none transition-all ${
+                            errors.corporateEmail ? "border-rose-500 focus:ring-1 focus:ring-rose-500" : "border-white/10 focus:border-amber-400"
+                          }`}
+                        />
+                      </div>
+                      {errors.corporateEmail && (
+                        <span className="text-[10px] text-rose-400 mt-1 flex items-center gap-1">
+                          <AlertCircle className="w-3 h-3" /> {errors.corporateEmail}
+                        </span>
+                      )}
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1.5">
+                        Phone / Mobile Number
+                      </label>
+                      <div className="relative flex items-center">
+                        <Phone className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                        <input
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          placeholder="+91 98765 43210"
+                          className="w-full pl-10 pr-3.5 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-all"
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  {/* Message */}
+                  {/* Row 3: Engagement Type & Preferred Slot Date */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1.5">
+                        Engagement Type
+                      </label>
+                      <select
+                        value={formData.engagementType}
+                        onChange={(e) => setFormData({ ...formData, engagementType: e.target.value })}
+                        className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-amber-400 transition-all"
+                      >
+                        {engagementOptions.map((opt, idx) => (
+                          <option key={idx} value={opt} className="bg-[#090c15] text-white">
+                            {opt}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1.5">
+                        Preferred Slot / Date
+                      </label>
+                      <div className="relative flex items-center">
+                        <Calendar className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
+                        <input
+                          type="date"
+                          value={formData.preferredDate}
+                          onChange={(e) => setFormData({ ...formData, preferredDate: e.target.value })}
+                          className="w-full pl-10 pr-3.5 py-3 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-all [color-scheme:dark]"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Row 4: Additional Requirements / Roles Offered */}
                   <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1.5">
-                      MESSAGE & TENTATIVE TIMELINE *
+                    <label className="block text-slate-300 font-semibold mb-1.5">
+                      Additional Requirements / Roles Offered
                     </label>
                     <textarea
-                      rows={4}
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      placeholder="Share details on candidate expectations, batch shortlist requirements, or preferred online assessment windows..."
-                      className={`w-full px-4 py-3 rounded-xl bg-black/40 border text-xs font-mono text-white placeholder-slate-500 focus:outline-none transition-all ${
-                        errors.message ? "border-rose-500 focus:ring-1 focus:ring-rose-500" : "border-white/10 focus:border-indigo-400"
-                      }`}
+                      rows={3}
+                      value={formData.additionalReqs}
+                      onChange={(e) => setFormData({ ...formData, additionalReqs: e.target.value })}
+                      placeholder="Share details on roles, CTC package, eligibility criteria..."
+                      className="w-full p-3.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-all resize-none"
                     />
-                    {errors.message && (
-                      <span className="text-[11px] font-mono text-rose-400 mt-1 flex items-center gap-1">
-                        <AlertCircle className="w-3 h-3" /> {errors.message}
-                      </span>
-                    )}
                   </div>
 
-                  {/* Submit Button */}
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full py-4 rounded-xl font-mono text-xs font-semibold text-white bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 shadow-[0_0_25px_rgba(99,102,241,0.4)] transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
-                  >
-                    {isSubmitting ? (
-                      <span>TRANSMITTING INQUIRY TELEMETRY...</span>
-                    ) : (
-                      <>
-                        <Send className="w-4 h-4 text-cyan-300" />
-                        <span>SUBMIT PLACEMENT DRIVE INQUIRY</span>
-                      </>
-                    )}
-                  </button>
+                  {/* Bottom Actions */}
+                  <div className="flex items-center justify-end gap-3 pt-4">
+                    <button
+                      type="button"
+                      onClick={handleReset}
+                      className="px-6 py-3 rounded-full border border-white/15 bg-white/5 hover:bg-white/10 text-slate-300 font-bold uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="px-7 py-3 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-black uppercase tracking-wider flex items-center gap-2 shadow-[0_0_25px_rgba(245,158,11,0.35)] transition-all hover:scale-105 cursor-pointer disabled:opacity-50"
+                    >
+                      <Send className="w-3.5 h-3.5 text-black" />
+                      <span>{isSubmitting ? "Submitting..." : "Submit Inquiry"}</span>
+                    </button>
+                  </div>
                 </form>
               )}
             </div>
@@ -303,60 +349,60 @@ export default function RecruiterContactPage() {
             {/* Faculty Coordinator Block */}
             <div className="p-7 rounded-3xl bg-[#0c0f18]/80 border border-white/10 backdrop-blur-md">
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-                  <UserCheck className="w-5 h-5" />
+                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                  <Building2 className="w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="text-base font-bold text-white">Department Placement Cell</h4>
-                  <span className="text-xs font-mono text-slate-400">Office of Corporate Relations & Drives</span>
+                  <span className="text-xs font-mono text-slate-400">Office of Corporate Relations &amp; Drives</span>
                 </div>
               </div>
 
               <p className="text-xs text-slate-300 leading-relaxed font-sans mb-6">
-                Our faculty and student placement coordinators manage full logistics for on-campus presentation auditoriums, proctored coding labs, and remote interview panels.
+                Government College of Engineering Srirangam faculty and student placement coordinators manage full logistics for on-campus presentation auditoriums, proctored coding labs, and remote interview panels.
               </p>
 
               <div className="space-y-3 font-mono text-xs text-slate-300">
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-black/40 border border-white/5">
-                  <Mail className="w-4 h-4 text-indigo-400" />
-                  <span>placements.cs@university.edu</span>
+                  <Mail className="w-4 h-4 text-amber-400" />
+                  <span>placements.cse@gces.edu.in</span>
                 </div>
 
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-black/40 border border-white/5">
                   <Phone className="w-4 h-4 text-cyan-400" />
-                  <span>+1 (800) 555-PLACEMENTS</span>
+                  <span>+91 (0431) 290-7888</span>
                 </div>
 
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-black/40 border border-white/5">
                   <MapPin className="w-4 h-4 text-pink-400" />
-                  <span>Computer Science Block, Room CS-401</span>
+                  <span>Government College of Engineering Srirangam, Tiruchirappalli</span>
                 </div>
               </div>
             </div>
 
             {/* Drive Process Roadmap */}
-            <div className="p-7 rounded-3xl bg-gradient-to-b from-indigo-950/20 to-black/40 border border-indigo-500/20">
-              <h4 className="text-xs font-mono uppercase tracking-widest text-indigo-300 mb-4 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-cyan-400" />
+            <div className="p-7 rounded-3xl bg-gradient-to-b from-amber-950/20 to-black/40 border border-amber-500/20">
+              <h4 className="text-xs font-mono uppercase tracking-widest text-amber-300 mb-4 flex items-center gap-2">
+                <Calendar className="w-4 h-4 text-amber-400" />
                 <span>EXPEDITED PLACEMENT PROCESS</span>
               </h4>
 
               <div className="space-y-3 font-mono text-xs">
                 <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">1</span>
-                  <span className="text-slate-300">Submit job description & shortlist criteria</span>
+                  <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">1</span>
+                  <span className="text-slate-300">Submit job description &amp; shortlist criteria</span>
                 </div>
                 <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">2</span>
-                  <span className="text-slate-300">Receive vetted candidate matrix & live code repos</span>
+                  <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">2</span>
+                  <span className="text-slate-300">Receive vetted candidate matrix &amp; live code repos</span>
                 </div>
                 <div className="flex items-start gap-2.5">
-                  <span className="w-5 h-5 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">3</span>
+                  <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">3</span>
                   <span className="text-slate-300">Host automated assessments or onsite interviews</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">4</span>
-                  <span className="text-slate-300">Same-day offer rolling & onboarding alignment</span>
+                  <span className="text-slate-300">Same-day offer rolling &amp; onboarding alignment</span>
                 </div>
               </div>
             </div>
