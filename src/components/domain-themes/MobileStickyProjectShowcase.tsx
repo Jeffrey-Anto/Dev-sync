@@ -46,16 +46,16 @@ function FleetNavScreen() {
   };
 
   return (
-    <div className="relative w-full h-full bg-[#070b14] text-slate-100 p-2.5 pt-5 flex flex-col justify-between select-none overflow-hidden font-mono">
+    <div className="relative w-full h-full bg-[#070b14] text-slate-100 p-2.5 sm:p-3 pt-5 sm:pt-6 flex flex-col justify-between select-none overflow-hidden font-mono">
       {/* Dynamic Map Grid Background */}
       <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#00E5FF_1px,transparent_1px)] [background-size:12px_12px]" />
 
       {/* Top Status */}
-      <div>
-        <div className="flex items-center justify-between text-[8px] text-cyan-300/80 mb-1.5 px-0.5">
+      <div className="flex-shrink-0">
+        <div className="flex items-center justify-between text-[8.5px] text-cyan-300/80 mb-1.5 px-0.5">
           <span>09:41</span>
           <div className="flex items-center gap-1">
-            <span className="text-[7.5px] px-1 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30 flex items-center gap-1">
+            <span className="text-[7.5px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
               OFFLINE GPS
             </span>
@@ -65,96 +65,95 @@ function FleetNavScreen() {
         </div>
 
         {/* Turn-by-Turn Instruction Banner */}
-        <div className="p-2 rounded-xl bg-gradient-to-r from-cyan-950/90 to-slate-900/90 border border-cyan-500/30 mb-1.5 shadow-md">
+        <div className="p-2 rounded-xl bg-gradient-to-r from-cyan-950/90 to-slate-900/90 border border-cyan-500/30 mb-2 shadow-md">
           <div className="flex items-center gap-2">
             <div className="w-7 h-7 rounded-lg bg-cyan-500/20 flex items-center justify-center border border-cyan-400/40 shrink-0">
-              <Navigation className="w-3.5 h-3.5 text-cyan-400 rotate-45 animate-pulse" />
+              <Navigation className="w-4 h-4 text-cyan-400 rotate-45 animate-pulse" />
             </div>
             <div className="min-w-0">
               <p className="text-[8px] text-cyan-300 font-bold truncate">In 250m turn right</p>
-              <h5 className="text-[10px] font-black text-white truncate">Lexington Expressway</h5>
+              <h5 className="text-[10.5px] font-black text-white truncate">Lexington Expressway</h5>
             </div>
           </div>
         </div>
-
-        {/* Live Vector Map Simulation Display */}
-        <div className="relative h-36 rounded-xl bg-[#040810] border border-cyan-500/20 overflow-hidden p-1.5 flex flex-col justify-between">
-          {/* Map Vector Roads SVG */}
-          <svg className="absolute inset-0 w-full h-full opacity-60" viewBox="0 0 200 150">
-            <path d="M 0 40 Q 60 70 120 40 T 200 60" fill="none" stroke="#1e293b" strokeWidth="12" />
-            <path d="M 40 0 Q 70 80 140 150" fill="none" stroke="#1e293b" strokeWidth="14" />
-            <path d="M 160 0 L 140 150" fill="none" stroke="#1e293b" strokeWidth="10" />
-
-            {/* Glowing Active Route Navigation Line */}
-            <path
-              d={
-                rerouteCount % 2 === 0
-                  ? "M 20 40 Q 70 70 110 90 T 170 130"
-                  : "M 20 40 Q 40 100 100 120 T 170 130"
-              }
-              fill="none"
-              stroke="#00E5FF"
-              strokeWidth="4"
-              strokeDasharray="6 3"
-              className="animate-pulse"
-            />
-
-            {/* User GPS Location Marker */}
-            <circle cx={rerouteCount % 2 === 0 ? "70" : "40"} cy={rerouteCount % 2 === 0 ? "70" : "100"} r="5" fill="#00E5FF" />
-            <circle cx={rerouteCount % 2 === 0 ? "70" : "40"} cy={rerouteCount % 2 === 0 ? "70" : "100"} r="10" fill="none" stroke="#00E5FF" strokeWidth="1.5" opacity="0.6">
-              <animate attributeName="r" values="5;14;5" dur="2s" repeatCount="indefinite" />
-              <animate attributeName="opacity" values="0.8;0;0.8" dur="2s" repeatCount="indefinite" />
-            </circle>
-
-            {/* Destination Pin */}
-            <circle cx="170" cy="130" r="4.5" fill="#EF4444" />
-          </svg>
-
-          {/* Top Map Badges */}
-          <div className="relative z-10 flex items-center justify-between">
-            <span className="text-[7.5px] px-1.5 py-0.5 rounded bg-black/80 border border-cyan-500/30 text-cyan-300 flex items-center gap-1">
-              <Database className="w-2 h-2" /> 100% Tiles Cached
-            </span>
-            <span className="text-[7.5px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
-              60 FPS
-            </span>
-          </div>
-
-          {/* Bottom Route Metrics inside Map */}
-          <div className="relative z-10 p-1 rounded-lg bg-black/85 backdrop-blur-md border border-white/10 flex items-center justify-between text-[7.5px]">
-            <div>
-              <span className="text-slate-400 block text-[6.5px]">REMAINING</span>
-              <span className="text-white font-bold">{rerouteCount % 2 === 0 ? "14.2 km · 22m" : "13.8 km · 20m"}</span>
-            </div>
-            <div className="text-right">
-              <span className="text-slate-400 block text-[6.5px]">ENGINE</span>
-              <span className="text-cyan-400 font-bold truncate max-w-[95px] block">
-                {rerouting ? "Routing..." : "Dijkstra (<1.2ms)"}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Interactive Simulation Button */}
-        <button
-          onClick={handleRecalculate}
-          className="w-full mt-1.5 py-1 px-2 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-[8px] font-bold flex items-center justify-center gap-1 transition-all cursor-pointer shadow-sm active:scale-95"
-        >
-          <RotateCcw className={`w-2.5 h-2.5 ${rerouting ? "animate-spin text-white" : ""}`} />
-          <span>{rerouting ? "Evaluating Route Graph..." : "Simulate Offline Reroute"}</span>
-        </button>
       </div>
 
-      {/* Bottom P2P Bluetooth Mesh Sync Status */}
-      <div className="space-y-1 mt-1">
-        <div className="p-1 rounded-xl bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-between text-[7.5px]">
+      {/* Live Vector Map Simulation Display (Flex-Grow to fit height) */}
+      <div className="relative flex-1 min-h-[130px] max-h-[220px] rounded-xl bg-[#040810] border border-cyan-500/20 overflow-hidden p-2 flex flex-col justify-between shadow-inner my-1">
+        {/* Map Vector Roads SVG */}
+        <svg className="absolute inset-0 w-full h-full opacity-65" viewBox="0 0 200 160" preserveAspectRatio="none">
+          <path d="M 0 40 Q 60 70 120 40 T 200 60" fill="none" stroke="#1e293b" strokeWidth="14" />
+          <path d="M 40 0 Q 70 80 140 160" fill="none" stroke="#1e293b" strokeWidth="16" />
+          <path d="M 170 0 L 140 160" fill="none" stroke="#1e293b" strokeWidth="12" />
+
+          {/* Glowing Active Route Navigation Line */}
+          <path
+            d={
+              rerouteCount % 2 === 0
+                ? "M 20 40 Q 70 70 110 100 T 170 140"
+                : "M 20 40 Q 40 110 100 130 T 170 140"
+            }
+            fill="none"
+            stroke="#00E5FF"
+            strokeWidth="4.5"
+            strokeDasharray="6 3"
+            className="animate-pulse"
+          />
+
+          {/* User GPS Location Marker */}
+          <circle cx={rerouteCount % 2 === 0 ? "70" : "40"} cy={rerouteCount % 2 === 0 ? "70" : "110"} r="6" fill="#00E5FF" />
+          <circle cx={rerouteCount % 2 === 0 ? "70" : "40"} cy={rerouteCount % 2 === 0 ? "70" : "110"} r="12" fill="none" stroke="#00E5FF" strokeWidth="1.5" opacity="0.6">
+            <animate attributeName="r" values="6;16;6" dur="2s" repeatCount="indefinite" />
+            <animate attributeName="opacity" values="0.8;0;0.8" dur="2s" repeatCount="indefinite" />
+          </circle>
+
+          {/* Destination Pin */}
+          <circle cx="170" cy="140" r="5" fill="#EF4444" />
+        </svg>
+
+        {/* Top Map Badges */}
+        <div className="relative z-10 flex items-center justify-between">
+          <span className="text-[7.5px] px-1.5 py-0.5 rounded bg-black/80 border border-cyan-500/30 text-cyan-300 flex items-center gap-1">
+            <Database className="w-2.5 h-2.5" /> 100% Cached
+          </span>
+          <span className="text-[7.5px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30">
+            60 FPS
+          </span>
+        </div>
+
+        {/* Bottom Route Metrics inside Map */}
+        <div className="relative z-10 p-1.5 rounded-lg bg-black/85 backdrop-blur-md border border-white/10 flex items-center justify-between text-[7.5px]">
+          <div>
+            <span className="text-slate-400 block text-[6.5px]">REMAINING</span>
+            <span className="text-white font-bold">{rerouteCount % 2 === 0 ? "14.2 km · 22m" : "13.8 km · 20m"}</span>
+          </div>
+          <div className="text-right">
+            <span className="text-slate-400 block text-[6.5px]">ENGINE</span>
+            <span className="text-cyan-400 font-bold truncate max-w-[90px] block">
+              {rerouting ? "Routing..." : "Dijkstra (<1.2ms)"}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Interactive Simulation Button & Bottom Sync */}
+      <div className="flex-shrink-0 space-y-1.5 mt-1">
+        <button
+          onClick={handleRecalculate}
+          className="w-full py-1.5 px-2 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-[8px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+        >
+          <RotateCcw className={`w-3 h-3 ${rerouting ? "animate-spin text-white" : ""}`} />
+          <span>{rerouting ? "Evaluating Route..." : "Simulate Offline Reroute"}</span>
+        </button>
+
+        <div className="p-1.5 rounded-xl bg-cyan-950/40 border border-cyan-500/20 flex items-center justify-between text-[8px]">
           <div className="flex items-center gap-1">
             <Radio className="w-3 h-3 text-cyan-400 animate-pulse" />
             <span className="text-slate-200">Bluetooth Mesh Sync</span>
           </div>
           <span className="text-emerald-400 font-bold">● Active (4 Peers)</span>
         </div>
-        <div className="w-16 h-1 bg-cyan-400/40 rounded-full mx-auto" />
+        <div className="w-20 h-1 bg-cyan-400/40 rounded-full mx-auto" />
       </div>
     </div>
   );
@@ -172,16 +171,16 @@ function CineSyncScreen() {
   };
 
   return (
-    <div className="relative w-full h-full bg-[#08060f] text-slate-100 p-2.5 pt-5 flex flex-col justify-between select-none overflow-hidden font-mono">
+    <div className="relative w-full h-full bg-[#08060f] text-slate-100 p-2.5 sm:p-3 pt-5 sm:pt-6 flex flex-col justify-between select-none overflow-hidden font-mono">
       {/* Dynamic Cyber Grid Background */}
       <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#ec4899_1px,transparent_1px)] [background-size:12px_12px]" />
 
       {/* Top Status */}
-      <div>
-        <div className="flex items-center justify-between text-[8px] text-pink-300/80 mb-1.5 px-0.5">
+      <div className="flex-shrink-0">
+        <div className="flex items-center justify-between text-[8.5px] text-pink-300/80 mb-1.5 px-0.5">
           <span>09:41</span>
           <div className="flex items-center gap-1">
-            <span className="text-[7.5px] px-1 py-0.2 rounded bg-pink-500/20 text-pink-300 font-bold border border-pink-500/30 flex items-center gap-1">
+            <span className="text-[7.5px] px-1.5 py-0.2 rounded bg-pink-500/20 text-pink-300 font-bold border border-pink-500/30 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-ping" />
               12ms LATENCY
             </span>
@@ -191,105 +190,105 @@ function CineSyncScreen() {
         </div>
 
         {/* Studio App Header */}
-        <div className="p-1.5 rounded-xl bg-pink-950/40 border border-pink-500/30 flex items-center justify-between mb-1.5">
+        <div className="p-2 rounded-xl bg-pink-950/40 border border-pink-500/30 flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-lg bg-pink-500/20 flex items-center justify-center border border-pink-400/30">
-              <Volume2 className="w-3 h-3 text-pink-400" />
+            <div className="w-6 h-6 rounded-lg bg-pink-500/20 flex items-center justify-center border border-pink-400/30">
+              <Volume2 className="w-3.5 h-3.5 text-pink-400" />
             </div>
             <div>
-              <h5 className="text-[9px] font-bold text-white leading-tight">CineSync Studio</h5>
-              <p className="text-[6.5px] text-pink-400">48kHz 24-bit PCM Stream</p>
+              <h5 className="text-[10px] font-bold text-white leading-tight">CineSync Studio</h5>
+              <p className="text-[7px] text-pink-400">48kHz 24-bit PCM Stream</p>
             </div>
           </div>
           <span className="text-[7.5px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
             LIVE
           </span>
         </div>
+      </div>
 
-        {/* Real-time Oscilloscope Waveform Display */}
-        <div className="relative h-16 rounded-xl bg-black/80 border border-pink-500/20 overflow-hidden p-1.5 flex flex-col justify-between mb-1.5">
-          <div className="flex items-center justify-between text-[6.5px] text-slate-400 z-10">
-            <span>MASTER STEREO BUS</span>
-            <span className="text-pink-400 font-bold">0.0 dB CLIP GUARD</span>
-          </div>
-
-          {/* Animated Waveform Oscilloscope */}
-          <div className="flex items-center justify-center gap-0.5 h-8 my-auto">
-            {[45, 80, 30, 95, 60, 100, 75, 40, 90, 65, 85, 30, 95, 70, 50, 90, 40, 80].map(
-              (val, idx) => (
-                <motion.div
-                  key={idx}
-                  animate={{
-                    height: [
-                      `${val * 0.16}px`,
-                      `${val * 0.3}px`,
-                      `${val * 0.12}px`,
-                      `${val * 0.26}px`,
-                    ],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 0.9 + (idx % 3) * 0.15,
-                    ease: "easeInOut",
-                  }}
-                  className="w-1 bg-gradient-to-t from-pink-500 via-purple-400 to-cyan-300 rounded-full"
-                />
-              )
-            )}
-          </div>
+      {/* Real-time Oscilloscope Waveform Display (Flexible height) */}
+      <div className="relative flex-1 min-h-[60px] max-h-[90px] rounded-xl bg-black/80 border border-pink-500/20 overflow-hidden p-1.5 flex flex-col justify-between my-1">
+        <div className="flex items-center justify-between text-[6.5px] text-slate-400 z-10">
+          <span>MASTER STEREO BUS</span>
+          <span className="text-pink-400 font-bold">0.0 dB CLIP GUARD</span>
         </div>
 
-        {/* 4 Multi-Channel VU Faders */}
-        <div className="space-y-1">
-          {[
-            { name: "CH 1: BOOM MIC", level: "92%", color: "from-pink-500 to-emerald-400" },
-            { name: "CH 2: LAV 01", level: "76%", color: "from-pink-500 to-amber-400" },
-            { name: "CH 3: LAV 02", level: "64%", color: "from-pink-500 to-cyan-400" },
-            { name: "CH 4: FOLEY", level: "48%", color: "from-pink-500 to-purple-400" },
-          ].map((channel, idx) => {
-            const isMuted = mutedChannel === idx;
-            return (
-              <div
+        {/* Animated Waveform Oscilloscope */}
+        <div className="flex items-center justify-center gap-0.5 h-10 my-auto">
+          {[45, 80, 30, 95, 60, 100, 75, 40, 90, 65, 85, 30, 95, 70, 50, 90, 40, 80].map(
+            (val, idx) => (
+              <motion.div
                 key={idx}
-                onClick={(e) => toggleMute(idx, e)}
-                className={`p-1 rounded-lg border transition-all cursor-pointer flex items-center justify-between text-[7.5px] ${
-                  isMuted
-                    ? "bg-red-950/20 border-red-500/30 opacity-60"
-                    : "bg-white/[0.03] border-white/5 hover:border-pink-500/30"
-                }`}
-              >
-                <div className="flex items-center gap-1">
-                  {isMuted ? (
-                    <VolumeX className="w-2.5 h-2.5 text-red-400" />
-                  ) : (
-                    <Volume2 className="w-2.5 h-2.5 text-pink-400" />
-                  )}
-                  <span className="text-slate-300 font-bold truncate max-w-[70px]">{channel.name}</span>
-                </div>
-                <div className="w-16 bg-slate-800 h-1.2 rounded-full overflow-hidden">
-                  <motion.div
-                    animate={
-                      isMuted
-                        ? { width: "0%" }
-                        : { width: [channel.level, "40%", channel.level, "85%"] }
-                    }
-                    transition={{ repeat: Infinity, duration: 1.8 + idx * 0.3, ease: "easeInOut" }}
-                    className={`h-full bg-gradient-to-r ${channel.color} rounded-full`}
-                  />
-                </div>
-              </div>
-            );
-          })}
+                animate={{
+                  height: [
+                    `${val * 0.18}px`,
+                    `${val * 0.35}px`,
+                    `${val * 0.12}px`,
+                    `${val * 0.3}px`,
+                  ],
+                }}
+                transition={{
+                  repeat: Infinity,
+                  duration: 0.9 + (idx % 3) * 0.15,
+                  ease: "easeInOut",
+                }}
+                className="w-1 bg-gradient-to-t from-pink-500 via-purple-400 to-cyan-300 rounded-full"
+              />
+            )
+          )}
         </div>
       </div>
 
+      {/* 4 Multi-Channel VU Faders */}
+      <div className="flex-shrink-0 space-y-1 my-1">
+        {[
+          { name: "CH 1: BOOM", level: "92%", color: "from-pink-500 to-emerald-400" },
+          { name: "CH 2: LAV 01", level: "76%", color: "from-pink-500 to-amber-400" },
+          { name: "CH 3: LAV 02", level: "64%", color: "from-pink-500 to-cyan-400" },
+          { name: "CH 4: FOLEY", level: "48%", color: "from-pink-500 to-purple-400" },
+        ].map((channel, idx) => {
+          const isMuted = mutedChannel === idx;
+          return (
+            <div
+              key={idx}
+              onClick={(e) => toggleMute(idx, e)}
+              className={`p-1.5 rounded-lg border transition-all cursor-pointer flex items-center justify-between text-[7.5px] ${
+                isMuted
+                  ? "bg-red-950/20 border-red-500/30 opacity-60"
+                  : "bg-white/[0.03] border-white/5 hover:border-pink-500/30"
+              }`}
+            >
+              <div className="flex items-center gap-1">
+                {isMuted ? (
+                  <VolumeX className="w-2.5 h-2.5 text-red-400" />
+                ) : (
+                  <Volume2 className="w-2.5 h-2.5 text-pink-400" />
+                )}
+                <span className="text-slate-300 font-bold truncate max-w-[80px]">{channel.name}</span>
+              </div>
+              <div className="w-24 bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                <motion.div
+                  animate={
+                    isMuted
+                      ? { width: "0%" }
+                      : { width: [channel.level, "40%", channel.level, "85%"] }
+                  }
+                  transition={{ repeat: Infinity, duration: 1.8 + idx * 0.3, ease: "easeInOut" }}
+                  className={`h-full bg-gradient-to-r ${channel.color} rounded-full`}
+                />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
       {/* Bottom AudioUnit DMA Hardware Status */}
-      <div className="space-y-1 mt-1">
-        <div className="p-1 rounded-xl bg-pink-950/30 border border-pink-500/20 flex items-center justify-between text-[7.5px]">
+      <div className="flex-shrink-0 space-y-1.5 mt-1">
+        <div className="p-1.5 rounded-xl bg-pink-950/30 border border-pink-500/20 flex items-center justify-between text-[8px]">
           <span className="text-slate-300">C++ JSI Bridge DMA</span>
           <span className="text-emerald-400 font-bold">0 Dropouts (48kHz)</span>
         </div>
-        <div className="w-16 h-1 bg-pink-400/40 rounded-full mx-auto" />
+        <div className="w-20 h-1 bg-pink-400/40 rounded-full mx-auto" />
       </div>
     </div>
   );
@@ -315,16 +314,16 @@ function PulsePayScreen() {
   };
 
   return (
-    <div className="relative w-full h-full bg-[#050907] text-slate-100 p-2.5 pt-5 flex flex-col justify-between select-none overflow-hidden font-mono">
+    <div className="relative w-full h-full bg-[#050907] text-slate-100 p-2.5 sm:p-3 pt-5 sm:pt-6 flex flex-col justify-between select-none overflow-hidden font-mono">
       {/* Dynamic Cyber Grid Background */}
       <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:12px_12px]" />
 
       {/* Top Status */}
-      <div>
-        <div className="flex items-center justify-between text-[8px] text-emerald-300/80 mb-1.5 px-0.5">
+      <div className="flex-shrink-0">
+        <div className="flex items-center justify-between text-[8.5px] text-emerald-300/80 mb-1.5 px-0.5">
           <span>09:41</span>
           <div className="flex items-center gap-1">
-            <span className="text-[7.5px] px-1 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 flex items-center gap-1">
+            <span className="text-[7.5px] px-1.5 py-0.2 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
               NFC READY
             </span>
@@ -334,14 +333,14 @@ function PulsePayScreen() {
         </div>
 
         {/* Merchant POS Header */}
-        <div className="p-1.5 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between mb-1.5">
+        <div className="p-2 rounded-xl bg-emerald-950/40 border border-emerald-500/30 flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5">
-            <div className="w-5 h-5 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-400/30">
-              <CreditCard className="w-3 h-3 text-emerald-400" />
+            <div className="w-6 h-6 rounded-lg bg-emerald-500/20 flex items-center justify-center border border-emerald-400/30">
+              <CreditCard className="w-3.5 h-3.5 text-emerald-400" />
             </div>
             <div>
-              <h5 className="text-[9px] font-bold text-white">PulsePay POS</h5>
-              <p className="text-[6.5px] text-emerald-400">Offline Keystore Enclave</p>
+              <h5 className="text-[10px] font-bold text-white">PulsePay POS</h5>
+              <p className="text-[7px] text-emerald-400">Offline Keystore Enclave</p>
             </div>
           </div>
           <span className="text-[7.5px] font-bold text-slate-300">#POS-409</span>
@@ -349,65 +348,65 @@ function PulsePayScreen() {
 
         {/* Amount Card */}
         <div className="p-2 rounded-2xl bg-gradient-to-br from-emerald-950/60 via-slate-900 to-black border border-emerald-500/30 text-center my-1 shadow-lg">
-          <span className="text-[6.5px] text-slate-400 uppercase tracking-widest block">
+          <span className="text-[7px] text-slate-400 uppercase tracking-widest block mb-0.5">
             AMOUNT TO AUTHORIZE
           </span>
-          <h3 className="text-lg font-black text-white tracking-tight text-emerald-300">
-            $42.50 <span className="text-[9px] font-normal text-slate-400">USD</span>
+          <h3 className="text-xl font-black text-white tracking-tight text-emerald-300">
+            $42.50 <span className="text-[10px] font-normal text-slate-400">USD</span>
           </h3>
-          <p className="text-[6.5px] text-emerald-400/80 mt-0.5">● Encrypted ECDSA Attestation Ready</p>
-        </div>
-
-        {/* Biometric Laser Fingerprint Scanner Mockup */}
-        <div
-          onClick={handleFingerprintTap}
-          className="relative p-2.5 rounded-2xl bg-black/70 border border-emerald-500/25 flex flex-col items-center justify-center overflow-hidden cursor-pointer hover:border-emerald-400/60 transition-all group"
-        >
-          {/* Animated Biometric Fingerprint */}
-          <div className="relative w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
-            <div className="absolute inset-0 rounded-full border border-emerald-400/30 animate-ping" />
-            <Fingerprint
-              className={`w-7 h-7 transition-colors ${
-                authStatus === "authorized"
-                  ? "text-emerald-300 drop-shadow-[0_0_16px_#34d399]"
-                  : authStatus === "verifying"
-                  ? "text-amber-300 animate-pulse"
-                  : "text-emerald-400 drop-shadow-[0_0_12px_#10b981]"
-              }`}
-            />
-
-            {/* Glowing Laser Scan Bar */}
-            <motion.div
-              animate={{ y: [-16, 16, -16] }}
-              transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-              className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_8px_#34d399]"
-            />
-          </div>
-
-          <p className="text-[7.5px] font-bold text-white tracking-wide">
-            {authStatus === "authorized" ? (
-              <span className="text-emerald-300 flex items-center gap-1">
-                <CheckCircle2 className="w-2.5 h-2.5" /> PAYMENT AUTHORIZED
-              </span>
-            ) : authStatus === "verifying" ? (
-              <span className="text-amber-300 animate-pulse">VERIFYING ECDSA KEY...</span>
-            ) : (
-              "TAP FINGERPRINT TO AUTH"
-            )}
-          </p>
-          <span className="text-[5.5px] text-slate-400">Level 4 TEE Hardware Keystore</span>
+          <p className="text-[7px] text-emerald-400/80 mt-0.5">● Encrypted ECDSA Attestation Ready</p>
         </div>
       </div>
 
+      {/* Biometric Laser Fingerprint Scanner Mockup (Flexible height) */}
+      <div
+        onClick={handleFingerprintTap}
+        className="relative flex-1 min-h-[90px] max-h-[140px] p-2.5 rounded-2xl bg-black/70 border border-emerald-500/25 flex flex-col items-center justify-center overflow-hidden cursor-pointer hover:border-emerald-400/60 transition-all group my-1"
+      >
+        {/* Animated Biometric Fingerprint */}
+        <div className="relative w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/40 flex items-center justify-center mb-1 group-hover:scale-105 transition-transform">
+          <div className="absolute inset-0 rounded-full border border-emerald-400/30 animate-ping" />
+          <Fingerprint
+            className={`w-7 h-7 transition-colors ${
+              authStatus === "authorized"
+                ? "text-emerald-300 drop-shadow-[0_0_16px_#34d399]"
+                : authStatus === "verifying"
+                ? "text-amber-300 animate-pulse"
+                : "text-emerald-400 drop-shadow-[0_0_12px_#10b981]"
+            }`}
+          />
+
+          {/* Glowing Laser Scan Bar */}
+          <motion.div
+            animate={{ y: [-16, 16, -16] }}
+            transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
+            className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-white to-transparent shadow-[0_0_8px_#34d399]"
+          />
+        </div>
+
+        <p className="text-[7.5px] font-bold text-white tracking-wide text-center">
+          {authStatus === "authorized" ? (
+            <span className="text-emerald-300 flex items-center gap-1">
+              <CheckCircle2 className="w-2.5 h-2.5" /> PAYMENT AUTHORIZED
+            </span>
+          ) : authStatus === "verifying" ? (
+            <span className="text-amber-300 animate-pulse">VERIFYING ECDSA KEY...</span>
+          ) : (
+            "TAP FINGERPRINT TO AUTH"
+          )}
+        </p>
+        <span className="text-[6px] text-slate-400">Level 4 TEE Hardware Keystore</span>
+      </div>
+
       {/* Bottom Secure Settlement Status */}
-      <div className="space-y-1 mt-1">
-        <div className="p-1 rounded-xl bg-emerald-950/30 border border-emerald-500/20 flex items-center justify-between text-[7.5px]">
+      <div className="flex-shrink-0 space-y-1.5 mt-1">
+        <div className="p-1.5 rounded-xl bg-emerald-950/30 border border-emerald-500/20 flex items-center justify-between text-[8px]">
           <span className="text-slate-300 flex items-center gap-1">
-            <CheckCircle2 className="w-2 h-2 text-emerald-400" /> Fraud: 0.0%
+            <CheckCircle2 className="w-2.5 h-2.5 text-emerald-400" /> Fraud Risk: 0.0%
           </span>
           <span className="text-emerald-300 font-bold">&lt; 250ms Signed</span>
         </div>
-        <div className="w-16 h-1 bg-emerald-400/40 rounded-full mx-auto" />
+        <div className="w-20 h-1 bg-emerald-400/40 rounded-full mx-auto" />
       </div>
     </div>
   );
@@ -478,9 +477,9 @@ export default function MobileStickyProjectShowcase({
 
   // Color theme mapping per project index for glowing dynamic aura
   const projectGlowStyles = [
-    "from-cyan-500/25 via-blue-500/10 to-transparent shadow-[0_0_80px_rgba(0,229,255,0.22)]",
-    "from-pink-500/25 via-purple-500/10 to-transparent shadow-[0_0_80px_rgba(236,72,153,0.22)]",
-    "from-emerald-500/25 via-teal-500/10 to-transparent shadow-[0_0_80px_rgba(16,185,129,0.22)]",
+    "from-cyan-500/25 via-blue-500/10 to-transparent shadow-[0_0_90px_rgba(0,229,255,0.25)]",
+    "from-pink-500/25 via-purple-500/10 to-transparent shadow-[0_0_90px_rgba(236,72,153,0.25)]",
+    "from-emerald-500/25 via-teal-500/10 to-transparent shadow-[0_0_90px_rgba(16,185,129,0.25)]",
   ];
 
   return (
@@ -488,7 +487,7 @@ export default function MobileStickyProjectShowcase({
       {/* ── DESKTOP 3-COLUMN CENTER-STAGE SHOWCASE (Left Overview + Center Sticky Phone + Right Metrics) ── */}
       <div className="hidden lg:grid grid-cols-12 gap-6 xl:gap-8 items-start relative">
         {/* LEFT COLUMN (4 cols): Project Overview, Problem & Solution cards */}
-        <div className="col-span-4 space-y-20 py-4">
+        <div className="col-span-4 space-y-24 py-6">
           {projects.map((project, idx) => {
             const isActive = activeProjectIndex === idx;
 
@@ -499,7 +498,7 @@ export default function MobileStickyProjectShowcase({
                   cardRefs.current[idx] = el;
                 }}
                 onClick={() => handleTabClick(idx)}
-                className={`min-h-[70vh] flex flex-col justify-center p-6 xl:p-7 rounded-3xl border transition-all duration-500 cursor-pointer ${
+                className={`min-h-[75vh] flex flex-col justify-center p-6 xl:p-7 rounded-3xl border transition-all duration-500 cursor-pointer ${
                   isActive
                     ? "bg-gradient-to-br from-[#121829]/95 via-[#0b101f]/95 to-[#171128]/95 border-amber-500/60 shadow-[0_15px_50px_rgba(245,158,11,0.18)] scale-[1.02]"
                     : "bg-[#0b0e18]/60 border-white/10 hover:border-white/20 opacity-40 hover:opacity-75"
@@ -567,32 +566,27 @@ export default function MobileStickyProjectShowcase({
           })}
         </div>
 
-        {/* CENTER COLUMN (4 cols): STICKY PHONE PINNED AT EXACT CENTER OF VIEWPORT */}
-        <div className="col-span-4 sticky top-20 h-[calc(100vh-6rem)] max-h-[640px] flex flex-col items-center justify-center z-20 pointer-events-auto">
+        {/* CENTER COLUMN (4 cols): STICKY PHONE PINNED AT EXACT CENTER OF VIEWPORT (Dynamic Viewport Fit) */}
+        <div className="col-span-4 sticky top-0 h-screen flex flex-col items-center justify-center z-20 pointer-events-auto">
           {/* Dynamic Glowing Ambient Aura */}
           <div
-            className={`absolute w-64 h-[440px] rounded-full blur-3xl transition-all duration-700 bg-gradient-to-tr ${
+            className={`absolute w-80 h-[520px] rounded-full blur-3xl transition-all duration-700 bg-gradient-to-tr ${
               projectGlowStyles[activeProjectIndex] || projectGlowStyles[0]
             }`}
           />
 
-          {/* Active Screen Tag */}
-          <div className="mb-1.5 px-3 py-0.5 rounded-full bg-slate-900/90 border border-amber-500/40 text-amber-300 text-[10px] font-mono shadow-xl backdrop-blur-md flex items-center gap-1.5 z-10">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-            <span>
-              LIVE RUNTIME: <strong>{activeProject.title.split(" ")[0]}</strong>
-            </span>
-          </div>
-
-          {/* Stationary Sticky Phone Chassis with Compact Viewport Height Fit */}
-          <div className="relative group">
-            <PhoneFrame is3dActive={true} className="!w-[275px] sm:!w-[285px] xl:!w-[300px] !h-[490px] sm:!h-[510px] xl:!h-[530px] !rounded-[42px] !p-2.5">
+          {/* Stationary Sticky Phone Chassis with Viewport-Fitting Height */}
+          <div className="relative group shadow-[0_25px_80px_rgba(0,0,0,0.85)]">
+            <PhoneFrame
+              is3dActive={true}
+              className="!h-[min(640px,82vh)] !w-[min(335px,calc(82vh*0.52))] !rounded-[48px] !p-3"
+            >
               <AnimatePresence mode="wait">
                 <motion.div
                   key={activeProjectIndex}
-                  initial={{ opacity: 0, scale: 0.95, y: 8 }}
+                  initial={{ opacity: 0, scale: 0.96, y: 8 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 1.05, y: -8 }}
+                  exit={{ opacity: 0, scale: 1.04, y: -8 }}
                   transition={{ duration: 0.25, ease: "easeOut" }}
                   className="w-full h-full"
                 >
@@ -603,7 +597,7 @@ export default function MobileStickyProjectShowcase({
           </div>
 
           {/* Screen Navigation Controls & Indicator */}
-          <div className="flex items-center gap-2.5 mt-2 z-10">
+          <div className="flex items-center gap-2.5 mt-2.5 z-10">
             <button
               onClick={() => handleTabClick(Math.max(0, activeProjectIndex - 1))}
               disabled={activeProjectIndex === 0}
@@ -637,14 +631,10 @@ export default function MobileStickyProjectShowcase({
               <ChevronRight className="w-3 h-3" />
             </button>
           </div>
-
-          <p className="text-[9px] font-mono text-slate-400 mt-1 text-center">
-            ✦ Center sticky runtime · Scroll or tap to explore
-          </p>
         </div>
 
         {/* RIGHT COLUMN (4 cols): Metrics, Architecture Highlights & Inspect CTA */}
-        <div className="col-span-4 space-y-20 py-4">
+        <div className="col-span-4 space-y-24 py-6">
           {projects.map((project, idx) => {
             const isActive = activeProjectIndex === idx;
 
@@ -652,7 +642,7 @@ export default function MobileStickyProjectShowcase({
               <div
                 key={project.id}
                 onClick={() => handleTabClick(idx)}
-                className={`min-h-[70vh] flex flex-col justify-center p-6 xl:p-7 rounded-3xl border transition-all duration-500 cursor-pointer ${
+                className={`min-h-[75vh] flex flex-col justify-center p-6 xl:p-7 rounded-3xl border transition-all duration-500 cursor-pointer ${
                   isActive
                     ? "bg-gradient-to-br from-[#121829]/95 via-[#0b101f]/95 to-[#171128]/95 border-amber-500/60 shadow-[0_15px_50px_rgba(245,158,11,0.18)] scale-[1.02]"
                     : "bg-[#0b0e18]/60 border-white/10 hover:border-white/20 opacity-40 hover:opacity-75"
@@ -762,9 +752,6 @@ export default function MobileStickyProjectShowcase({
                 <span className="text-xs font-mono uppercase tracking-widest font-bold text-amber-300">
                   PROJECT #{idx + 1} · {project.title.split(" ")[0]}
                 </span>
-                <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/40">
-                  LIVE RUNTIME
-                </span>
               </div>
 
               <h3 className="text-lg sm:text-xl font-black text-white tracking-tight mb-1.5">
@@ -774,9 +761,9 @@ export default function MobileStickyProjectShowcase({
                 {project.oneLiner}
               </p>
 
-              {/* Mobile Phone Mockup View with Height Fit */}
+              {/* Mobile Phone Mockup View with Dynamic Fitting Height */}
               <div className="flex justify-center my-4">
-                <PhoneFrame className="!w-[260px] sm:!w-[280px] !h-[480px] sm:!h-[510px] !rounded-[40px] !p-2.5">
+                <PhoneFrame className="!h-[550px] sm:!h-[590px] !w-[290px] sm:!w-[320px] !rounded-[46px] !p-3">
                   {idx === 0 && <FleetNavScreen />}
                   {idx === 1 && <CineSyncScreen />}
                   {idx === 2 && <PulsePayScreen />}

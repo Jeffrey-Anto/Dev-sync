@@ -57,6 +57,29 @@ export default function DomainDetailPage({ params }: PageProps) {
   const [pourCount, setPourCount] = useState(0);
   const [swingCount, setSwingCount] = useState(0);
   const [mobileReplayCount, setMobileReplayCount] = useState(0);
+  const [isHeaderVisible, setIsHeaderVisible] = useState(true);
+  const lastScrollY = useRef(0);
+
+  // Auto-hide top bar on scroll down, reveal on scroll up or at top
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY;
+      const delta = currentScrollY - lastScrollY.current;
+
+      if (currentScrollY < 60) {
+        setIsHeaderVisible(true);
+      } else if (delta > 8) {
+        setIsHeaderVisible(false);
+      } else if (delta < -8) {
+        setIsHeaderVisible(true);
+      }
+
+      lastScrollY.current = currentScrollY;
+    };
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // Sync active domain so matrix orbit restores to this domain upon returning
   useEffect(() => {
@@ -154,9 +177,13 @@ export default function DomainDetailPage({ params }: PageProps) {
         />
       )}
 
-      {/* 3. TOP NAVIGATION BAR */}
+      {/* 3. TOP NAVIGATION BAR (Auto-hides on scroll down, reveals on scroll up) */}
       <header
-        className={`sticky top-0 z-30 transition-all ${
+        className={`sticky top-0 z-40 transition-all duration-300 transform ${
+          isHeaderVisible
+            ? "translate-y-0 opacity-100 pointer-events-auto"
+            : "-translate-y-full opacity-0 pointer-events-none shadow-none"
+        } ${
           isUiUx
             ? "bg-[#FFE600] border-b-4 border-black px-4 sm:px-8 py-3.5 shadow-[0_4px_0_#000000]"
             : "border-b backdrop-blur-xl px-4 sm:px-8 py-3.5 shadow-2xl"
