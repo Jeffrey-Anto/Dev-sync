@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import {
   Trophy,
   Award,
@@ -11,140 +11,146 @@ import {
   Shield,
   Cpu,
   Flame,
-  Terminal,
   CheckCircle2,
 } from "lucide-react";
 import { STUDENT_ACHIEVEMENTS, StudentAchievement } from "@/data/achievements";
 import { ConstellationBackground } from "@/components/backgrounds";
 
 export default function AchievementSlider() {
-  const sliderRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const [maxScrollDistance, setMaxScrollDistance] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
 
   const totalCards = STUDENT_ACHIEVEMENTS.length;
 
-  const updateScrollState = () => {
-    const container = sliderRef.current;
-    if (!container) return;
-    const { scrollLeft, scrollWidth, clientWidth } = container;
-    setCanScrollLeft(scrollLeft > 10);
-    setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+  // Track vertical scroll progress across the sticky cards container
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start start", "end end"],
+  });
 
-    // If reached the right end boundary
-    if (scrollLeft + clientWidth >= scrollWidth - 25) {
-      setActiveIndex(totalCards - 1);
-      return;
+  // Calculate the exact horizontal scroll distance required to reveal all cards
+  const updateScrollBounds = () => {
+    if (trackRef.current) {
+      const scrollWidth = trackRef.current.scrollWidth;
+      const viewportWidth = window.innerWidth;
+      const endPadding = viewportWidth >= 1024 ? 96 : viewportWidth >= 640 ? 48 : 24;
+      const distance = Math.max(0, scrollWidth - viewportWidth + endPadding);
+      setMaxScrollDistance(distance);
     }
-
-    // If at the left start boundary
-    if (scrollLeft <= 25) {
-      setActiveIndex(0);
-      return;
-    }
-
-    // Dynamic child offset calculation
-    const children = Array.from(container.children) as HTMLElement[];
-    if (!children.length) return;
-
-    let closestIndex = 0;
-    let minDistance = Infinity;
-
-    children.forEach((child, idx) => {
-      const childLeft = child.offsetLeft - container.offsetLeft;
-      const distance = Math.abs(childLeft - scrollLeft);
-      if (distance < minDistance) {
-        minDistance = distance;
-        closestIndex = idx;
-      }
-    });
-
-    setActiveIndex(closestIndex);
   };
 
   useEffect(() => {
-    const slider = sliderRef.current;
-    if (!slider) return;
-    slider.addEventListener("scroll", updateScrollState, { passive: true });
-    window.addEventListener("resize", updateScrollState);
-    updateScrollState();
+    updateScrollBounds();
+    const handleResize = () => {
+      updateScrollBounds();
+    };
+
+    window.addEventListener("resize", handleResize);
+    const timer = setTimeout(updateScrollBounds, 300);
+
     return () => {
-      slider.removeEventListener("scroll", updateScrollState);
-      window.removeEventListener("resize", updateScrollState);
+      window.removeEventListener("resize", handleResize);
+      clearTimeout(timer);
     };
   }, []);
 
-  const scrollToIndex = (index: number) => {
-    const container = sliderRef.current;
-    if (!container) return;
-    const children = Array.from(container.children) as HTMLElement[];
-    if (children[index]) {
-      const childLeft = children[index].offsetLeft - container.offsetLeft;
-      container.scrollTo({
-        left: childLeft,
-        behavior: "smooth",
-      });
-    }
+  // Transform vertical scroll progress into horizontal translation
+  const x = useTransform(scrollYProgress, [0, 1], [0, -maxScrollDistance]);
+  const progressPercent = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+
+  // Dynamically calculate active card index from scroll progress
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    const calculatedIndex = Math.min(
+      totalCards - 1,
+      Math.max(0, Math.floor(latest * totalCards + 0.1))
+    );
+    setActiveIndex(calculatedIndex);
+  });
+
+  // Smoothly scroll window to target card index
+  const scrollToCard = (index: number) => {
+    if (!containerRef.current) return;
+    const container = containerRef.current;
+    const rect = container.getBoundingClientRect();
+    const currentScrollY = window.scrollY;
+    const containerTop = currentScrollY + rect.top;
+    const scrollableDistance = container.offsetHeight - window.innerHeight;
+
+    const targetFraction = totalCards > 1 ? index / (totalCards - 1) : 0;
+    const targetScrollY = containerTop + targetFraction * scrollableDistance;
+
+    window.scrollTo({
+      top: targetScrollY,
+      behavior: "smooth",
+    });
   };
 
   const handlePrev = () => {
     const nextIdx = Math.max(activeIndex - 1, 0);
-    scrollToIndex(nextIdx);
+    scrollToCard(nextIdx);
   };
 
   const handleNext = () => {
     const nextIdx = Math.min(activeIndex + 1, totalCards - 1);
-    scrollToIndex(nextIdx);
+    scrollToCard(nextIdx);
   };
 
   return (
-    <section
-      id="achievements-showcase"
-      className="relative z-20 py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-[#040507] overflow-hidden border-t border-white/10"
-    >
-      {/* Background Ambience */}
-      <ConstellationBackground opacity={0.6} />
-      <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
-      <div className="absolute top-0 right-1/4 w-[600px] h-[350px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none" />
-      <div className="absolute bottom-0 left-1/4 w-[600px] h-[350px] bg-cyan-500/5 rounded-full blur-[140px] pointer-events-none" />
+    <section id="achievements-showcase" className="relative z-20 bg-[#040507] border-t border-white/10">
+      {/* ── 1. NORMAL SCROLLING SECTION TITLE (Scrolls away naturally; NOT locked) ── */}
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-12 sm:pb-16">
+        <div className="flex items-center gap-2 mb-3">
+          <span className="h-[2px] w-6 bg-amber-400" />
+          <span className="font-mono text-xs tracking-widest text-amber-400 font-bold uppercase">
+            EXCELLENCE IN ACTION
+          </span>
+        </div>
 
-      <div className="max-w-7xl mx-auto w-full">
-        {/* Top Header Section */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 sm:mb-16">
-          <div>
-            {/* Top Sub-tag */}
-            <div className="flex items-center gap-2 mb-3">
-              <span className="h-[2px] w-6 bg-amber-400" />
-              <span className="font-mono text-xs tracking-widest text-amber-400 font-bold uppercase">
-                EXCELLENCE IN ACTION
-              </span>
+        {/* Display Headline */}
+        <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight uppercase leading-[0.95] font-sans">
+          OUR STUDENT <br />
+          <span className="inline-block animate-deep-color-flow">
+            ACHIEVEMENTS
+          </span>
+        </h2>
+
+        {/* Subtitle */}
+        <p className="text-xs sm:text-sm font-mono tracking-wider text-cyan-400 font-bold uppercase mt-3">
+          MOMENTUM OUR STUDENTS ARE BUILDING
+        </p>
+      </div>
+
+      {/* ── 2. STICKY HORIZONTAL CARDS CONTAINER (Locks when cards reach screen; Title is out of view) ── */}
+      <div
+        ref={containerRef}
+        className="relative"
+        style={{ height: `${(totalCards + 0.8) * 58}vh` }}
+      >
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between pt-16 sm:pt-20 pb-6 sm:pb-8 select-none">
+          {/* Background Ambience */}
+          <ConstellationBackground opacity={0.6} />
+          <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
+          <div className="absolute top-1/4 right-1/4 w-[600px] h-[350px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none" />
+          <div className="absolute bottom-1/4 left-1/4 w-[600px] h-[350px] bg-cyan-500/5 rounded-full blur-[140px] pointer-events-none" />
+
+          {/* Sticky Top Status Bar & Navigation Controls Capsule */}
+          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+            <div className="flex items-center gap-2 text-xs font-mono text-amber-400 font-bold uppercase">
+              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
+              <span className="tracking-wider">STUDENT HONORS ARCHIVE</span>
             </div>
 
-            {/* Giant Display Headline */}
-            <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight uppercase leading-[0.95] font-sans">
-              OUR STUDENT <br />
-              <span className="inline-block animate-deep-color-flow">
-                ACHIEVEMENTS
-              </span>
-            </h2>
-
-            {/* Cyan Subtitle */}
-            <p className="text-xs sm:text-sm font-mono tracking-wider text-cyan-400 font-bold uppercase mt-3">
-              MOMENTUM OUR STUDENTS ARE BUILDING
-            </p>
-          </div>
-
-          {/* Top-Right Controls Capsule */}
-          <div className="flex items-center gap-4 self-start md:self-end">
-            <div className="flex items-center gap-3 px-4 py-2.5 rounded-full bg-[#0a0d16]/90 border border-white/15 backdrop-blur-xl shadow-2xl">
+            {/* Controls Capsule */}
+            <div className="flex items-center gap-3 px-3.5 py-1.5 sm:py-2 rounded-full bg-[#0a0d16]/90 border border-white/15 backdrop-blur-xl shadow-2xl">
               {/* Prev Button */}
               <button
                 onClick={handlePrev}
-                disabled={!canScrollLeft}
+                disabled={activeIndex === 0}
                 aria-label="Previous Achievement"
-                className={`p-1.5 rounded-full transition-all cursor-pointer ${
-                  canScrollLeft
+                className={`p-1 rounded-full transition-all cursor-pointer ${
+                  activeIndex > 0
                     ? "text-white hover:text-amber-300 hover:scale-110 active:scale-95"
                     : "text-slate-600 cursor-not-allowed"
                 }`}
@@ -160,16 +166,16 @@ export default function AchievementSlider() {
               </div>
 
               {/* Dot Indicators */}
-              <div className="flex items-center gap-1.5 px-1">
+              <div className="flex items-center gap-1 px-1">
                 {STUDENT_ACHIEVEMENTS.map((_, idx) => (
                   <button
                     key={idx}
-                    onClick={() => scrollToIndex(idx)}
+                    onClick={() => scrollToCard(idx)}
                     aria-label={`Jump to achievement ${idx + 1}`}
-                    className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    className={`h-1.5 rounded-full transition-all duration-300 cursor-pointer ${
                       activeIndex === idx
-                        ? "w-6 bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)]"
-                        : "w-2 bg-slate-700 hover:bg-slate-500"
+                        ? "w-5 bg-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)]"
+                        : "w-1.5 bg-slate-700 hover:bg-slate-500"
                     }`}
                   />
                 ))}
@@ -178,10 +184,10 @@ export default function AchievementSlider() {
               {/* Next Button */}
               <button
                 onClick={handleNext}
-                disabled={!canScrollRight}
+                disabled={activeIndex === totalCards - 1}
                 aria-label="Next Achievement"
-                className={`p-1.5 rounded-full transition-all cursor-pointer ${
-                  canScrollRight
+                className={`p-1 rounded-full transition-all cursor-pointer ${
+                  activeIndex < totalCards - 1
                     ? "text-white hover:text-amber-300 hover:scale-110 active:scale-95"
                     : "text-slate-600 cursor-not-allowed"
                 }`}
@@ -190,17 +196,44 @@ export default function AchievementSlider() {
               </button>
             </div>
           </div>
-        </div>
 
-        {/* Horizontal Card Track */}
-        <div
-          ref={sliderRef}
-          className="flex gap-6 overflow-x-auto pb-8 pt-2 scroll-smooth snap-x snap-mandatory scrollbar-none select-none cursor-grab active:cursor-grabbing"
-          style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
-        >
-          {STUDENT_ACHIEVEMENTS.map((item, index) => (
-            <AchievementCard key={item.id} achievement={item} index={index} />
-          ))}
+          {/* Full-Height Horizontal Sticky Cards Track (Driven by vertical scroll) */}
+          <div className="relative z-10 w-full overflow-visible my-auto py-2">
+            <motion.div
+              ref={trackRef}
+              style={{ x }}
+              className="flex gap-6 sm:gap-8 px-4 sm:px-8 lg:px-16 items-stretch will-change-transform"
+            >
+              {STUDENT_ACHIEVEMENTS.map((item, index) => (
+                <AchievementCard
+                  key={item.id}
+                  achievement={item}
+                  index={index}
+                  isActive={activeIndex === index}
+                />
+              ))}
+            </motion.div>
+          </div>
+
+          {/* Bottom Horizontal Scroll Progress Bar & Cue */}
+          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between text-[10px] font-mono text-slate-400">
+            <div className="flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+              <span className="text-slate-300">SCROLL DOWN TO EXPLORE HORIZONTALLY</span>
+            </div>
+
+            <div className="flex items-center gap-3 w-40 sm:w-56">
+              <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
+                <motion.div
+                  style={{ width: progressPercent }}
+                  className="h-full bg-gradient-to-r from-amber-400 via-cyan-400 to-emerald-400 rounded-full"
+                />
+              </div>
+              <span className="font-bold text-amber-300">
+                {Math.round(((activeIndex + 1) / totalCards) * 100)}%
+              </span>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -210,9 +243,11 @@ export default function AchievementSlider() {
 function AchievementCard({
   achievement,
   index,
+  isActive,
 }: {
   achievement: StudentAchievement;
   index: number;
+  isActive: boolean;
 }) {
   const getIcon = () => {
     switch (achievement.tagType) {
@@ -236,36 +271,33 @@ function AchievementCard({
   const IconComponent = getIcon();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.5, delay: index * 0.1 }}
-      className="min-w-[320px] sm:min-w-[380px] md:min-w-[420px] max-w-[420px] flex-shrink-0 snap-start rounded-3xl bg-[#090c15]/90 border border-white/10 hover:border-white/25 backdrop-blur-xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-300 group hover:shadow-[0_20px_40px_-15px_rgba(0,0,0,0.8)] relative overflow-hidden"
-      style={{
-        boxShadow: "0 15px 35px -10px rgba(0, 0, 0, 0.7)",
-      }}
+    <div
+      className={`min-w-[310px] sm:min-w-[370px] md:min-w-[420px] max-w-[420px] flex-shrink-0 rounded-3xl backdrop-blur-2xl p-6 sm:p-7 flex flex-col justify-between transition-all duration-500 relative overflow-hidden border ${
+        isActive
+          ? "bg-gradient-to-br from-[#121829]/95 via-[#0b101f]/95 to-[#171128]/95 border-amber-500/60 shadow-[0_25px_60px_rgba(245,158,11,0.22)] scale-[1.02]"
+          : "bg-[#090c15]/90 border-white/10 hover:border-white/25 shadow-xl opacity-80 hover:opacity-100"
+      }`}
     >
       {/* Top Header: Tag Pill & Index */}
       <div>
-        <div className="flex items-center justify-between mb-5">
+        <div className="flex items-center justify-between mb-4">
           {/* Badge Tag */}
           <div
-            className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[11px] font-mono font-bold tracking-wider uppercase ${achievement.tagColor.bg} ${achievement.tagColor.text} ${achievement.tagColor.border}`}
+            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-xl border text-[10.5px] font-mono font-bold tracking-wider uppercase ${achievement.tagColor.bg} ${achievement.tagColor.text} ${achievement.tagColor.border}`}
           >
             <IconComponent className="w-3.5 h-3.5" />
             <span>{achievement.tag}</span>
           </div>
 
           {/* Index Number */}
-          <span className="font-mono text-sm text-slate-500 font-semibold group-hover:text-slate-300 transition-colors">
+          <span className="font-mono text-sm text-slate-500 font-semibold">
             {achievement.indexStr}
           </span>
         </div>
 
         {/* Visual Graphic Banner */}
         <div
-          className={`relative h-48 sm:h-52 w-full rounded-2xl overflow-hidden mb-6 border border-white/10 bg-gradient-to-br ${achievement.gradientTheme} p-4 flex flex-col justify-between shadow-inner`}
+          className={`relative h-44 sm:h-48 w-full rounded-2xl overflow-hidden mb-5 border border-white/10 bg-gradient-to-br ${achievement.gradientTheme} p-4 flex flex-col justify-between shadow-inner`}
         >
           {/* Subtle Grid Background */}
           <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
@@ -278,7 +310,7 @@ function AchievementCard({
 
           {/* Top Status inside Visual */}
           <div className="relative z-10 flex items-center justify-between">
-            <span className="text-[10px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-md bg-black/60 border border-white/10 text-slate-300 backdrop-blur-md">
+            <span className="text-[9.5px] font-mono uppercase tracking-widest px-2.5 py-0.5 rounded-md bg-black/60 border border-white/10 text-slate-300 backdrop-blur-md">
               HONORS ARCHIVE
             </span>
             <div className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34D399]" />
@@ -287,22 +319,22 @@ function AchievementCard({
           {/* Center Trophy / Stage Emblem Mock */}
           <div className="relative z-10 my-auto flex flex-col items-center justify-center text-center">
             <div
-              className="w-14 h-14 rounded-2xl flex items-center justify-center mb-2 shadow-2xl transition-transform duration-300 group-hover:scale-110"
+              className="w-13 h-13 rounded-2xl flex items-center justify-center mb-1.5 shadow-2xl transition-transform duration-300"
               style={{
                 backgroundColor: `${achievement.accentColor}20`,
                 border: `1px solid ${achievement.accentColor}50`,
                 boxShadow: `0 0 25px ${achievement.accentColor}40`,
               }}
             >
-              <IconComponent className="w-7 h-7 text-white" />
+              <IconComponent className="w-6 h-6 text-white" />
             </div>
-            <span className="text-[11px] font-mono uppercase tracking-wider text-slate-300 font-semibold">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-slate-300 font-semibold">
               COLLECTIVE COHORT RECOGNITION
             </span>
           </div>
 
           {/* Bottom Accreditation Tag */}
-          <div className="relative z-10 flex items-center justify-between text-[10px] font-mono text-slate-400">
+          <div className="relative z-10 flex items-center justify-between text-[9.5px] font-mono text-slate-400">
             <span className="flex items-center gap-1 text-slate-300">
               <CheckCircle2 className="w-3 h-3 text-emerald-400" />
               VERIFIED PODIUM
@@ -312,27 +344,30 @@ function AchievementCard({
         </div>
 
         {/* Title */}
-        <h3 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight leading-snug group-hover:text-amber-300 transition-colors mb-1.5">
+        <h3 className="text-lg sm:text-xl font-extrabold text-white tracking-tight leading-snug mb-1">
           {achievement.title}
         </h3>
 
         {/* Subtitle in Gold/Yellow Accent */}
-        <h4 className="text-xs sm:text-sm font-semibold text-amber-400/95 font-sans mb-3">
+        <h4 className="text-xs sm:text-[13px] font-semibold text-amber-400/95 font-sans mb-2.5">
           {achievement.subTitle}
         </h4>
 
         {/* Description Text */}
-        <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans font-normal">
+        <p className="text-xs text-slate-300 leading-relaxed font-sans font-normal line-clamp-3">
           {achievement.description}
         </p>
       </div>
 
       {/* Bottom Footer Line */}
-      <div className="pt-4 mt-6 border-t border-white/10 flex items-center justify-end text-[11px] font-mono">
+      <div className="pt-3.5 mt-4 border-t border-white/10 flex items-center justify-between text-[10.5px] font-mono">
+        <span className="text-emerald-400 flex items-center gap-1">
+          <Sparkles className="w-3 h-3" /> CSE DEPT
+        </span>
         <span className="text-slate-400 tracking-wider font-semibold">
           {achievement.institution}
         </span>
       </div>
-    </motion.div>
+    </div>
   );
 }
