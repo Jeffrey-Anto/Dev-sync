@@ -111,7 +111,7 @@ body {
   font-family: var(--font-current-sans);
   background-color: var(--bg-primary);
   color: var(--text-primary);
-  overflow-x: hidden;
+  overflow-x: clip;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   selection-background-color: #6366f1;
   selection-color: #ffffff;

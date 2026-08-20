@@ -104,7 +104,7 @@ export default function DomainDetailPage({ params }: PageProps) {
 
   return (
     <div
-      className={`min-h-screen relative overflow-x-hidden flex flex-col justify-between transition-colors duration-300 ${
+      className={`min-h-screen relative overflow-x-clip flex flex-col justify-between transition-colors duration-300 ${
         isUiUx ? "bg-[#f8faf9] text-slate-900" : "bg-[#030504] text-slate-100"
       }`}
     >
