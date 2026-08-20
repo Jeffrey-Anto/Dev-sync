@@ -91,7 +91,7 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
         }}
         className="group relative cursor-pointer rounded-3xl transition-all duration-300 select-none flex flex-col justify-between"
       >
-        {/* ⚡ Spider-Sense Golden-Red Glow Halo */}
+        {/* Spider-Verse Glow Halo */}
         <div
           className="absolute -inset-1 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-xl pointer-events-none"
           style={{
@@ -547,27 +547,20 @@ function WebDevSpiderCard({
       <div className="mb-6 relative z-10">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444] animate-pulse" />
+            <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]" />
             <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-red-300/80">
-              ARTIFACT #{index + 1}
-            </span>
-            <span className="text-[9px] font-mono font-black px-2 py-0.5 bg-red-950/70 border border-red-500/40 text-red-200 rounded-md shadow-[0_0_8px_rgba(239,68,68,0.3)]">
-              🕸️ WEB-PULLED
+              PROJECT #{index + 1}
             </span>
           </div>
 
-          {/* Spider-Sense Indicator on Hover */}
           <div className="flex items-center gap-2">
-            <span className="text-[10px] font-mono font-bold text-amber-300 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-0.5">
-              ⚡ SENSE
-            </span>
             <div className="w-8 h-8 rounded-full flex items-center justify-center bg-red-950/80 border border-red-500/40 text-red-300 group-hover:text-white group-hover:bg-red-600 group-hover:border-red-400 group-hover:rotate-45 transition-all shadow-[0_0_12px_rgba(239,68,68,0.25)]">
               <ArrowUpRight className="w-4 h-4" />
             </div>
           </div>
         </div>
 
-        {/* ─── Cyber Web Terminal HUD Preview Box ─── */}
+        {/* ─── Web Architecture Preview Box ─── */}
         <div
           className="h-32 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden border border-red-500/20 group-hover:border-red-500/40 transition-colors"
           style={{
@@ -576,10 +569,10 @@ function WebDevSpiderCard({
         >
           <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-300">
             <span className="flex items-center gap-1 text-red-300">
-              <Activity className="w-3 h-3 text-red-400 animate-pulse" />
-              CYBER ARCHITECTURE
+              <Activity className="w-3 h-3 text-red-400" />
+              SYSTEM ARCHITECTURE
             </span>
-            <span className="text-cyan-400/90 font-mono">60 FPS VERIFIED</span>
+            <span className="text-cyan-400/90 font-mono">CORE MODULE</span>
           </div>
 
           <div className="font-mono text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-red-500/30 inline-block self-start shadow-[0_0_12px_rgba(239,68,68,0.2)]">
@@ -589,7 +582,7 @@ function WebDevSpiderCard({
                 <span className="text-cyan-300 font-bold">{project.metrics[0].value}</span>
               </div>
             ) : (
-              <span className="text-red-300">🕷️ Production Live</span>
+              <span className="text-red-300">Production Build</span>
             )}
           </div>
 

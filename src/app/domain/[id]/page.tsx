@@ -99,14 +99,14 @@ export default function DomainDetailPage({ params }: PageProps) {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className={`fixed inset-0 z-50 pointer-events-none flex items-center justify-center ${
-              isUiUx ? "bg-[#f8faf9]" : "bg-[#050608]"
+            className={`fixed inset-0 z-50 pointer-events-none flex items-center justify-center backdrop-blur-xl ${
+              isUiUx ? "bg-[#f8faf9]/90" : "bg-[#050608]/90"
             }`}
           >
             <motion.div
-              initial={{ scale: 1, opacity: 1 }}
-              animate={{ scale: 0.3, opacity: 0 }}
-              transition={{ duration: 0.4, ease: "easeInOut" }}
+              initial={{ scale: 1.1, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.35, ease: "easeOut" }}
               className={`text-center font-bold ${
                 isUiUx ? "font-doodle text-2xl text-black" : "font-mono text-sm text-cyan-400"
               }`}
@@ -120,12 +120,12 @@ export default function DomainDetailPage({ params }: PageProps) {
       {/* 2. CINEMATIC ENTRY WASH ANIMATION OVERLAY (Only on dark domains) */}
       {!isUiUx && (
         <motion.div
-          initial={{ opacity: 1 }}
-          animate={{ opacity: 0 }}
-          transition={{ duration: 0.6, ease: "easeOut" }}
+          initial={{ opacity: 1, scale: 1.2 }}
+          animate={{ opacity: 0, scale: 1 }}
+          transition={{ duration: 0.7, ease: "easeOut" }}
           className="fixed inset-0 pointer-events-none z-40"
           style={{
-            background: `radial-gradient(circle at center, rgba(${domain.colorTheme.rgb}, 0.35) 0%, transparent 80%)`,
+            background: `radial-gradient(circle at center, rgba(${domain.colorTheme.rgb}, 0.4) 0%, rgba(${domain.colorTheme.rgb}, 0.1) 45%, transparent 75%)`,
           }}
         />
       )}
