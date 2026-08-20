@@ -157,7 +157,7 @@ export default function DomainDetailPage({ params }: PageProps) {
           borderColor: !isUiUx ? `rgba(${domain.colorTheme.rgb}, 0.25)` : undefined,
         }}
       >
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+        <div className="max-w-[1440px] mx-auto flex items-center justify-between">
           <button
             onClick={handleBackNavigation}
             className={`group flex items-center gap-2.5 transition-all cursor-pointer ${
@@ -202,7 +202,7 @@ export default function DomainDetailPage({ params }: PageProps) {
       </header>
 
       {/* 4. MAIN DOMAIN SHOWCASE VIEWPORT */}
-      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex-grow w-full">
+      <main className="relative z-10 max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 flex-grow w-full">
         {/* Domain Hero Header with Motion Settle */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
