@@ -37,9 +37,9 @@ export default function HeroSection() {
               strokeColor="#818CF8"
               fillColor="#F8FAFC"
               strokeWidth={1.3}
-              drawDuration={1.5}
-              fillDelay={0.2}
-              stagger={0.03}
+              drawDuration={3.5}
+              fillDelay={0.6}
+              stagger={0.07}
               ease="power2.out"
               trigger="mount"
               fillMode="wipe"
