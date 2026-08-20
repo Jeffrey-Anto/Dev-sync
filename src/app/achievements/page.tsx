@@ -18,6 +18,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuroraMeshBackground } from "@/components/backgrounds";
+import AntigravityField from "@/components/AntigravityField";
 
 interface AchievementMilestone {
   years: string[];
@@ -226,16 +227,17 @@ function InteractiveSummaryCard({ item, index }: { item: SummaryCardItem; index:
 export default function AchievementsPage() {
   return (
     <div className="relative min-h-screen bg-[#050608] text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between overflow-hidden">
-      {/* Ambient Aurora Background */}
-      <AuroraMeshBackground intensity="subtle" />
+      {/* Official Google Antigravity Swirl Particle Vortex Background - Clean & Spacious */}
+      <AntigravityField
+        particleDensity={0.8}
+        interactiveRadius={340}
+        opacity={0.95}
+      />
 
       {/* Global Navigation */}
       <Navbar />
 
       <main className="relative z-10 pt-28 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow">
-        {/* Background Ambience */}
-        <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
-        <div className="absolute top-20 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-indigo-950/20 rounded-full blur-[140px] pointer-events-none" />
 
         {/* Page Header */}
         <div className="text-center max-w-4xl mx-auto mb-16 relative">
@@ -281,7 +283,7 @@ export default function AchievementsPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/80 border border-amber-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-amber-400 transition-all"
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-amber-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-amber-400 transition-all"
           >
             <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-400 w-fit mb-4">
               <Trophy className="w-6 h-6" />
@@ -296,7 +298,7 @@ export default function AchievementsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/80 border border-emerald-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-emerald-400 transition-all"
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-emerald-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-emerald-400 transition-all"
           >
             <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 w-fit mb-4">
               <Award className="w-6 h-6" />
@@ -311,7 +313,7 @@ export default function AchievementsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/80 border border-purple-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-purple-400 transition-all"
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-purple-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-purple-400 transition-all"
           >
             <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-400 w-fit mb-4">
               <ShieldCheck className="w-6 h-6" />
@@ -326,7 +328,7 @@ export default function AchievementsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/80 border border-cyan-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-cyan-400 transition-all"
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-cyan-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-cyan-400 transition-all"
           >
             <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 w-fit mb-4">
               <Briefcase className="w-6 h-6" />
@@ -362,7 +364,7 @@ export default function AchievementsPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: index * 0.08 }}
-                className="p-6 sm:p-8 rounded-3xl bg-[#0c0f18]/80 border border-white/10 hover:border-white/25 backdrop-blur-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 group"
+                className="p-6 sm:p-8 rounded-3xl bg-[#0c0f18]/45 border border-white/10 hover:border-white/25 backdrop-blur-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 group"
               >
                 <div className="flex items-start gap-4">
                   {/* Square Year Box (Clean without Q3/Q4, stacked 2025/2026 for GCT) */}
