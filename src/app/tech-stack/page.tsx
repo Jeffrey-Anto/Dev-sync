@@ -63,19 +63,29 @@ const allSlugs = [
 ];
 
 const stackGroups = [
-  { label: "Languages", slugs: ["typescript", "javascript", "dart", "java", "python", "rust", "go", "cplusplus", "c", "html5", "css3"] },
-  { label: "Frameworks & Web", slugs: ["react", "flutter", "android", "nodedotjs", "express", "nextdotjs", "fastapi", "tailwindcss", "framer", "graphql"] },
-  { label: "Cloud & DevOps", slugs: ["docker", "kubernetes", "terraform", "amazonaws", "helm", "prometheus", "grafana", "nginx", "vercel", "firebase"] },
+  { label: "Programming", slugs: ["typescript", "javascript", "python", "java", "dart", "rust", "go", "cplusplus", "c"] },
+  { label: "Markup & Style", slugs: ["html5", "css3"] },
+  { label: "Web Frameworks", slugs: ["react", "nextdotjs", "express", "nodedotjs", "fastapi", "tailwindcss", "graphql"] },
+  { label: "Mobile", slugs: ["flutter", "android"] },
   { label: "Databases", slugs: ["postgresql", "mongodb", "redis", "prisma"] },
   { label: "AI & ML", slugs: ["pytorch", "huggingface", "opencv"] },
-  { label: "QA & Testing", slugs: ["testinglibrary", "jest", "cypress", "sonarqube", "postman"] },
-  { label: "Version Control", slugs: ["git", "github", "gitlab", "jira", "visualstudiocode", "androidstudio"] },
-  { label: "Design & Security", slugs: ["figma", "storybook", "kalilinux", "wireshark", "raspberrypi", "espressif"] },
+  { label: "Testing", slugs: ["jest", "cypress", "testinglibrary"] },
+  { label: "QA & API", slugs: ["sonarqube", "postman"] },
+  { label: "Version Control", slugs: ["git", "github", "gitlab"] },
+  { label: "Project Mgmt", slugs: ["jira"] },
+  { label: "IDEs", slugs: ["visualstudiocode", "androidstudio"] },
+  { label: "Design Tools", slugs: ["figma", "framer", "storybook"] },
+  { label: "Cloud Platforms", slugs: ["amazonaws", "vercel", "firebase"] },
+  { label: "Containers & K8s", slugs: ["docker", "kubernetes", "helm"] },
+  { label: "Infra & Servers", slugs: ["terraform", "nginx"] },
+  { label: "Monitoring", slugs: ["prometheus", "grafana"] },
+  { label: "Security", slugs: ["kalilinux", "wireshark"] },
+  { label: "Edge & IoT", slugs: ["raspberrypi", "espressif"] },
 ];
 
 export default function TechStackPage() {
   const images = useMemo(
-    () => allSlugs.map((slug) => `https://cdn.simpleicons.org/${slug}/${slug}`),
+    () => allSlugs.map((slug) => `https://cdn.simpleicons.org/${slug}`),
     []
   );
 
