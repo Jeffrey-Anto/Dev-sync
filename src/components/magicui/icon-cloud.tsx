@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 
 export interface IconCloudGroup {
   label: string;
@@ -24,6 +24,7 @@ interface IconData {
   loaded: boolean;
   failed: boolean;
   name: string;
+  shortName: string;
   slug: string;
   cdnSlug: string;
   tx: number;
@@ -33,11 +34,74 @@ interface IconData {
   delay: number;
 }
 
-const INTRO_SPIN_SPEED = 0.05;
+const INTRO_SPIN_SPEED = 0.045;
 
 const CDN_ALIAS: Record<string, string> = {
   java: "openjdk",
   css3: "css",
+  cplusplus: "cplusplus",
+  visualstudiocode: "visualstudiocode",
+  androidstudio: "androidstudio",
+  nextdotjs: "nextdotjs",
+  nodedotjs: "nodedotjs",
+};
+
+const FRIENDLY_NAMES: Record<string, { full: string; short: string }> = {
+  typescript: { full: "TypeScript", short: "TypeScript" },
+  javascript: { full: "JavaScript", short: "JavaScript" },
+  python: { full: "Python", short: "Python" },
+  java: { full: "Java", short: "Java" },
+  cplusplus: { full: "C++", short: "C++" },
+  c: { full: "C", short: "C" },
+  rust: { full: "Rust", short: "Rust" },
+  go: { full: "Go", short: "Go" },
+  dart: { full: "Dart", short: "Dart" },
+  html5: { full: "HTML5", short: "HTML5" },
+  css3: { full: "CSS3", short: "CSS3" },
+  react: { full: "React", short: "React" },
+  flutter: { full: "Flutter", short: "Flutter" },
+  android: { full: "Android", short: "Android" },
+  nodedotjs: { full: "Node.js", short: "Node.js" },
+  express: { full: "Express", short: "Express" },
+  nextdotjs: { full: "Next.js", short: "Next.js" },
+  fastapi: { full: "FastAPI", short: "FastAPI" },
+  tailwindcss: { full: "Tailwind CSS", short: "Tailwind" },
+  framer: { full: "Framer", short: "Framer" },
+  graphql: { full: "GraphQL", short: "GraphQL" },
+  docker: { full: "Docker", short: "Docker" },
+  kubernetes: { full: "Kubernetes", short: "Kubernetes" },
+  terraform: { full: "Terraform", short: "Terraform" },
+  amazonaws: { full: "AWS", short: "AWS" },
+  helm: { full: "Helm", short: "Helm" },
+  prometheus: { full: "Prometheus", short: "Prometheus" },
+  grafana: { full: "Grafana", short: "Grafana" },
+  nginx: { full: "Nginx", short: "Nginx" },
+  vercel: { full: "Vercel", short: "Vercel" },
+  firebase: { full: "Firebase", short: "Firebase" },
+  postgresql: { full: "PostgreSQL", short: "Postgres" },
+  mongodb: { full: "MongoDB", short: "MongoDB" },
+  redis: { full: "Redis", short: "Redis" },
+  prisma: { full: "Prisma", short: "Prisma" },
+  pytorch: { full: "PyTorch", short: "PyTorch" },
+  huggingface: { full: "Hugging Face", short: "HuggingFace" },
+  opencv: { full: "OpenCV", short: "OpenCV" },
+  testinglibrary: { full: "Testing Library", short: "TestingLib" },
+  jest: { full: "Jest", short: "Jest" },
+  cypress: { full: "Cypress", short: "Cypress" },
+  sonarqube: { full: "SonarQube", short: "SonarQube" },
+  postman: { full: "Postman", short: "Postman" },
+  git: { full: "Git", short: "Git" },
+  github: { full: "GitHub", short: "GitHub" },
+  gitlab: { full: "GitLab", short: "GitLab" },
+  jira: { full: "Jira", short: "Jira" },
+  visualstudiocode: { full: "VS Code", short: "VS Code" },
+  androidstudio: { full: "Android Studio", short: "AndroidStudio" },
+  figma: { full: "Figma", short: "Figma" },
+  storybook: { full: "Storybook", short: "Storybook" },
+  kalilinux: { full: "Kali Linux", short: "Kali" },
+  wireshark: { full: "Wireshark", short: "Wireshark" },
+  raspberrypi: { full: "Raspberry Pi", short: "RaspberryPi" },
+  espressif: { full: "ESP32", short: "ESP32" },
 };
 
 export function IconCloud({
@@ -47,7 +111,6 @@ export function IconCloud({
   onUnbox,
 }: IconCloudProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [hoveredTech, setHoveredTech] = useState<string | null>(null);
   const phaseRef = useRef<"intro" | "columns">("intro");
 
   const allImages = React.useMemo(() => {
@@ -73,7 +136,7 @@ export function IconCloud({
     const resizeCanvas = () => {
       const parent = canvas.parentElement;
       if (!parent) return;
-      const dpr = window.devicePixelRatio || 1;
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
       canvas.width = parent.clientWidth * dpr;
       canvas.height = parent.clientHeight * dpr;
       canvas.style.width = `${parent.clientWidth}px`;
@@ -95,6 +158,10 @@ export function IconCloud({
       const parts = src.split("/");
       const rawSlug = (parts[parts.length - 1] || "tech").split("?")[0].toLowerCase();
       const cdnSlug = CDN_ALIAS[rawSlug] || rawSlug;
+      const meta = FRIENDLY_NAMES[rawSlug] || {
+        full: rawSlug.toUpperCase(),
+        short: rawSlug.toUpperCase(),
+      };
 
       const img = new Image();
       img.crossOrigin = "anonymous";
@@ -108,7 +175,8 @@ export function IconCloud({
         image: img,
         loaded: false,
         failed: false,
-        name: rawSlug.toUpperCase(),
+        name: meta.full,
+        shortName: meta.short,
         slug: rawSlug,
         cdnSlug,
         tx: 0,
@@ -137,12 +205,22 @@ export function IconCloud({
       return icon;
     });
 
-    let columnHeaders: { x: number; y: number; label: string; font: number }[] = [];
+    let columnHeaders: {
+      left: number;
+      top: number;
+      w: number;
+      h: number;
+      headerH: number;
+      headerY: number;
+      label: string;
+      font: number;
+    }[] = [];
 
     const computeColumnTargets = (stagger: boolean) => {
       const width = parseFloat(canvas.style.width) || 500;
       const height = parseFloat(canvas.style.height) || 500;
-      const iconRenderSize = Math.max(Math.min(width, height) * 0.085, 34);
+      const minDim = Math.min(width, height);
+      const iconRenderSize = Math.max(minDim * 0.1, 44);
 
       const activeGroups = (groups || [])
         .map((g) => ({
@@ -153,42 +231,88 @@ export function IconCloud({
 
       if (activeGroups.length === 0) return;
 
-      const nCols = activeGroups.length;
-      const colW = 2 / nCols;
+      // Cards layout: 6 columns x 3 rows with balanced spacing around corners and outside boxes
+      const cardsPerRow = width < 768 ? 3 : 6;
+      const gridRows = Math.ceil(activeGroups.length / cardsPerRow);
 
-      // Per-column layout so rows don't line up across unrelated stacks.
-      // Each column fills roughly the same vertical height but with its own
-      // cell gap — dense columns get tight pitch, sparse get airy pitch.
-      const totalH = 1.85;
+      const spanX = 1.90; // Clean margin from screen left/right
+      const spanY = 1.84; // Clean margin from screen top/bottom
+      const cardSlotW = spanX / cardsPerRow;
+      const cardSlotH = spanY / gridRows;
+
+      // Even spacing/gutters outside boxes
+      const gapX = cardSlotW * 0.05;
+      const gapY = cardSlotH * 0.06;
+      const boxW = cardSlotW - gapX;
+      const boxH = cardSlotH - gapY;
+
+      // Calculate a UNIFORM icon size for all items across all categories
+      const maxDensityCols = 3;
+      const maxDensityRows = 3;
+      const maxContentW = (boxW - boxW * 0.08) * (width * 0.48);
+      const maxContentH = (boxH - boxH * 0.22 - boxH * 0.08) * (height * 0.46);
+      const maxCellW = maxContentW / maxDensityCols;
+      const maxCellH = maxContentH / maxDensityRows;
+
+      // Exact uniform icon diameter in pixels
+      const uniformIconPx = Math.min(maxCellW * 0.80, maxCellH * 0.78, 38);
+      const uniformTScale = Math.max(0.35, uniformIconPx / iconRenderSize);
 
       columnHeaders = [];
       activeGroups.forEach((g, gi) => {
+        const col = gi % cardsPerRow;
+        const row = Math.floor(gi / cardsPerRow);
+
+        const cardLeft = -spanX / 2 + col * cardSlotW + gapX / 2;
+        const cardTop = -spanY / 2 + row * cardSlotH + gapY / 2;
+        const cardRight = cardLeft + boxW;
+        const cardBottom = cardTop + boxH;
+
+        // Header band at top of box
+        const headerH = boxH * 0.20;
+        const headerY = cardTop + headerH * 0.52;
+
         const n = g.items.length;
-        const cx = -1 + colW * (gi + 0.5);
-        // Per-column cell gap, capped to avoid giant gaps for tiny columns.
-        const cellH = n > 1 ? Math.min(0.26, totalH / (n - 1 + 0.7)) : 0;
+        let gridCols = 3;
+        if (n <= 2) gridCols = n;
+        else if (n === 3) gridCols = 3;
+        else if (n === 4) gridCols = 2;
+        else gridCols = 3;
 
-        const topY = n > 1 ? -(n - 1) * cellH / 2 : 0;
-        // Small stagger so adjacent columns don't sit on identical rows.
-        const staggerY = (gi % 2) * cellH * 0.28;
+        const gridRowsIn = Math.ceil(n / gridCols);
 
-        const tScale = Math.min(
-          0.46,
-          (cellH * height * 0.46 * 0.72) / (iconRenderSize * 1.2)
-        );
+        // Content area inside the box below header
+        const contentLeft = cardLeft + boxW * 0.04;
+        const contentRight = cardRight - boxW * 0.04;
+        const contentTop = cardTop + headerH + boxH * 0.02;
+        const contentBottom = cardBottom - boxH * 0.04;
+
+        const contentW = contentRight - contentLeft;
+        const contentH = contentBottom - contentTop;
+
+        const cellW = contentW / gridCols;
+        const cellH = contentH / gridRowsIn;
 
         g.items.forEach((icon, ji) => {
-          icon.tx = cx;
-          icon.ty = topY + ji * cellH + staggerY;
+          const ir = Math.floor(ji / gridCols);
+          const ic = ji % gridCols;
+
+          icon.tx = contentLeft + cellW * (ic + 0.5);
+          icon.ty = contentTop + cellH * (ir + 0.5);
           icon.tz = 1;
-          icon.tScale = tScale;
-          icon.delay = stagger ? gi * 8 + ji * 3 : 0;
+          // Uniform size for all icons, no stretching
+          icon.tScale = uniformTScale;
+          icon.delay = stagger ? gi * 4 + ji * 2 : 0;
         });
 
-        const font = Math.max(8, Math.min(10, colW * width * 0.07));
+        const font = Math.max(8.5, Math.min(10.5, boxW * width * 0.04));
         columnHeaders.push({
-          x: cx,
-          y: topY + staggerY - cellH * 0.62,
+          left: cardLeft,
+          top: cardTop,
+          w: boxW,
+          h: boxH,
+          headerH,
+          headerY,
           label: g.label.toUpperCase(),
           font,
         });
@@ -205,7 +329,7 @@ export function IconCloud({
       computeColumnTargets(false);
       const snapW = parseFloat(canvas.style.width) || 500;
       const snapH = parseFloat(canvas.style.height) || 500;
-      currentRadiusX = snapW * 0.4;
+      currentRadiusX = snapW * 0.48;
       currentRadiusY = snapH * 0.46;
       icons.forEach((icon) => {
         icon.x = icon.tx;
@@ -229,7 +353,7 @@ export function IconCloud({
     let rotationY = BASE_SPEED_Y;
 
     let frameCount = 0;
-    let totalSpin = 0;
+    const startTime = performance.now();
 
     const rotate = () => {
       rotationX += (targetRotationX - rotationX) * 0.05;
@@ -242,10 +366,10 @@ export function IconCloud({
 
       for (let i = 0; i < icons.length; i++) {
         const icon = icons[i];
-        let x1 = icon.x * cosY - icon.z * sinY;
-        let z1 = icon.z * cosY + icon.x * sinY;
-        let y2 = icon.y * cosX - z1 * sinX;
-        let z2 = z1 * cosX + icon.y * sinX;
+        const x1 = icon.x * cosY - icon.z * sinY;
+        const z1 = icon.z * cosY + icon.x * sinY;
+        const y2 = icon.y * cosX - z1 * sinX;
+        const z2 = z1 * cosX + icon.y * sinX;
         icon.x = x1;
         icon.y = y2;
         icon.z = z2;
@@ -265,35 +389,34 @@ export function IconCloud({
       const minDim = Math.min(width, height);
       const centerX = width / 2;
       const centerY = height / 2;
-      const iconRenderSize = Math.max(minDim * 0.085, 34);
+      const iconRenderSize = Math.max(minDim * 0.1, 44);
 
       frameCount++;
 
       if (currentRadiusX === 0) {
-        currentRadiusX = minDim * 0.4;
-        currentRadiusY = minDim * 0.4;
+        currentRadiusX = minDim * 0.38;
+        currentRadiusY = minDim * 0.38;
       }
-      const targetRadiusX = mode === "columns" ? width * 0.4 : minDim * 0.4;
-      const targetRadiusY = mode === "columns" ? height * 0.46 : minDim * 0.4;
-      currentRadiusX += (targetRadiusX - currentRadiusX) * 0.03;
-      currentRadiusY += (targetRadiusY - currentRadiusY) * 0.03;
+      const targetRadiusX = mode === "columns" ? width * 0.48 : minDim * 0.38;
+      const targetRadiusY = mode === "columns" ? height * 0.46 : minDim * 0.38;
+      currentRadiusX += (targetRadiusX - currentRadiusX) * 0.04;
+      currentRadiusY += (targetRadiusY - currentRadiusY) * 0.04;
       const radiusX = currentRadiusX;
       const radiusY = currentRadiusY;
 
       if (mode === "intro") {
-        if (totalSpin < Math.PI * 4 - 0.6) {
-          rotationY = INTRO_SPIN_SPEED;
+        const elapsed = (performance.now() - startTime) / 1000;
+        if (elapsed >= 1.0) {
+          beginUnbox();
         } else {
-          rotationY = Math.max(0.02, (Math.PI * 4 - totalSpin) * 0.15);
+          rotationY = 0.065;
+          rotationX = 0;
+          rotate();
         }
-        rotationX = 0;
-        totalSpin += rotationY;
-        rotate();
-        if (totalSpin >= Math.PI * 4) beginUnbox();
       } else if (mode === "columns") {
         for (const icon of icons) {
           if (frameCount < icon.delay) continue;
-          const k = 0.03;
+          const k = 0.04;
           icon.x += (icon.tx - icon.x) * k;
           icon.y += (icon.ty - icon.y) * k;
           icon.z += (icon.tz - icon.z) * k;
@@ -305,21 +428,49 @@ export function IconCloud({
 
       ctx.clearRect(0, 0, width, height);
 
+      // Draw category container boxes in columns mode
       if (mode === "columns") {
         ctx.save();
         for (const h of columnHeaders) {
-          ctx.globalAlpha = 0.85;
-          ctx.font = `bold ${h.font}px monospace`;
+          const screenLeft = centerX + h.left * radiusX;
+          const screenTop = centerY + h.top * radiusY;
+          const screenW = h.w * radiusX;
+          const screenH = h.h * radiusY;
+          const screenHeaderH = h.headerH * radiusY;
+          const screenHeaderY = centerY + h.headerY * radiusY;
+          const screenHeaderX = screenLeft + screenW / 2;
+
+          // Box Container Background
+          ctx.beginPath();
+          ctx.roundRect(screenLeft, screenTop, screenW, screenH, 8);
+          ctx.fillStyle = "rgba(10, 14, 23, 0.72)";
+          ctx.fill();
+          ctx.lineWidth = 1;
+          ctx.strokeStyle = "rgba(99, 102, 241, 0.22)";
+          ctx.stroke();
+
+          // Header Divider
+          ctx.beginPath();
+          ctx.moveTo(screenLeft + 6, screenTop + screenHeaderH);
+          ctx.lineTo(screenLeft + screenW - 6, screenTop + screenHeaderH);
+          ctx.strokeStyle = "rgba(99, 102, 241, 0.15)";
+          ctx.stroke();
+
+          // Header Category Name
+          ctx.font = `bold ${h.font}px ui-sans-serif, system-ui, -apple-system, sans-serif`;
           ctx.textAlign = "center";
-          ctx.textBaseline = "alphabetic";
-          ctx.fillStyle = "rgba(165, 180, 252, 0.95)";
-          ctx.fillText(h.label, centerX + h.x * radiusX, centerY + h.y * radiusY);
+          ctx.textBaseline = "middle";
+          ctx.fillStyle = "rgba(199, 210, 254, 0.95)";
+          ctx.fillText(h.label, screenHeaderX, screenHeaderY);
         }
         ctx.restore();
       }
 
       const sortedIcons = [...icons].sort((a, b) => a.z - b.z);
       let foundHover: string | null = null;
+      let hoveredIconData: IconData | null = null;
+      let hoveredScreenX = 0;
+      let hoveredScreenY = 0;
 
       for (let i = 0; i < sortedIcons.length; i++) {
         const icon = sortedIcons[i];
@@ -329,62 +480,107 @@ export function IconCloud({
         const scale = icon.scale * (0.55 + depth * 0.65);
         const opacity = 0.25 + depth * 0.75;
         const currentSize = iconRenderSize * scale;
+
         const distToMouse = Math.hypot(mousePos.x - screenX, mousePos.y - screenY);
-        const isIconHovered = distToMouse < currentSize * 0.65 && icon.z > 0.1;
-        if (isIconHovered) foundHover = icon.name;
+        const isIconHovered = distToMouse < currentSize * 0.68 && icon.z > 0.1;
+
+        if (isIconHovered) {
+          foundHover = icon.name;
+          hoveredIconData = icon;
+          hoveredScreenX = screenX;
+          hoveredScreenY = screenY;
+        }
 
         ctx.save();
         ctx.globalAlpha = isIconHovered ? 1.0 : opacity;
 
+        // Circular background badge (strictly 1:1 circle, no stretching)
+        const badgeRadius = currentSize * (isIconHovered ? 0.58 : 0.48);
         ctx.beginPath();
-        ctx.arc(screenX, screenY, currentSize * (isIconHovered ? 0.68 : 0.56), 0, Math.PI * 2);
-        ctx.fillStyle = isIconHovered ? "rgba(30, 41, 59, 0.95)" : "rgba(15, 23, 42, 0.75)";
+        ctx.arc(screenX, screenY, badgeRadius, 0, Math.PI * 2);
+        ctx.fillStyle = isIconHovered ? "rgba(30, 41, 59, 0.95)" : "rgba(15, 23, 42, 0.85)";
         ctx.fill();
         ctx.lineWidth = isIconHovered ? 2 : 1;
         ctx.strokeStyle = isIconHovered
-          ? "rgba(56, 189, 248, 0.9)"
-          : `rgba(99, 102, 241, ${0.15 + depth * 0.35})`;
+          ? "rgba(56, 189, 248, 0.95)"
+          : `rgba(99, 102, 241, ${0.18 + depth * 0.35})`;
+
         if (isIconHovered) {
-          ctx.shadowColor = "rgba(56, 189, 248, 0.8)";
-          ctx.shadowBlur = 15;
+          ctx.shadowColor = "rgba(56, 189, 248, 0.85)";
+          ctx.shadowBlur = 16;
         }
         ctx.stroke();
 
+        // Draw Uniform Icon Logo (strictly 1:1 aspect ratio square, no stretching)
         if (icon.loaded) {
-          const drawSize = isIconHovered ? currentSize * 1.15 : currentSize;
-          ctx.drawImage(icon.image, screenX - drawSize / 2, screenY - drawSize / 2, drawSize, drawSize);
+          const drawSize = isIconHovered ? currentSize * 0.82 : currentSize * 0.68;
+          ctx.drawImage(
+            icon.image,
+            screenX - drawSize / 2,
+            screenY - drawSize / 2,
+            drawSize,
+            drawSize
+          );
         } else {
-          // Fallback: initials when logo missing
-          const label = icon.name.slice(0, 2);
-          ctx.font = `bold ${Math.max(9, currentSize * 0.42)}px monospace`;
-          ctx.fillStyle = "rgba(165,180,252,0.9)";
+          // Fallback monogram
+          const label = icon.shortName.slice(0, 2);
+          ctx.font = `bold ${Math.max(9, currentSize * 0.36)}px monospace`;
+          ctx.fillStyle = "rgba(165, 180, 252, 0.95)";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
           ctx.fillText(label, screenX, screenY);
         }
 
-        // Always show stack name under icon in columns mode, tooltip on hover otherwise
-        if (mode === "columns") {
-          ctx.font = `${isIconHovered ? "bold" : "600"} 8px monospace`;
-          ctx.fillStyle = isIconHovered ? "#ffffff" : "rgba(203,213,225,0.92)";
+        // Clean label under icon in columns mode
+        if (mode === "columns" && !isIconHovered) {
+          ctx.font = "600 7.5px monospace";
+          ctx.fillStyle = "rgba(199, 210, 254, 0.85)";
           ctx.textAlign = "center";
           ctx.textBaseline = "top";
-          const label = icon.name.length > 12 ? icon.name.slice(0, 11) + "…" : icon.name;
-          ctx.fillText(label, screenX, screenY + currentSize * 0.62 + 5);
-        } else if (isIconHovered) {
-          ctx.font = "bold 11px monospace";
-          ctx.fillStyle = "#ffffff";
-          ctx.textAlign = "center";
-          ctx.textBaseline = "bottom";
-          ctx.fillText(icon.name, screenX, screenY - currentSize * 0.7);
+          const displayLabel =
+            icon.shortName.length > 9
+              ? icon.shortName.slice(0, 8) + "…"
+              : icon.shortName;
+          ctx.fillText(displayLabel, screenX, screenY + badgeRadius + 2.5);
         }
 
         ctx.restore();
       }
 
+      // Floating Tooltip on Hover
+      if (hoveredIconData) {
+        ctx.save();
+        const tooltipText = hoveredIconData.name;
+        ctx.font = "bold 11px ui-sans-serif, system-ui, -apple-system, sans-serif";
+        const metrics = ctx.measureText(tooltipText);
+        const paddingX = 10;
+        const paddingY = 5;
+        const ttW = metrics.width + paddingX * 2;
+        const ttH = 24;
+        const ttX = hoveredScreenX - ttW / 2;
+        const ttY = hoveredScreenY - iconRenderSize * 0.65 - ttH;
+
+        // Tooltip box
+        ctx.beginPath();
+        ctx.roundRect(ttX, ttY, ttW, ttH, 6);
+        ctx.fillStyle = "rgba(15, 23, 42, 0.98)";
+        ctx.fill();
+        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = "rgba(56, 189, 248, 0.9)";
+        ctx.shadowColor = "rgba(0, 0, 0, 0.7)";
+        ctx.shadowBlur = 12;
+        ctx.stroke();
+
+        // Tooltip text
+        ctx.fillStyle = "#ffffff";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText(tooltipText, hoveredScreenX, ttY + ttH / 2);
+        ctx.restore();
+      }
+
       if (foundHover !== activeHoveredName) {
         activeHoveredName = foundHover;
-        setHoveredTech(foundHover);
       }
 
       animationFrameId = requestAnimationFrame(render);
@@ -421,7 +617,6 @@ export function IconCloud({
       isDragging = false;
       targetRotationY = BASE_SPEED_Y;
       targetRotationX = BASE_SPEED_X;
-      setHoveredTech(null);
     };
     const handleMouseUp = () => {
       isDragging = false;
