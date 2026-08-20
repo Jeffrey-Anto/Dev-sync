@@ -338,7 +338,6 @@ interface SpaceTimeWarpOverlayProps {
 
 function SpaceTimeWarpOverlay({ domain }: SpaceTimeWarpOverlayProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const Icon = iconMap[domain.icon] || Terminal;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -484,28 +483,6 @@ function SpaceTimeWarpOverlay({ domain }: SpaceTimeWarpOverlayProps) {
         transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
         className="relative z-20 text-center flex flex-col items-center justify-center px-4"
       >
-        {/* Glowing Singularity Icon Capsule */}
-        <motion.div
-          animate={{ rotate: [0, 8, -8, 0], scale: [1, 1.2, 1.35] }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-          className="w-22 h-22 sm:w-24 sm:h-24 rounded-3xl flex items-center justify-center mb-5 shadow-2xl"
-          style={{
-            backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.35)`,
-            border: `2px solid ${domain.colorTheme.primary}`,
-            boxShadow: `0 0 70px 25px ${domain.colorTheme.primary}`,
-          }}
-        >
-          <Icon className="w-11 h-11 sm:w-12 sm:h-12" style={{ color: domain.colorTheme.secondary }} />
-        </motion.div>
-
-        {/* Warp Header Text */}
-        <div
-          className="text-xs sm:text-sm uppercase tracking-widest font-mono font-bold mb-2"
-          style={{ color: domain.colorTheme.secondary }}
-        >
-          SPACE-TIME WARP ENGAGED // 0{DOMAINS.findIndex((d) => d.id === domain.id) + 1}
-        </div>
-
         {/* Scaled Domain Title */}
         <h2
           className="text-3xl sm:text-5xl lg:text-7xl font-black text-white tracking-tight leading-tight mb-2"
@@ -758,23 +735,9 @@ function WarpDomainCard({
           }}
         />
 
-        {/* Top Header: Domain Category Badge & Index */}
+        {/* Top Header: Domain Index */}
         <div>
-          <div className="flex items-start justify-between mb-5">
-            {/* Category Tag Pill */}
-            <div
-              className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-mono font-bold tracking-wider uppercase"
-              style={{
-                backgroundColor: `rgba(${domain.colorTheme.rgb}, 0.22)`,
-                border: `1px solid ${domain.colorTheme.primary}`,
-                color: domain.colorTheme.secondary,
-                boxShadow: isCenter ? `0 0 25px rgba(${domain.colorTheme.rgb}, 0.5)` : "none",
-              }}
-            >
-              <Icon className="w-4 h-4" style={{ color: domain.colorTheme.secondary }} />
-              <span>{domain.shortName.toUpperCase()}</span>
-            </div>
-
+          <div className="flex items-start justify-end mb-5">
             <span
               className="font-mono text-xs font-bold tracking-wider"
               style={{ color: isCenter ? domain.colorTheme.secondary : "rgba(148, 163, 184, 0.7)" }}
