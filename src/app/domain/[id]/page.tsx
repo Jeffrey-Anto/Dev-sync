@@ -60,25 +60,43 @@ export default function DomainDetailPage({ params }: PageProps) {
   const [isHeaderVisible, setIsHeaderVisible] = useState(true);
   const lastScrollY = useRef(0);
 
-  // Auto-hide top bar on scroll down, reveal on scroll up or at top
+  // Auto-hide top bar on enter, scroll down, reveal on scroll up or top hover
   useEffect(() => {
+    // Auto-hide shortly after entering the page
+    const autoHideTimer = setTimeout(() => {
+      setIsHeaderVisible(false);
+    }, 1600);
+
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
       const delta = currentScrollY - lastScrollY.current;
 
-      if (currentScrollY < 60) {
-        setIsHeaderVisible(true);
-      } else if (delta > 8) {
+      if (delta > 6) {
+        // Scrolling down -> hide top bar
         setIsHeaderVisible(false);
-      } else if (delta < -8) {
+      } else if (delta < -6) {
+        // Scrolling up -> reveal top bar
         setIsHeaderVisible(true);
       }
 
       lastScrollY.current = currentScrollY;
     };
 
+    const handleMouseMove = (e: MouseEvent) => {
+      // Hovering near the top edge reveals top bar
+      if (e.clientY <= 35) {
+        setIsHeaderVisible(true);
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("mousemove", handleMouseMove, { passive: true });
+
+    return () => {
+      clearTimeout(autoHideTimer);
+      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener("mousemove", handleMouseMove);
+    };
   }, []);
 
   // Sync active domain so matrix orbit restores to this domain upon returning
