@@ -5,10 +5,12 @@ import StatStrip from "@/components/StatStrip";
 import DomainSelection from "@/components/DomainSelection";
 import AchievementSlider from "@/components/AchievementSlider";
 import Footer from "@/components/Footer";
+import JsonLd, { collectionPageJsonLd } from "@/components/JsonLd";
 
 export default function HomePage() {
   return (
     <div className="relative min-h-screen text-slate-100 flex flex-col">
+      <JsonLd data={collectionPageJsonLd} />
       {/* Navigation */}
       <Navbar />
 

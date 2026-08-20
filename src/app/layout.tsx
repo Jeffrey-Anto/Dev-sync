@@ -1,5 +1,6 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Script from "next/script";
+import JsonLd, { organizationJsonLd, websiteJsonLd } from "@/components/JsonLd";
 import {
   Outfit,
   Inter,
@@ -101,21 +102,70 @@ const fontVariables = [
   geistMono.variable,
 ].join(" ");
 
+const SITE_URL = "https://gces.net.in"; // ponytail: set NEXT_PUBLIC_SITE_URL or replace with real deploy URL
+const SITE_NAME = "COLLECTIVE.CSE — GCES Trichy";
+
 export const metadata: Metadata = {
-  title: "COLLECTIVE.CSE",
+  metadataBase: new URL(SITE_URL),
+  title: {
+    default: "GCES CSE Batch 2027 — 60 Engineers | Government College of Engineering Srirangam, Trichy",
+    template: "%s | GCES CSE Collective 2027",
+  },
   description:
-    "A collective engineering showcase of 60 Computer Science undergraduates across 6 core domains: Web Systems, AI/ML, Cloud DevOps, Embedded IoT, Mobile, and Cybersecurity.",
+    "Hire 60 CSE undergrads — Government College of Engineering Srirangam (GCES), Trichy, Batch 2023–2027. 6 domains: Web & Distributed Systems, AI/ML, Cloud & DevOps, Embedded IoT, Mobile, Cybersecurity. 18+ live projects, hackathon champions, campus recruitment open.",
   keywords: [
-    "Computer Science Placement",
-    "Campus Recruitment",
-    "Engineering Showcase",
-    "Full-Stack Web",
-    "AI/ML",
-    "Cloud Architecture",
-    "DevOps",
-    "Cybersecurity",
-    "Embedded Systems",
+    "Government College of Engineering Srirangam",
+    "GCE Srirangam",
+    "GCES Trichy",
+    "GCES CSE",
+    "CSE Batch 2027",
+    "Computer Science batch 2027 Trichy",
+    "hire CSE students Trichy",
+    "campus recruitment GCE Srirangam",
+    "GCES placement cell",
+    "Trichy engineering college CSE",
+    "collective CSE",
+    "Web Development students",
+    "AI ML students",
+    "Cloud DevOps students",
   ],
+  authors: [{ name: "GCES CSE Batch 2027 Collective", url: SITE_URL }],
+  creator: "GCES CSE Batch 2027",
+  publisher: "Government College of Engineering Srirangam — Dept. of CSE",
+  category: "education",
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: SITE_URL,
+    siteName: SITE_NAME,
+    title: "GCES CSE Batch 2027 — 60 Engineers · Government College of Engineering Srirangam",
+    description:
+      "60 CSE undergrads, 6 core domains, 18+ production projects. Government College of Engineering Srirangam, Trichy — Batch 2023–2027. Open for campus recruitment.",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "GCES CSE Collective 2027 — 60 Minds, One Technical Collective" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GCES CSE Batch 2027 — 60 Engineers | GCES Trichy",
+    description: "Hire GCES CSE 2027 — 60 engineers across Web, AI/ML, Cloud, IoT, Mobile, Cybersecurity. Trichy. Open for recruitment.",
+    images: ["/opengraph-image"],
+    creator: "@gces_cse",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: false,
+    googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+  },
+  verification: {
+    // add when you have Search Console: google: "YOUR_CODE", other: { "msvalidate.01": "BING_CODE" }
+  },
+  formatDetection: { telephone: false },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#050608",
+  colorScheme: "dark",
 };
 
 export default function RootLayout({
@@ -151,6 +201,8 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-[#050608] text-slate-100 selection:bg-indigo-500 selection:text-white">
+        <JsonLd data={organizationJsonLd} />
+        <JsonLd data={websiteJsonLd} />
         {children}
       </body>
     </html>

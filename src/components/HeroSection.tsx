@@ -11,6 +11,13 @@ import StrokeText from "@/components/StrokeText";
 export default function HeroSection() {
   return (
     <section className="relative w-full min-h-screen flex flex-col justify-between overflow-hidden pt-24 pb-12">
+      {/* SEO: real headings for crawlers — canvas ParticleText is not indexable */}
+      <h1 className="sr-only">
+        Government College of Engineering Srirangam — CSE Batch 2027 — 60 Minds, One Technical Collective
+      </h1>
+      <h2 className="sr-only">
+        60 CSE undergrads across Web, AI/ML, Cloud &amp; DevOps, Embedded IoT, Mobile and Cybersecurity — Batch 2023–2027, Trichy. Open for campus recruitment.
+      </h2>
       {/* Tech Grid Under Blobs */}
       <div className="absolute inset-0 tech-grid-bg pointer-events-none z-0 opacity-40" />
 
