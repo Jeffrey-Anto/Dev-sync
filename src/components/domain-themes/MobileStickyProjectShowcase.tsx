@@ -487,7 +487,7 @@ export default function MobileStickyProjectShowcase({
       {/* ── DESKTOP 3-COLUMN CENTER-STAGE SHOWCASE (Left Overview + Center Sticky Phone + Right Metrics) ── */}
       <div className="hidden lg:grid grid-cols-12 gap-6 xl:gap-8 items-start relative">
         {/* LEFT COLUMN (4 cols): Project Overview, Problem & Solution cards */}
-        <div className="col-span-4 space-y-24 py-6">
+        <div className="col-span-4 space-y-24 pt-6 pb-[75vh]">
           {projects.map((project, idx) => {
             const isActive = activeProjectIndex === idx;
 
@@ -634,7 +634,7 @@ export default function MobileStickyProjectShowcase({
         </div>
 
         {/* RIGHT COLUMN (4 cols): Metrics, Architecture Highlights & Inspect CTA */}
-        <div className="col-span-4 space-y-24 py-6">
+        <div className="col-span-4 space-y-24 pt-6 pb-[75vh]">
           {projects.map((project, idx) => {
             const isActive = activeProjectIndex === idx;
 
