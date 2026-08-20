@@ -100,7 +100,7 @@ export default function AchievementSlider() {
   return (
     <section id="achievements-showcase" className="relative z-20 bg-[#040507] border-t border-white/10">
       {/* ── 1. NORMAL SCROLLING SECTION TITLE (Scrolls away naturally; NOT locked) ── */}
-      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-24 sm:pt-32 pb-12 sm:pb-16">
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-4 sm:pb-6">
         <div className="flex items-center gap-2 mb-3">
           <span className="h-[2px] w-6 bg-amber-400" />
           <span className="font-mono text-xs tracking-widest text-amber-400 font-bold uppercase">
@@ -115,11 +115,6 @@ export default function AchievementSlider() {
             ACHIEVEMENTS
           </span>
         </h2>
-
-        {/* Subtitle */}
-        <p className="text-xs sm:text-sm font-mono tracking-wider text-cyan-400 font-bold uppercase mt-3">
-          MOMENTUM OUR STUDENTS ARE BUILDING
-        </p>
       </div>
 
       {/* ── 2. STICKY HORIZONTAL CARDS CONTAINER (Locks when cards reach screen; Title is out of view) ── */}
@@ -128,20 +123,15 @@ export default function AchievementSlider() {
         className="relative"
         style={{ height: `${(totalCards + 0.8) * 58}vh` }}
       >
-        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between pt-16 sm:pt-20 pb-6 sm:pb-8 select-none">
+        <div className="sticky top-0 h-screen w-full overflow-hidden flex flex-col justify-between pt-6 sm:pt-8 pb-6 sm:pb-8 select-none">
           {/* Background Ambience */}
           <ConstellationBackground opacity={0.6} />
           <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
           <div className="absolute top-1/4 right-1/4 w-[600px] h-[350px] bg-amber-500/5 rounded-full blur-[140px] pointer-events-none" />
           <div className="absolute bottom-1/4 left-1/4 w-[600px] h-[350px] bg-cyan-500/5 rounded-full blur-[140px] pointer-events-none" />
 
-          {/* Sticky Top Status Bar & Navigation Controls Capsule */}
-          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-            <div className="flex items-center gap-2 text-xs font-mono text-amber-400 font-bold uppercase">
-              <span className="w-2 h-2 rounded-full bg-amber-400 animate-ping" />
-              <span className="tracking-wider">STUDENT HONORS ARCHIVE</span>
-            </div>
-
+          {/* Sticky Top Navigation Controls Capsule */}
+          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-end">
             {/* Controls Capsule */}
             <div className="flex items-center gap-3 px-3.5 py-1.5 sm:py-2 rounded-full bg-[#0a0d16]/90 border border-white/15 backdrop-blur-xl shadow-2xl">
               {/* Prev Button */}
@@ -215,13 +205,8 @@ export default function AchievementSlider() {
             </motion.div>
           </div>
 
-          {/* Bottom Horizontal Scroll Progress Bar & Cue */}
-          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-between text-[10px] font-mono text-slate-400">
-            <div className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-              <span className="text-slate-300">SCROLL DOWN TO EXPLORE HORIZONTALLY</span>
-            </div>
-
+          {/* Bottom Horizontal Scroll Progress Bar */}
+          <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex items-center justify-end text-[10px] font-mono text-slate-400">
             <div className="flex items-center gap-3 w-40 sm:w-56">
               <div className="flex-1 h-1 bg-slate-800 rounded-full overflow-hidden">
                 <motion.div
@@ -357,16 +342,6 @@ function AchievementCard({
         <p className="text-xs text-slate-300 leading-relaxed font-sans font-normal line-clamp-3">
           {achievement.description}
         </p>
-      </div>
-
-      {/* Bottom Footer Line */}
-      <div className="pt-3.5 mt-4 border-t border-white/10 flex items-center justify-between text-[10.5px] font-mono">
-        <span className="text-emerald-400 flex items-center gap-1">
-          <Sparkles className="w-3 h-3" /> CSE DEPT
-        </span>
-        <span className="text-slate-400 tracking-wider font-semibold">
-          {achievement.institution}
-        </span>
       </div>
     </div>
   );
