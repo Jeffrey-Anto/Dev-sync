@@ -12,6 +12,8 @@ import {
   X,
   CheckCircle2,
   AlertCircle,
+  Paperclip,
+  FileText,
 } from "lucide-react";
 
 export interface RecruiterModalProps {
@@ -25,10 +27,12 @@ export default function RecruiterModal({ isOpen, onClose }: RecruiterModalProps)
     contactRep: "",
     corporateEmail: "",
     phone: "",
-    engagementType: "Full-Time Campus Drive",
+    engagementType: "Full-Time Recruitment Drive",
     preferredDate: "",
     additionalReqs: "",
   });
+
+  const [attachedFiles, setAttachedFiles] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -53,7 +57,7 @@ export default function RecruiterModal({ isOpen, onClose }: RecruiterModalProps)
 
     setIsSubmitting(true);
     setTimeout(() => {
-      console.log("Recruiter Inquiry Submitted:", formData);
+      console.log("Recruiter Inquiry Submitted:", formData, "Files:", attachedFiles);
       setIsSubmitting(false);
       setIsSubmitted(true);
     }, 900);
@@ -66,10 +70,11 @@ export default function RecruiterModal({ isOpen, onClose }: RecruiterModalProps)
       contactRep: "",
       corporateEmail: "",
       phone: "",
-      engagementType: "Full-Time Campus Drive",
+      engagementType: "Full-Time Recruitment Drive",
       preferredDate: "",
       additionalReqs: "",
     });
+    setAttachedFiles([]);
     setErrors({});
     onClose();
   };
@@ -106,18 +111,9 @@ export default function RecruiterModal({ isOpen, onClose }: RecruiterModalProps)
 
             {/* Header */}
             <div className="mb-5 sm:mb-6 pr-6 sm:pr-8">
-              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-amber-400 font-bold mb-2">
-                <Building2 className="w-4 h-4 text-amber-400" />
-                <span>RECRUITER ENGAGEMENT DESK</span>
-              </div>
-
-              <h2 className="text-xl sm:text-3xl font-black text-white tracking-tight">
-                Invite GCE Srirangam to Placement Drive
+              <h2 className="text-xl sm:text-3xl font-black text-amber-400 tracking-tight">
+                HOST A CAMPUS DRIVE
               </h2>
-
-              <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed font-sans">
-                Coordinate pre-placement talks, technical assessments, and interview drives with our 2026–2027 batch.
-              </p>
             </div>
 
             {isSubmitted ? (
@@ -244,16 +240,17 @@ export default function RecruiterModal({ isOpen, onClose }: RecruiterModalProps)
                       onChange={(e) => setFormData({ ...formData, engagementType: e.target.value })}
                       className="w-full px-4 py-3 rounded-xl bg-black/50 border border-white/10 text-white focus:outline-none focus:border-amber-400 transition-all"
                     >
-                      <option value="Full-Time Campus Drive" className="bg-[#090c15] text-white">Full-Time Campus Drive</option>
-                      <option value="Internship + PPO Hiring" className="bg-[#090c15] text-white">Internship + PPO Hiring</option>
-                      <option value="Virtual Campus Drive" className="bg-[#090c15] text-white">Virtual Campus Drive</option>
-                      <option value="Hackathon / Technical Sponsorship" className="bg-[#090c15] text-white">Hackathon / Technical Sponsorship</option>
+                      <option value="Full-Time Recruitment Drive" className="bg-[#090c15] text-white">Full-Time Recruitment Drive</option>
+                      <option value="Internship & PPO Hiring" className="bg-[#090c15] text-white">Internship &amp; PPO Hiring</option>
+                      <option value="Virtual Recruitment Drive" className="bg-[#090c15] text-white">Virtual Recruitment Drive</option>
+                      <option value="Hackathon / Technical Challenge" className="bg-[#090c15] text-white">Hackathon / Technical Challenge</option>
+                      <option value="Other / General Inquiry" className="bg-[#090c15] text-white">Other / General Inquiry</option>
                     </select>
                   </div>
 
                   <div>
                     <label className="block text-slate-300 font-semibold mb-1.5">
-                      Preferred Slot / Date
+                      Preferred Drive Date
                     </label>
                     <div className="relative flex items-center">
                       <Calendar className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
@@ -267,22 +264,81 @@ export default function RecruiterModal({ isOpen, onClose }: RecruiterModalProps)
                   </div>
                 </div>
 
-                {/* Row 4: Additional Requirements / Roles Offered */}
-                <div>
-                  <label className="block text-slate-300 font-semibold mb-1.5">
-                    Additional Requirements / Roles Offered
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={formData.additionalReqs}
-                    onChange={(e) => setFormData({ ...formData, additionalReqs: e.target.value })}
-                    placeholder="Share details on roles, CTC package, eligibility criteria..."
-                    className="w-full p-3.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-all resize-none"
-                  />
+                {/* Row 4: Additional Requirements / Roles Offered & Attachment */}
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-slate-300 font-semibold mb-1.5">
+                      Additional Requirements / Roles Offered
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={formData.additionalReqs}
+                      onChange={(e) => setFormData({ ...formData, additionalReqs: e.target.value })}
+                      placeholder="Share details on roles, CTC package, eligibility criteria..."
+                      className="w-full p-3.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-all resize-none"
+                    />
+                  </div>
+
+                  {/* File Attachment Option (Up to 5 files) */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider">
+                        Attach Job Description / Files (Optional, up to 5)
+                      </label>
+                      {attachedFiles.length > 0 && (
+                        <span className="text-[11px] font-mono text-amber-400 font-bold">
+                          {attachedFiles.length}/5 files attached
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex flex-wrap items-center gap-2.5">
+                      {attachedFiles.length < 5 && (
+                        <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black/40 hover:bg-white/5 border border-white/15 hover:border-amber-400/50 text-xs font-mono text-slate-300 hover:text-white cursor-pointer transition-all">
+                          <Paperclip className="w-4 h-4 text-amber-400" />
+                          <span>Attach File(s)...</span>
+                          <input
+                            type="file"
+                            multiple
+                            className="hidden"
+                            onChange={(e) => {
+                              const newFiles = Array.from(e.target.files || []).map((f) => f.name);
+                              setAttachedFiles((prev) => {
+                                const combined = Array.from(new Set([...prev, ...newFiles]));
+                                return combined.slice(0, 5);
+                              });
+                              e.target.value = "";
+                            }}
+                          />
+                        </label>
+                      )}
+                      {attachedFiles.map((fileName, idx) => (
+                        <div
+                          key={idx}
+                          className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs font-mono text-amber-300"
+                        >
+                          <FileText className="w-3.5 h-3.5 flex-shrink-0" />
+                          <span className="max-w-[180px] truncate">{fileName}</span>
+                          <button
+                            type="button"
+                            onClick={() => setAttachedFiles((prev) => prev.filter((_, i) => i !== idx))}
+                            className="text-slate-400 hover:text-white cursor-pointer ml-1"
+                            aria-label="Remove attachment"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
                 </div>
 
+                {/* Submission Disclaimer Line */}
+                <p className="text-xs text-slate-400 font-sans leading-relaxed pt-2">
+                  By submitting this inquiry, our placement team will contact you to coordinate the recruitment process.
+                </p>
+
                 {/* Bottom Actions */}
-                <div className="flex items-center justify-end gap-3 pt-4">
+                <div className="flex items-center justify-end gap-3 pt-2">
                   <button
                     type="button"
                     onClick={onClose}

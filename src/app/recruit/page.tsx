@@ -15,8 +15,10 @@ import {
   Sparkles,
   ShieldCheck,
   ArrowRight,
-  FileText,
   AlertCircle,
+  Paperclip,
+  X,
+  FileText,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -33,20 +35,23 @@ export default function RecruiterContactPage() {
     contactRep: "",
     corporateEmail: "",
     phone: "",
-    engagementType: "Full-Time Campus Drive",
+    engagementType: "Full-Time Recruitment Drive",
     preferredDate: "",
     additionalReqs: "",
   });
+
+  const [attachedFiles, setAttachedFiles] = useState<string[]>([]);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   const engagementOptions = [
-    "Full-Time Campus Drive",
-    "Internship + PPO Hiring",
-    "Virtual Campus Drive",
-    "Hackathon / Technical Challenge Sponsorship",
+    "Full-Time Recruitment Drive",
+    "Internship & PPO Hiring",
+    "Virtual Recruitment Drive",
+    "Hackathon / Technical Challenge",
+    "Other / General Inquiry",
   ];
 
   const validate = () => {
@@ -68,7 +73,7 @@ export default function RecruiterContactPage() {
 
     setIsSubmitting(true);
     setTimeout(() => {
-      console.log("Recruiter Drive Request Submitted:", formData);
+      console.log("Recruiter Drive Request Submitted:", formData, "Files:", attachedFiles);
       setIsSubmitting(false);
       setIsSubmitted(true);
     }, 900);
@@ -81,10 +86,11 @@ export default function RecruiterContactPage() {
       contactRep: "",
       corporateEmail: "",
       phone: "",
-      engagementType: "Full-Time Campus Drive",
+      engagementType: "Full-Time Recruitment Drive",
       preferredDate: "",
       additionalReqs: "",
     });
+    setAttachedFiles([]);
     setErrors({});
   };
 
@@ -105,7 +111,7 @@ export default function RecruiterContactPage() {
         <div className="text-center max-w-4xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-300 mb-4">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>PLACEMENT CYCLE 2026-2027 NOW OPEN</span>
+            <span>NOW OPEN FOR RECRUITMENT</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
@@ -116,11 +122,11 @@ export default function RecruiterContactPage() {
           </h1>
 
           <p className="text-sm sm:text-base text-slate-300 mt-4 max-w-3xl mx-auto font-sans leading-relaxed">
-            Zero ramp-up friction. A calibrated cohort of {COHORT_STATS.totalEngineers} engineers with {COHORT_STATS.totalProjects} verified production repositories across {DOMAINS.length} core domains and {totalTechs}+ modern frameworks.
+            A cohort of 60 Computer Science students with hands-on project experience across six core technology domains.
           </p>
 
           {/* Download Placement Brochure Button */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+          <div className="mt-8 flex items-center justify-center">
             <a
               href="/placement-brochure-2026.pdf"
               download
@@ -129,11 +135,6 @@ export default function RecruiterContactPage() {
               <Download className="w-4 h-4 text-cyan-300" />
               <span>Download Placement Brochure (PDF)</span>
             </a>
-
-            <div className="flex items-center gap-2 text-xs font-mono text-slate-400 px-4 py-3 rounded-2xl bg-white/5 border border-white/10">
-              <FileText className="w-4 h-4 text-indigo-400" />
-              <span>Batch Stats · Syllabus · Drive Policies</span>
-            </div>
           </div>
         </div>
 
@@ -144,18 +145,9 @@ export default function RecruiterContactPage() {
           <div className="lg:col-span-7">
             <div className="p-4 sm:p-10 rounded-3xl bg-[#090c15]/90 border border-white/15 backdrop-blur-2xl shadow-2xl relative overflow-hidden">
               <div className="mb-6">
-                <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-wider text-amber-400 font-bold mb-2">
-                  <Building2 className="w-4 h-4 text-amber-400" />
-                  <span>RECRUITER ENGAGEMENT DESK</span>
-                </div>
-
-                <h2 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                  Invite GCE Srirangam to Placement Drive
+                <h2 className="text-2xl sm:text-3xl font-black text-amber-400 tracking-tight">
+                  HOST A CAMPUS DRIVE
                 </h2>
-
-                <p className="text-xs sm:text-sm text-slate-400 mt-2 leading-relaxed font-sans">
-                  Coordinate pre-placement talks, technical assessments, and interview drives with our 2026–2027 batch.
-                </p>
               </div>
 
               {isSubmitted ? (
@@ -292,7 +284,7 @@ export default function RecruiterContactPage() {
 
                     <div>
                       <label className="block text-slate-300 font-semibold mb-1.5">
-                        Preferred Slot / Date
+                        Preferred Drive Date
                       </label>
                       <div className="relative flex items-center">
                         <Calendar className="absolute left-3.5 w-4 h-4 text-slate-500 pointer-events-none" />
@@ -306,22 +298,81 @@ export default function RecruiterContactPage() {
                     </div>
                   </div>
 
-                  {/* Row 4: Additional Requirements / Roles Offered */}
-                  <div>
-                    <label className="block text-slate-300 font-semibold mb-1.5">
-                      Additional Requirements / Roles Offered
-                    </label>
-                    <textarea
-                      rows={3}
-                      value={formData.additionalReqs}
-                      onChange={(e) => setFormData({ ...formData, additionalReqs: e.target.value })}
-                      placeholder="Share details on roles, CTC package, eligibility criteria..."
-                      className="w-full p-3.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-all resize-none"
-                    />
+                  {/* Row 4: Additional Requirements / Roles Offered & Attachment */}
+                  <div className="space-y-3">
+                    <div>
+                      <label className="block text-slate-300 font-semibold mb-1.5">
+                        Additional Requirements / Roles Offered
+                      </label>
+                      <textarea
+                        rows={3}
+                        value={formData.additionalReqs}
+                        onChange={(e) => setFormData({ ...formData, additionalReqs: e.target.value })}
+                        placeholder="Share details on roles, CTC package, eligibility criteria..."
+                        className="w-full p-3.5 rounded-xl bg-black/40 border border-white/10 text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-all resize-none"
+                      />
+                    </div>
+
+                    {/* File Attachment Option (Up to 5 files) */}
+                    <div>
+                      <div className="flex items-center justify-between mb-1.5">
+                        <label className="block text-xs font-mono text-slate-400 uppercase tracking-wider">
+                          Attach Job Description / Files (Optional, up to 5)
+                        </label>
+                        {attachedFiles.length > 0 && (
+                          <span className="text-[11px] font-mono text-amber-400 font-bold">
+                            {attachedFiles.length}/5 files attached
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex flex-wrap items-center gap-2.5">
+                        {attachedFiles.length < 5 && (
+                          <label className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-black/40 hover:bg-white/5 border border-white/15 hover:border-amber-400/50 text-xs font-mono text-slate-300 hover:text-white cursor-pointer transition-all">
+                            <Paperclip className="w-4 h-4 text-amber-400" />
+                            <span>Attach File(s)...</span>
+                            <input
+                              type="file"
+                              multiple
+                              className="hidden"
+                              onChange={(e) => {
+                                const newFiles = Array.from(e.target.files || []).map((f) => f.name);
+                                setAttachedFiles((prev) => {
+                                  const combined = Array.from(new Set([...prev, ...newFiles]));
+                                  return combined.slice(0, 5);
+                                });
+                                e.target.value = "";
+                              }}
+                            />
+                          </label>
+                        )}
+                        {attachedFiles.map((fileName, idx) => (
+                          <div
+                            key={idx}
+                            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-xs font-mono text-amber-300"
+                          >
+                            <FileText className="w-3.5 h-3.5 flex-shrink-0" />
+                            <span className="max-w-[180px] truncate">{fileName}</span>
+                            <button
+                              type="button"
+                              onClick={() => setAttachedFiles((prev) => prev.filter((_, i) => i !== idx))}
+                              className="text-slate-400 hover:text-white cursor-pointer ml-1"
+                              aria-label="Remove attachment"
+                            >
+                              <X className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
                   </div>
 
+                  {/* Submission Disclaimer Line */}
+                  <p className="text-xs text-slate-400 font-sans leading-relaxed pt-2">
+                    By submitting this inquiry, our placement team will contact you to coordinate the recruitment process.
+                  </p>
+
                   {/* Bottom Actions */}
-                  <div className="flex items-center justify-end gap-3 pt-4">
+                  <div className="flex items-center justify-end gap-3 pt-2">
                     <button
                       type="button"
                       onClick={handleReset}
@@ -359,7 +410,7 @@ export default function RecruiterContactPage() {
               </div>
 
               <p className="text-xs text-slate-300 leading-relaxed font-sans mb-6">
-                Government College of Engineering Srirangam faculty and student placement coordinators manage full logistics for on-campus presentation auditoriums, proctored coding labs, and remote interview panels.
+                Our placement team coordinates pre-placement talks, technical assessments, interviews, coding tests, and campus recruitment drives.
               </p>
 
               <div className="space-y-3 font-mono text-xs text-slate-300">
@@ -390,19 +441,19 @@ export default function RecruiterContactPage() {
               <div className="space-y-3 font-mono text-xs">
                 <div className="flex items-start gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">1</span>
-                  <span className="text-slate-300">Submit job description &amp; shortlist criteria</span>
+                  <span className="text-slate-300">Share your job requirements</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">2</span>
-                  <span className="text-slate-300">Receive vetted candidate matrix &amp; live code repos</span>
+                  <span className="text-slate-300">Eligible candidates are shortlisted</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-amber-500/20 text-amber-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">3</span>
-                  <span className="text-slate-300">Host automated assessments or onsite interviews</span>
+                  <span className="text-slate-300">Conduct assessments and interviews</span>
                 </div>
                 <div className="flex items-start gap-2.5">
                   <span className="w-5 h-5 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center flex-shrink-0 text-[10px] font-bold">4</span>
-                  <span className="text-slate-300">Same-day offer rolling &amp; onboarding alignment</span>
+                  <span className="text-slate-300">Complete selections and share results</span>
                 </div>
               </div>
             </div>
