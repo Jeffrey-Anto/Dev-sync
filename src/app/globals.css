@@ -281,4 +281,32 @@ body {
   animation: deepColorFlow 5s ease-in-out infinite;
 }
 
+.animate-aurora-text {
+  background: linear-gradient(
+    90deg,
+    #818cf8 0%,
+    #38bdf8 25%,
+    #34d399 50%,
+    #c084fc 75%,
+    #818cf8 100%
+  );
+  background-size: 250% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: auroraFlow 6s ease-in-out infinite;
+}
+
+@keyframes auroraFlow {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
 

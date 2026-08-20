@@ -116,7 +116,7 @@ export default function RecruiterContactPage() {
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
             Why Recruit From the <br className="hidden sm:inline" />
-            <span className="bg-gradient-to-r from-indigo-400 via-cyan-300 to-emerald-400 bg-clip-text text-transparent">
+            <span className="inline-block animate-aurora-text font-black drop-shadow-[0_0_35px_rgba(56,189,248,0.5)]">
               CS Class of 2026
             </span>
           </h1>
@@ -125,15 +125,38 @@ export default function RecruiterContactPage() {
             A cohort of 60 Computer Science students with hands-on project experience across six core technology domains.
           </p>
 
-          {/* Download Placement Brochure Button */}
+          {/* Download Placement Brochure Button with Luxury Shimmer & Aura */}
           <div className="mt-8 flex items-center justify-center">
             <a
               href="/placement-brochure-2026.pdf"
               download
-              className="px-6 py-3.5 rounded-2xl font-mono text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-[0_0_25px_rgba(99,102,241,0.4)] transition-all hover:scale-105 flex items-center gap-2.5"
+              className="group relative inline-flex items-center justify-center p-[2px] rounded-2xl transition-all duration-300 hover:scale-105 active:scale-[0.98] cursor-pointer"
             >
-              <Download className="w-4 h-4 text-cyan-300" />
-              <span>Download Placement Brochure (PDF)</span>
+              {/* Ambient Multi-Hue Pulsing Aura */}
+              <span className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-500 via-indigo-500 to-purple-500 opacity-60 group-hover:opacity-100 blur-xl transition-all duration-500 group-hover:blur-2xl animate-pulse" />
+
+              {/* Continuous Gradient Border Ring */}
+              <span className="absolute inset-0 rounded-2xl bg-gradient-to-r from-cyan-400 via-indigo-500 to-purple-500 p-[1.5px]" />
+
+              {/* Inner Obsidian Glass Body */}
+              <span className="relative z-10 px-8 py-4 rounded-2xl bg-[#070a14]/90 text-white font-mono text-xs sm:text-sm font-bold tracking-wider flex items-center gap-3 overflow-hidden shadow-2xl backdrop-blur-2xl transition-colors duration-300 group-hover:bg-[#0c1022]">
+                {/* Top Glass Refraction Highlight */}
+                <span className="absolute top-0 left-0 right-0 h-[45%] bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-t-2xl" />
+
+                {/* Dynamic Sliding Light Gleam Streak */}
+                <span className="absolute -left-[100%] top-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-[-20deg] group-hover:left-[200%] transition-all duration-1000 ease-out pointer-events-none" />
+
+                {/* Live Cyan Indicator Dot */}
+                <span className="relative flex h-2 w-2 items-center justify-center flex-shrink-0">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
+                </span>
+
+                <Download className="w-4 h-4 text-cyan-300 group-hover:translate-y-0.5 transition-transform" />
+                <span className="relative z-10 group-hover:text-cyan-200 transition-colors">
+                  Download Placement Brochure (PDF)
+                </span>
+              </span>
             </a>
           </div>
         </div>
