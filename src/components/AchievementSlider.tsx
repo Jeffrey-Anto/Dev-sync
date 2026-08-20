@@ -124,7 +124,9 @@ export default function AchievementSlider() {
             {/* Giant Display Headline */}
             <h2 className="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight uppercase leading-[0.95] font-sans">
               OUR STUDENT <br />
-              <span className="text-white">ACHIEVEMENTS</span>
+              <span className="inline-block animate-deep-color-flow">
+                ACHIEVEMENTS
+              </span>
             </h2>
 
             {/* Cyan Subtitle */}

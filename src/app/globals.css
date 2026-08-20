@@ -148,3 +148,59 @@ body {
 .animate-ambient-glow {
   animation: ambient-glow 8s ease-in-out infinite;
 }
+
+/* Text Shimmer Animation */
+@keyframes textShimmer {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animate-text-shimmer {
+  background-size: 200% auto;
+  animation: textShimmer 4s ease infinite;
+}
+
+/* Dynamic Deep Saturated Color Flow Animation */
+@keyframes deepColorFlow {
+  0% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6));
+  }
+  33% {
+    background-position: 50% 50%;
+    filter: drop-shadow(0 0 30px rgba(234, 88, 12, 0.65));
+  }
+  66% {
+    background-position: 100% 50%;
+    filter: drop-shadow(0 0 30px rgba(147, 51, 234, 0.65));
+  }
+  100% {
+    background-position: 0% 50%;
+    filter: drop-shadow(0 0 25px rgba(245, 158, 11, 0.6));
+  }
+}
+
+.animate-deep-color-flow {
+  background: linear-gradient(
+    135deg,
+    #f59e0b 0%,
+    #ea580c 25%,
+    #dc2626 50%,
+    #9333ea 75%,
+    #f59e0b 100%
+  );
+  background-size: 300% 300%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: deepColorFlow 5s ease-in-out infinite;
+}
+
+
