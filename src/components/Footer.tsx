@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Terminal, ShieldCheck, Mail, Calendar, CheckCircle2, ArrowUp } from "lucide-react";
 import { COHORT_STATS } from "@/data/domains";
 import { CircuitTraceBackground } from "@/components/backgrounds";
@@ -31,18 +32,16 @@ export default function Footer() {
                   COLLECTIVE<span className="text-indigo-400">.CS</span>
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-sm mb-4 font-sans">
-                A unified showcase of 60 Computer Science engineers graduating in 2026.
-                Designed strictly as a collective cohort demonstration of real-world production engineering capability.
+              <p className="text-xs text-slate-400 leading-relaxed max-w-sm mb-5 font-sans">
+                A collective showcase of 60 Computer Science students, their skills, projects, and technical capabilities.
               </p>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
-                <CheckCircle2 className="w-3.5 h-3.5" />
-                <span>On-Campus & Remote Drives Open</span>
-              </div>
-            </div>
-
-            <div className="mt-8 text-xs font-mono text-slate-500">
-              © 2026 Department of Computer Science & Engineering. All projects verified.
+              <Link
+                href="/recruit"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 hover:border-emerald-500/50 text-emerald-400 hover:text-emerald-300 text-xs font-mono transition-all duration-300 group shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] cursor-pointer"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" />
+                <span className="font-bold tracking-wider">OPEN FOR RECRUITMENT</span>
+              </Link>
             </div>
           </div>
 
@@ -58,11 +57,11 @@ export default function Footer() {
               </li>
               <li className="flex items-center justify-between border-b border-white/5 pb-1.5">
                 <span>Core Domains</span>
-                <strong className="text-white">{COHORT_STATS.domainsCount} Disciplines</strong>
+                <strong className="text-white">{COHORT_STATS.domainsCount} Core Domains</strong>
               </li>
               <li className="flex items-center justify-between pb-1.5">
                 <span>Live Projects</span>
-                <strong className="text-white">{COHORT_STATS.totalProjects} Repositories</strong>
+                <strong className="text-white">{COHORT_STATS.totalProjects}+ Projects</strong>
               </li>
             </ul>
           </div>
@@ -73,7 +72,7 @@ export default function Footer() {
               RECRUITER DESK & PLACEMENT OFFICE
             </h4>
             <p className="text-xs text-slate-400 leading-relaxed mb-4 font-sans">
-              To schedule an exclusive campus recruitment drive, shortlist by domain capability, or request live test environment access:
+              Connect with our placement team to schedule a campus drive.
             </p>
 
             <div className="space-y-2">
@@ -89,12 +88,23 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Back to Top */}
-        <div className="pt-8 flex items-center justify-between text-xs font-mono text-slate-500">
-          <span>NO INDIVIDUAL NAMES · PURE COLLECTIVE THROUGHPUT</span>
+        {/* Bottom Bar: Left (© College), Center (Motto), Right (Back to top) */}
+        <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs font-mono text-slate-400">
+          {/* Left: Copyright */}
+          <div className="flex items-center gap-1.5 font-medium tracking-wider text-slate-400">
+            <span className="text-sm sm:text-base font-bold text-slate-400">©</span>
+            <span>GOVERNMENT COLLEGE OF ENGINEERING SRIRANGAM</span>
+          </div>
+
+          {/* Center: Cohort Motto */}
+          <div className="text-center font-semibold tracking-widest text-slate-400 text-[11px] sm:text-xs">
+            ONE COHORT. MULTIPLE CAPABILITIES.
+          </div>
+
+          {/* Right: Back to top */}
           <button
             onClick={scrollToTop}
-            className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors cursor-pointer group"
+            className="flex items-center gap-1.5 hover:text-cyan-400 transition-colors cursor-pointer group flex-shrink-0"
           >
             <span>Back to top</span>
             <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform" />
