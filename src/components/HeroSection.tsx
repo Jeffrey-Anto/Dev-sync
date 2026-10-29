@@ -68,14 +68,14 @@ export default function HeroSection() {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="w-full flex flex-col items-center justify-center my-1 sm:my-2 space-y-0.5 sm:space-y-1 select-none"
         >
-          {/* Line 1: 60 MINDS. — Saffron */}
+          {/* Line 1: 60 MINDS. — Electric Cyan & Neon Turquoise Glow */}
           <div className="w-full h-12 sm:h-20 md:h-24 max-w-3xl relative">
             <ParticleText
               text="60 MINDS."
               particleSize={2.4}
               density={3}
-              color="#FF8800"
-              highlightColor="#FF9933"
+              color="#00D2FF"
+              highlightColor="#00F5D4"
               scatter={160}
               gatherDuration={1500}
               stagger={380}
@@ -90,14 +90,14 @@ export default function HeroSection() {
             />
           </div>
 
-          {/* Line 2: ONE TECHNICAL — White */}
+          {/* Line 2: ONE TECHNICAL — Vivid Electric Violet & Neon Purple Glow */}
           <div className="w-full h-12 sm:h-20 md:h-24 max-w-4xl relative">
             <ParticleText
               text="ONE TECHNICAL"
               particleSize={2.4}
               density={3}
-              color="#FFFFFF"
-              highlightColor="#E2E8F0"
+              color="#8B5CF6"
+              highlightColor="#C084FC"
               scatter={160}
               gatherDuration={1600}
               stagger={400}
@@ -112,14 +112,14 @@ export default function HeroSection() {
             />
           </div>
 
-          {/* Line 3: COLLECTIVE. — Green */}
+          {/* Line 3: COLLECTIVE. — High-Voltage Electric Magenta & Neon Pink Glow */}
           <div className="w-full h-12 sm:h-20 md:h-24 max-w-3xl relative">
             <ParticleText
               text="COLLECTIVE."
               particleSize={2.4}
               density={3}
-              color="#16A34A"
-              highlightColor="#22C55E"
+              color="#FF007A"
+              highlightColor="#FF5C9D"
               scatter={180}
               gatherDuration={1700}
               stagger={420}
