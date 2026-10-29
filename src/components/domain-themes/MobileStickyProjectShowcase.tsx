@@ -30,9 +30,9 @@ import { Project, Domain } from "@/data/domains";
 import { PhoneFrame } from "./MobileDevCinematicIntro";
 
 // =========================================================================
-// 1. IN-DEVICE MOBILE SCREEN FOR PROJECT 1: FLEETNAV
+// 1. IN-DEVICE MOBILE SCREEN FOR PROJECT 1: GCES HOSTEL
 // =========================================================================
-function FleetNavScreen() {
+function GcesHostelScreen() {
   const [rerouting, setRerouting] = useState(false);
   const [rerouteCount, setRerouteCount] = useState(0);
 
@@ -57,7 +57,7 @@ function FleetNavScreen() {
           <div className="flex items-center gap-1">
             <span className="text-[7.5px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30 flex items-center gap-1">
               <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
-              OFFLINE GPS
+              CAMPUS LIVE
             </span>
             <Signal className="w-2.5 h-2.5 text-cyan-400" />
             <Battery className="w-3 h-3 text-emerald-400" />
@@ -71,8 +71,8 @@ function FleetNavScreen() {
               <Navigation className="w-4 h-4 text-cyan-400 rotate-45 animate-pulse" />
             </div>
             <div className="min-w-0">
-              <p className="text-[8px] text-cyan-300 font-bold truncate">In 250m turn right</p>
-              <h5 className="text-[10.5px] font-black text-white truncate">Lexington Expressway</h5>
+              <p className="text-[8px] text-cyan-300 font-bold truncate">Token Confirmed · Mess Open</p>
+              <h5 className="text-[10.5px] font-black text-white truncate">GCES Srirangam Campus</h5>
             </div>
           </div>
         </div>
@@ -160,144 +160,124 @@ function FleetNavScreen() {
 }
 
 // =========================================================================
-// 2. IN-DEVICE MOBILE SCREEN FOR PROJECT 2: CINESYNC
+// 2. IN-DEVICE MOBILE SCREEN FOR PROJECT 2: CONNECTLNX KMP
 // =========================================================================
-function CineSyncScreen() {
-  const [mutedChannel, setMutedChannel] = useState<number | null>(null);
+function ConnectLnxScreen() {
+  const [boosted, setBoosted] = useState(false);
 
-  const toggleMute = (idx: number, e: React.MouseEvent) => {
+  const toggleBoost = (e: React.MouseEvent) => {
     e.stopPropagation();
-    setMutedChannel(mutedChannel === idx ? null : idx);
+    setBoosted((b) => !b);
   };
 
   return (
-    <div className="relative w-full h-full bg-[#08060f] text-slate-100 p-2.5 sm:p-3 pt-5 sm:pt-6 flex flex-col justify-between select-none overflow-hidden font-mono">
+    <div className="relative w-full h-full bg-[#060a12] text-slate-100 p-2.5 sm:p-3 pt-5 sm:pt-6 flex flex-col justify-between select-none overflow-hidden font-mono">
       {/* Dynamic Cyber Grid Background */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#ec4899_1px,transparent_1px)] [background-size:12px_12px]" />
+      <div className="absolute inset-0 opacity-20 pointer-events-none bg-[radial-gradient(#06b6d4_1px,transparent_1px)] [background-size:12px_12px]" />
 
       {/* Top Status */}
       <div className="flex-shrink-0">
-        <div className="flex items-center justify-between text-[8.5px] text-pink-300/80 mb-1.5 px-0.5">
+        <div className="flex items-center justify-between text-[8.5px] text-cyan-300/80 mb-1.5 px-0.5">
           <span>09:41</span>
           <div className="flex items-center gap-1">
-            <span className="text-[7.5px] px-1.5 py-0.2 rounded bg-pink-500/20 text-pink-300 font-bold border border-pink-500/30 flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-pink-400 animate-ping" />
-              12ms LATENCY
+            <span className="text-[7.5px] px-1.5 py-0.2 rounded bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/30 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+              P2P WI-FI DIRECT
             </span>
-            <Wifi className="w-2.5 h-2.5 text-pink-400" />
+            <Wifi className="w-2.5 h-2.5 text-cyan-400" />
             <Battery className="w-3 h-3 text-emerald-400" />
           </div>
         </div>
 
         {/* Studio App Header */}
-        <div className="p-2 rounded-xl bg-pink-950/40 border border-pink-500/30 flex items-center justify-between mb-1.5">
+        <div className="p-2 rounded-xl bg-cyan-950/40 border border-cyan-500/30 flex items-center justify-between mb-1.5">
           <div className="flex items-center gap-1.5">
-            <div className="w-6 h-6 rounded-lg bg-pink-500/20 flex items-center justify-center border border-pink-400/30">
-              <Volume2 className="w-3.5 h-3.5 text-pink-400" />
+            <div className="w-6 h-6 rounded-lg bg-cyan-500/20 flex items-center justify-center border border-cyan-400/30">
+              <Radio className="w-3.5 h-3.5 text-cyan-400" />
             </div>
             <div>
-              <h5 className="text-[10px] font-bold text-white leading-tight">CineSync Studio</h5>
-              <p className="text-[7px] text-pink-400">48kHz 24-bit PCM Stream</p>
+              <h5 className="text-[10px] font-bold text-white leading-tight">ConnectLnx KMP</h5>
+              <p className="text-[7px] text-cyan-400">Zero-Cloud P2P LAN Transfer</p>
             </div>
           </div>
           <span className="text-[7.5px] px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">
-            LIVE
+            {boosted ? "74.8 MB/s" : "54.2 MB/s"}
           </span>
         </div>
       </div>
 
-      {/* Real-time Oscilloscope Waveform Display (Flexible height) */}
-      <div className="relative flex-1 min-h-[60px] max-h-[90px] rounded-xl bg-black/80 border border-pink-500/20 overflow-hidden p-1.5 flex flex-col justify-between my-1">
+      {/* Real-time Transfer Stream Display */}
+      <div className="relative flex-1 min-h-[70px] max-h-[105px] rounded-xl bg-black/80 border border-cyan-500/20 overflow-hidden p-2 flex flex-col justify-between my-1">
         <div className="flex items-center justify-between text-[6.5px] text-slate-400 z-10">
-          <span>MASTER STEREO BUS</span>
-          <span className="text-pink-400 font-bold">0.0 dB CLIP GUARD</span>
+          <span>PEER: ARCH LINUX WORKSTATION</span>
+          <span className="text-cyan-400 font-bold">ZERO-COPY NIO</span>
         </div>
 
-        {/* Animated Waveform Oscilloscope */}
-        <div className="flex items-center justify-center gap-0.5 h-10 my-auto">
-          {[45, 80, 30, 95, 60, 100, 75, 40, 90, 65, 85, 30, 95, 70, 50, 90, 40, 80].map(
-            (val, idx) => (
-              <motion.div
-                key={idx}
-                animate={{
-                  height: [
-                    `${val * 0.18}px`,
-                    `${val * 0.35}px`,
-                    `${val * 0.12}px`,
-                    `${val * 0.3}px`,
-                  ],
-                }}
-                transition={{
-                  repeat: Infinity,
-                  duration: 0.9 + (idx % 3) * 0.15,
-                  ease: "easeInOut",
-                }}
-                className="w-1 bg-gradient-to-t from-pink-500 via-purple-400 to-cyan-300 rounded-full"
-              />
-            )
-          )}
+        <div>
+          <div className="flex items-center justify-between text-[7.5px] text-white font-bold mb-1">
+            <span className="truncate max-w-[130px]">ubuntu-24.04-desktop.iso</span>
+            <span className="text-cyan-300">4.8 GB (78%)</span>
+          </div>
+
+          <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden p-0.5 border border-cyan-500/30">
+            <motion.div
+              animate={{ width: boosted ? ["78%", "92%"] : ["78%", "84%"] }}
+              transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+              className="h-full bg-gradient-to-r from-cyan-500 via-teal-400 to-emerald-400 rounded-full"
+            />
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between text-[6.5px] text-slate-400">
+          <span>5 Multiplexed Sockets</span>
+          <span className="text-emerald-400 font-bold">ETA: 12 seconds</span>
         </div>
       </div>
 
-      {/* 4 Multi-Channel VU Faders */}
+      {/* Transfer Metrics Grid */}
       <div className="flex-shrink-0 space-y-1 my-1">
         {[
-          { name: "CH 1: BOOM", level: "92%", color: "from-pink-500 to-emerald-400" },
-          { name: "CH 2: LAV 01", level: "76%", color: "from-pink-500 to-amber-400" },
-          { name: "CH 3: LAV 02", level: "64%", color: "from-pink-500 to-cyan-400" },
-          { name: "CH 4: FOLEY", level: "48%", color: "from-pink-500 to-purple-400" },
-        ].map((channel, idx) => {
-          const isMuted = mutedChannel === idx;
-          return (
-            <div
-              key={idx}
-              onClick={(e) => toggleMute(idx, e)}
-              className={`p-1.5 rounded-lg border transition-all cursor-pointer flex items-center justify-between text-[7.5px] ${
-                isMuted
-                  ? "bg-red-950/20 border-red-500/30 opacity-60"
-                  : "bg-white/[0.03] border-white/5 hover:border-pink-500/30"
-              }`}
-            >
-              <div className="flex items-center gap-1">
-                {isMuted ? (
-                  <VolumeX className="w-2.5 h-2.5 text-red-400" />
-                ) : (
-                  <Volume2 className="w-2.5 h-2.5 text-pink-400" />
-                )}
-                <span className="text-slate-300 font-bold truncate max-w-[80px]">{channel.name}</span>
-              </div>
-              <div className="w-24 bg-slate-800 h-1.5 rounded-full overflow-hidden">
-                <motion.div
-                  animate={
-                    isMuted
-                      ? { width: "0%" }
-                      : { width: [channel.level, "40%", channel.level, "85%"] }
-                  }
-                  transition={{ repeat: Infinity, duration: 1.8 + idx * 0.3, ease: "easeInOut" }}
-                  className={`h-full bg-gradient-to-r ${channel.color} rounded-full`}
-                />
-              </div>
+          { label: "PROTOCOL", value: "Java NIO FileChannel.transferTo", status: "Zero-Copy" },
+          { label: "PEER DISCOVERY", value: "Local mDNS + ML Kit QR fallback", status: "LAN Only" },
+          { label: "CLIPBOARD SYNC", value: "Coroutines SharedFlow", status: "Active" },
+        ].map((item, idx) => (
+          <div
+            key={idx}
+            className="p-1.5 rounded-lg border bg-white/[0.03] border-white/5 flex items-center justify-between text-[7.5px]"
+          >
+            <div>
+              <span className="text-slate-400 block text-[6px]">{item.label}</span>
+              <span className="text-slate-200 font-bold">{item.value}</span>
             </div>
-          );
-        })}
+            <span className="text-cyan-400 font-bold">{item.status}</span>
+          </div>
+        ))}
       </div>
 
-      {/* Bottom AudioUnit DMA Hardware Status */}
+      {/* Bottom P2P Status & Button */}
       <div className="flex-shrink-0 space-y-1.5 mt-1">
-        <div className="p-1.5 rounded-xl bg-pink-950/30 border border-pink-500/20 flex items-center justify-between text-[8px]">
-          <span className="text-slate-300">C++ JSI Bridge DMA</span>
-          <span className="text-emerald-400 font-bold">0 Dropouts (48kHz)</span>
+        <button
+          onClick={toggleBoost}
+          className="w-full py-1.5 px-2 rounded-lg bg-cyan-500/15 hover:bg-cyan-500/25 border border-cyan-500/30 text-cyan-300 text-[8px] font-bold flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-sm active:scale-95"
+        >
+          <RotateCcw className="w-2.5 h-2.5 text-cyan-400" />
+          <span>{boosted ? "Boost Mode Active (5 Sockets)" : "Toggle Multi-Socket Boost"}</span>
+        </button>
+
+        <div className="p-1.5 rounded-xl bg-cyan-950/30 border border-cyan-500/20 flex items-center justify-between text-[8px]">
+          <span className="text-slate-300">Data Sovereignty</span>
+          <span className="text-emerald-400 font-bold">0 Cloud Relays (100% P2P)</span>
         </div>
-        <div className="w-20 h-1 bg-pink-400/40 rounded-full mx-auto" />
+        <div className="w-20 h-1 bg-cyan-400/40 rounded-full mx-auto" />
       </div>
     </div>
   );
 }
 
 // =========================================================================
-// 3. IN-DEVICE MOBILE SCREEN FOR PROJECT 3: PULSEPAY
+// 3. IN-DEVICE MOBILE SCREEN FOR PROJECT 3: SMET
 // =========================================================================
-function PulsePayScreen() {
+function SmetScreen() {
   const [authStatus, setAuthStatus] = useState<"idle" | "verifying" | "authorized">("idle");
 
   const handleFingerprintTap = (e: React.MouseEvent) => {
@@ -339,22 +319,22 @@ function PulsePayScreen() {
               <CreditCard className="w-3.5 h-3.5 text-emerald-400" />
             </div>
             <div>
-              <h5 className="text-[10px] font-bold text-white">PulsePay POS</h5>
-              <p className="text-[7px] text-emerald-400">Offline Keystore Enclave</p>
+              <h5 className="text-[10px] font-bold text-white">SMET Vault</h5>
+              <p className="text-[7px] text-emerald-400">Offline Room ACID Enclave</p>
             </div>
           </div>
-          <span className="text-[7.5px] font-bold text-slate-300">#POS-409</span>
+          <span className="text-[7.5px] font-bold text-slate-300">#BUDGET-ALERT</span>
         </div>
 
         {/* Amount Card */}
         <div className="p-2 rounded-2xl bg-gradient-to-br from-emerald-950/60 via-slate-900 to-black border border-emerald-500/30 text-center my-1 shadow-lg">
           <span className="text-[7px] text-slate-400 uppercase tracking-widest block mb-0.5">
-            AMOUNT TO AUTHORIZE
+            MONTHLY BUDGET REMAINING
           </span>
           <h3 className="text-xl font-black text-white tracking-tight text-emerald-300">
-            $42.50 <span className="text-[10px] font-normal text-slate-400">USD</span>
+            ₹4,250 <span className="text-[10px] font-normal text-slate-400">INR</span>
           </h3>
-          <p className="text-[7px] text-emerald-400/80 mt-0.5">● Encrypted ECDSA Attestation Ready</p>
+          <p className="text-[7px] text-emerald-400/80 mt-0.5">● Biometric Fingerprint Authentication Active</p>
         </div>
       </div>
 
@@ -469,16 +449,16 @@ export default function MobileStickyProjectShowcase({
 
   // Render correct in-device screen
   const renderPhoneScreen = () => {
-    if (activeProjectIndex === 0) return <FleetNavScreen key="fleetnav" />;
-    if (activeProjectIndex === 1) return <CineSyncScreen key="cinesync" />;
-    if (activeProjectIndex === 2) return <PulsePayScreen key="pulsepay" />;
-    return <FleetNavScreen key="default" />;
+    if (activeProjectIndex === 0) return <GcesHostelScreen key="gceshostel" />;
+    if (activeProjectIndex === 1) return <ConnectLnxScreen key="connectlnx" />;
+    if (activeProjectIndex === 2) return <SmetScreen key="smet" />;
+    return <GcesHostelScreen key="default" />;
   };
 
   // Color theme mapping per project index for glowing dynamic aura
   const projectGlowStyles = [
     "from-cyan-500/25 via-blue-500/10 to-transparent shadow-[0_0_90px_rgba(0,229,255,0.25)]",
-    "from-pink-500/25 via-purple-500/10 to-transparent shadow-[0_0_90px_rgba(236,72,153,0.25)]",
+    "from-teal-500/25 via-cyan-500/10 to-transparent shadow-[0_0_90px_rgba(20,184,166,0.25)]",
     "from-emerald-500/25 via-teal-500/10 to-transparent shadow-[0_0_90px_rgba(16,185,129,0.25)]",
   ];
 
@@ -764,9 +744,9 @@ export default function MobileStickyProjectShowcase({
               {/* Mobile Phone Mockup View with Dynamic Fitting Dimensions */}
               <div className="flex justify-center my-3 sm:my-4">
                 <PhoneFrame className="!h-[480px] sm:!h-[590px] !w-full max-w-[275px] sm:max-w-[320px] !rounded-[40px] sm:!rounded-[46px] !p-2 sm:!p-3">
-                  {idx === 0 && <FleetNavScreen />}
-                  {idx === 1 && <CineSyncScreen />}
-                  {idx === 2 && <PulsePayScreen />}
+                  {idx === 0 && <GcesHostelScreen />}
+                  {idx === 1 && <ConnectLnxScreen />}
+                  {idx === 2 && <SmetScreen />}
                 </PhoneFrame>
               </div>
 
