@@ -152,6 +152,7 @@ export const STUDENTS: Student[] = [
     year: "2023 – 2027",
     links: {
       portfolio: "https://dalwin-protfolio.onrender.com/",
+      github: "https://github.com/DALWINRAJU",
     },
   },
 ];
