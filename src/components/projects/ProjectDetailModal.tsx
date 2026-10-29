@@ -378,10 +378,10 @@ function DarkDetailModal({
                 border: isWebDev ? "1px solid rgba(239, 68, 68, 0.4)" : `1px solid rgba(${domain.colorTheme.rgb}, 0.3)`,
               }}
             >
-              {domain.name}
+              {project.categoryBadge || domain.name}
             </span>
             <span className="text-xs font-mono text-slate-500">
-              PROJECT_ID: {project.id.toUpperCase()}
+              PROJECT_ID: {(project.displayId || project.id).toUpperCase()}
             </span>
           </div>
 

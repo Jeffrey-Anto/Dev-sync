@@ -13,6 +13,8 @@ export interface Project {
   outcome?: string;
   architectureHighlights?: string[];
   metrics?: { label: string; value: string }[];
+  categoryBadge?: string;
+  displayId?: string;
 }
 
 export interface Domain {
@@ -63,7 +65,7 @@ export const DOMAINS: Domain[] = [
     icon: "BrainCircuit",
     studentCount: 12,
     projectCount: 3,
-    techStack: ["PyTorch", "Hugging Face", "LangChain", "Vector DBs", "FastAPI", "ONNX", "CUDA", "scikit-learn"],
+    techStack: ["Python/FastAPI", "XGBoost", "LightGBM", "Solidity", "scikit-learn", "PyTorch", "Next.js 15", "LangChain"],
   },
   {
     id: "cloud-devops",
@@ -197,22 +199,42 @@ export const PROJECTS: Project[] = [
   // AI / ML Projects
   {
     id: "ai-p1",
+    displayId: "AI-P1",
     domainId: "ai-ml",
-    title: "AuraDoc Autonomous Multimodal RAG",
-    oneLiner: "Hybrid dense-sparse retrieval system for technical schematics with automated source citation.",
-    techStack: ["PyTorch", "Qdrant", "FastAPI", "Llama-3", "LangChain"],
-    description: "Processes complex engineering PDFs, OCR circuit diagrams, and source code with millisecond query synthesis.",
-    imageUrl: "/projects/auradoc.jpg",
-    liveLink: "https://auradoc.collective.internal",
-    repoLink: "https://github.com/collective-cohort/auradoc",
-    problem: "Standard LLM RAG pipelines fail to interpret multimodal engineering diagrams, electrical schematics, and tabular math formulas accurately.",
-    solution: "Designed a dual-encoder architecture integrating ColPali visual embeddings with BM25 sparse indexing and cross-encoder re-ranking.",
-    outcome: "Boosted factual recall by 42% on technical manuals and eliminated hallucinations via exact bounding-box diagram grounding.",
-    architectureHighlights: ["ColPali Visual Embeddings", "Qdrant Hybrid Dense/Sparse Search", "Cross-Encoder Re-Ranking Pipeline"],
+    categoryBadge: "AI & MACHINE LEARNING",
+    title: "Authentic Chain",
+    oneLiner: "AI + blockchain system that detects fake Instagram profiles and anchors tamper-proof verdicts on-chain.",
+    techStack: [
+      "Next.js 15",
+      "TypeScript",
+      "Python/FastAPI",
+      "XGBoost",
+      "LightGBM",
+      "scikit-learn",
+      "Solidity",
+      "ethers.js v6",
+      "Prisma",
+      "Neon PostgreSQL",
+      "NextAuth",
+      "Apify",
+      "Cloudinary",
+    ],
+    description: "AI + blockchain system that detects fake Instagram profiles and anchors tamper-proof verdicts on-chain.",
+    imageUrl: "/projects/authenticchain.jpg",
+    liveLink: "https://authentic-chain.gces.net.in/",
+    repoLink: "https://github.com/Saravanaanandh/Authentic-chain",
+    problem: "Fake, bot, and impersonator accounts drive scams and misinformation, and no public verdict about a profile can be trusted unless people can confirm it wasn’t altered after the fact.",
+    solution: "Built a dual-engine pipeline: a 22-feature XGBoost behavioural model trained on real scraped profiles plus labeled impersonation data, fused with a stacked ensemble (XGBoost + Random Forest + LightGBM) via a logistic meta-model. Scores are combined through a hybrid fusion layer, and an AI-driven root-trace agent (Claude on Bedrock + Google Lens + pHash image matching) autonomously investigates impersonation chains. Final verdicts are SHA-256 hashed and written to a Solidity smart contract on Ethereum Sepolia for tamper-proof audit.",
+    outcome: "Achieved 94.9% accuracy / 0.990 AUC on held-out real accounts for the behavioural model and 0.987 AUC for the ML ensemble, with on-chain proof anchoring for every verdict and a full admin dashboard, dataset management, and model versioning in production.",
+    architectureHighlights: [
+      "Hybrid ML + Rule-Based Fusion Engine",
+      "AI Root-Trace Impersonation Agent (Claude + Google Lens + pHash)",
+      "On-Chain Verdict Anchoring (Ethereum Sepolia)",
+    ],
     metrics: [
-      { label: "Recall @ 5", value: "94.6%" },
-      { label: "Query Synthesis", value: "< 450ms" },
-      { label: "Diagram Accuracy", value: "98.2%" },
+      { label: "Behavioural Model Accuracy", value: "94.9% (AUC 0.990)" },
+      { label: "ML Ensemble AUC", value: "0.987" },
+      { label: "Scan Time", value: "~60s live / ~30s cached" },
     ],
   },
   {
