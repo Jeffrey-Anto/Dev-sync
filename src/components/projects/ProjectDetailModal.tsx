@@ -517,11 +517,7 @@ function DarkDetailModal({
       </div>
 
       {/* Live Repository & Demo CTAs */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-white/10">
-        <div className="text-xs font-mono text-slate-500">
-          COLLECTIVE CS VERIFIED ARTIFACT · NO INDIVIDUAL AUTHORSHIP
-        </div>
-
+      <div className="flex flex-wrap items-center justify-end gap-3 pt-6 border-t border-white/10">
         <div className="flex items-center gap-3">
           {project.repoLink && (
             <a
