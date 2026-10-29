@@ -1,0 +1,42 @@
+{
+  "generatedAt": "2026-10-29T16:55:27.710Z",
+  "students": {
+    "barath-b": {
+      "githubContributions": 3477
+    },
+    "dhavaputhalvi-r": {
+      "githubContributions": 103
+    },
+    "dhanusha-baskaran": {
+      "githubContributions": 128,
+      "leetcodeSolved": 63,
+      "leetcodeSubmissions": 65
+    },
+    "harshavarthini-p": {
+      "githubContributions": 75,
+      "leetcodeSolved": 49,
+      "leetcodeSubmissions": 50
+    },
+    "nisha-s": {},
+    "lavanya-s-v": {},
+    "avandika-b-n": {
+      "githubContributions": 49
+    },
+    "k-sangameshwari": {
+      "githubContributions": 17
+    },
+    "suganya-m": {
+      "githubContributions": 18
+    },
+    "saravanakumar-m": {
+      "githubContributions": 152,
+      "leetcodeSolved": 174,
+      "leetcodeSubmissions": 180
+    },
+    "rifath-shifa-m": {
+      "githubContributions": 65,
+      "leetcodeSolved": 2,
+      "leetcodeSubmissions": 2
+    }
+  }
+}

@@ -14,14 +14,24 @@ import {
   type Student,
 } from "@/data/students";
 import { PLATFORM_ORDER, PLATFORMS } from "@/components/students/platforms";
+import studentStats from "@/data/student-stats.json";
 
-type SortKey = "roster" | "name" | "leetcode" | "commits";
+type StudentStat = {
+  githubContributions?: number;
+  leetcodeSolved?: number;
+  leetcodeSubmissions?: number;
+};
+
+const STATS = studentStats.students as Record<string, StudentStat>;
+const NUMBER = new Intl.NumberFormat("en-US");
+
+type SortKey = "roster" | "name" | "leetcode" | "contributions";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
   { key: "roster", label: "Roster" },
   { key: "name", label: "A–Z" },
   { key: "leetcode", label: "LeetCode" },
-  { key: "commits", label: "Commits" },
+  { key: "contributions", label: "Contributions" },
 ];
 
 function StudentRow({ student, index }: { student: Student; index: number }) {
@@ -33,6 +43,7 @@ function StudentRow({ student, index }: { student: Student; index: number }) {
   const accent = domain?.colorTheme.primary ?? "#818CF8";
   const accentRgb = domain?.colorTheme.rgb ?? "129, 140, 248";
   const links = PLATFORM_ORDER.filter((key) => student.links[key]);
+  const stats = STATS[student.slug] ?? {};
 
   const handleMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = rowRef.current?.getBoundingClientRect();
@@ -128,14 +139,14 @@ function StudentRow({ student, index }: { student: Student; index: number }) {
                 >
                   <Icon className="h-3.5 w-3.5" style={{ color: accent }} />
                   {meta.label}
-                  {key === "github" && student.githubCommits !== undefined && (
+                  {key === "github" && stats.githubContributions !== undefined && (
                     <span className="font-mono text-[10px] tabular-nums text-slate-500">
-                      {student.githubCommits}
+                      {NUMBER.format(stats.githubContributions)}
                     </span>
                   )}
-                  {key === "leetcode" && student.leetcodeSolved !== undefined && (
+                  {key === "leetcode" && stats.leetcodeSolved !== undefined && (
                     <span className="font-mono text-[10px] tabular-nums text-slate-500">
-                      {student.leetcodeSolved}
+                      {NUMBER.format(stats.leetcodeSolved)}
                     </span>
                   )}
                 </a>
@@ -165,12 +176,14 @@ export default function StudentsPage() {
       case "leetcode":
         return list.sort(
           (a, b) =>
-            (b.leetcodeSolved ?? -1) - (a.leetcodeSolved ?? -1) || a.name.localeCompare(b.name)
+            (STATS[b.slug]?.leetcodeSolved ?? -1) - (STATS[a.slug]?.leetcodeSolved ?? -1) ||
+            a.name.localeCompare(b.name)
         );
-      case "commits":
+      case "contributions":
         return list.sort(
           (a, b) =>
-            (b.githubCommits ?? -1) - (a.githubCommits ?? -1) || a.name.localeCompare(b.name)
+            (STATS[b.slug]?.githubContributions ?? -1) -
+              (STATS[a.slug]?.githubContributions ?? -1) || a.name.localeCompare(b.name)
         );
       default:
         return list;
@@ -241,7 +254,7 @@ export default function StudentsPage() {
 
         <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-sans text-[11px] text-slate-500">
-            Commit and LeetCode solved counts are public snapshots.
+            GitHub counts cover the last 12 months. LeetCode counts are accepted solutions.
           </p>
           <div
             role="group"

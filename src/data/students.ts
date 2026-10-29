@@ -18,8 +18,6 @@ export interface Student {
   bio?: string;
   skills?: string[];
   links: StudentLinks;
-  githubCommits?: number;
-  leetcodeSolved?: number;
   stats?: { label: string; value: string }[];
 }
 
@@ -28,7 +26,6 @@ export const STUDENTS: Student[] = [
     slug: "barath-b",
     name: "Barath B",
     year: "2023 – 2027",
-    githubCommits: 166,
     links: {
       github: "https://github.com/3DBarath",
       linkedin: "https://www.linkedin.com/in/3dbarath/",
@@ -38,7 +35,6 @@ export const STUDENTS: Student[] = [
     slug: "dhavaputhalvi-r",
     name: "Dhavaputhalvi R",
     year: "2023 – 2027",
-    githubCommits: 117,
     links: {
       portfolio:
         "https://portfolio-final-60064325153.development.catalystserverless.in/app/index.html",
@@ -51,8 +47,6 @@ export const STUDENTS: Student[] = [
     slug: "dhanusha-baskaran",
     name: "Dhanusha Baskaran",
     year: "2023 – 2027",
-    githubCommits: 137,
-    leetcodeSolved: 63,
     links: {
       portfolio: "https://dhanusha1909.github.io/Portfolio/",
       github: "https://github.com/Dhanusha1909/",
@@ -64,8 +58,6 @@ export const STUDENTS: Student[] = [
     slug: "harshavarthini-p",
     name: "Harshavarthini P",
     year: "2023 – 2027",
-    githubCommits: 45,
-    leetcodeSolved: 49,
     links: {
       portfolio: "https://harshavarthini-p-portfolio.lovable.app/",
       github: "https://github.com/harshapalanivel5",
@@ -94,7 +86,6 @@ export const STUDENTS: Student[] = [
     slug: "avandika-b-n",
     name: "Avandika B N",
     year: "2023 – 2027",
-    githubCommits: 25,
     links: {
       portfolio: "https://avandika-dev.vercel.app/",
       github: "https://github.com/Avandika-07",
@@ -105,7 +96,6 @@ export const STUDENTS: Student[] = [
     slug: "k-sangameshwari",
     name: "K. Sangameshwari",
     year: "2023 – 2027",
-    githubCommits: 10,
     links: {
       portfolio: "https://sangameshwarik-protfolio.vercel.app/",
       github: "https://github.com/sangameshwarik",
@@ -116,7 +106,6 @@ export const STUDENTS: Student[] = [
     slug: "suganya-m",
     name: "Suganya M",
     year: "2023 – 2027",
-    githubCommits: 43,
     links: {
       github: "https://github.com/suganya2307/Suganya-M",
       linkedin: "https://www.linkedin.com/in/suganya-m-b76059325",
@@ -126,8 +115,6 @@ export const STUDENTS: Student[] = [
     slug: "saravanakumar-m",
     name: "Saravanakumar M",
     year: "2023 – 2027",
-    githubCommits: 199,
-    leetcodeSolved: 174,
     domainId: "web-dev",
     links: {
       portfolio: "https://saravanawebdev.web.app",
@@ -140,8 +127,6 @@ export const STUDENTS: Student[] = [
     slug: "rifath-shifa-m",
     name: "Rifath Shifa M",
     year: "2023 – 2027",
-    githubCommits: 50,
-    leetcodeSolved: 2,
     links: {
       portfolio: "https://shifagirl-portfolio.vercel.app",
       github: "https://github.com/rifathshifa",
