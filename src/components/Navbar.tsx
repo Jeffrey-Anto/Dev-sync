@@ -84,7 +84,7 @@ export default function Navbar() {
         {/* Brand / Logo */}
         <Link href="/" className="flex items-center gap-3.5 group">
           {/* Refined Geometric Monogram */}
-          <div className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/10 to-transparent border border-white/15 flex items-center justify-center transition-all duration-300 group-hover:border-indigo-400/60 group-hover:shadow-[0_0_20px_rgba(99,102,241,0.35)]">
+          <div data-logo-slot className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/10 to-transparent border border-white/15 flex items-center justify-center transition-all duration-300 group-hover:border-indigo-400/60 group-hover:shadow-[0_0_20px_rgba(99,102,241,0.35)]">
             <span className="font-mono text-sm font-black text-indigo-300 group-hover:text-cyan-300 transition-colors">
               //
             </span>

@@ -1,5 +1,6 @@
 import React from "react";
 import Navbar from "@/components/Navbar";
+import SiteEntry from "@/components/SiteEntry";
 import HeroSection from "@/components/HeroSection";
 import StatStrip from "@/components/StatStrip";
 import DomainSelection from "@/components/DomainSelection";
@@ -15,21 +16,23 @@ export default function HomePage() {
       <Navbar />
 
       {/* Main Content Sections */}
-      <main className="flex-grow">
-        {/* Full-viewport 3D Hero — single focused animated node-graph scene */}
-        <HeroSection />
+      <SiteEntry>
+        <main className="flex-grow">
+          {/* Full-viewport 3D Hero — single focused animated node-graph scene */}
+          <HeroSection />
 
-        {/* Animated Counting-Up Stat Strip */}
-        <StatStrip />
+          {/* Animated Counting-Up Stat Strip */}
+          <StatStrip />
 
-        {/* Spatial Domain Capability Matrix */}
-        <DomainSelection />
+          {/* Spatial Domain Capability Matrix */}
+          <DomainSelection />
 
-        {/* Horizontal Scrolling Student Achievements */}
-        <AchievementSlider />
+          {/* Horizontal Scrolling Student Achievements */}
+          <AchievementSlider />
 
-        <Footer />
-      </main>
+          <Footer />
+        </main>
+      </SiteEntry>
     </div>
   );
 }
