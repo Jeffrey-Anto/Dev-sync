@@ -914,7 +914,7 @@ function WarpDomainCard({
               ✓
             </span>
             <span className="truncate">
-              <strong className="text-white">{domain.projectCount}</strong> Verified Production Systems
+              <strong className="text-white">{domain.projectCount}</strong> {domain.id === "cybersecurity" ? "Production & Demo Systems" : "Verified Production Systems"}
             </span>
           </div>
         </div>

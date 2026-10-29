@@ -142,6 +142,8 @@ export default function DomainDetailPage({ params }: PageProps) {
 
   const isUiUx = domain.id === "ui-ux";
   const isWebDev = domain.id === "web-dev";
+  const verifiedCount = domainProjects.filter((p) => !p.isDemo).length;
+  const demoCount = domainProjects.filter((p) => p.isDemo).length;
 
   return (
     <div
@@ -366,7 +368,9 @@ export default function DomainDetailPage({ params }: PageProps) {
                     : "text-xl sm:text-2xl font-black text-white"
                 }`}
               >
-                Verified Production Systems ({domainProjects.length})
+                {demoCount > 0
+                  ? `Production Systems (${verifiedCount}) & Demo Specs (${demoCount})`
+                  : `Verified Production Systems (${domainProjects.length})`}
               </h2>
               <p
                 className={`mt-1 ${
@@ -390,7 +394,7 @@ export default function DomainDetailPage({ params }: PageProps) {
                 backgroundColor: !isUiUx ? `rgba(${domain.colorTheme.rgb}, 0.12)` : undefined,
               }}
             >
-              100% PRODUCTION READY
+              {demoCount > 0 ? `${verifiedCount} VERIFIED · ${demoCount} DEMO SPEC` : "100% PRODUCTION READY"}
             </span>
           </div>
 

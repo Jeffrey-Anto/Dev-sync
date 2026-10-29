@@ -16,6 +16,7 @@ import {
   Sparkles,
   Palette,
   Coffee,
+  Lock,
 } from "lucide-react";
 import { Project, Domain } from "@/data/domains";
 
@@ -136,6 +137,15 @@ function UiUxDetailModal({
             <span className="handdrawn-box-alt bg-[#FFE600] text-black font-mono text-[11px] sm:text-xs font-black px-2.5 sm:px-3 py-0.5 sm:py-1 shadow-[2px_2px_0_#000]">
               SPEC #{project.id.toUpperCase()}
             </span>
+            {project.isDemo ? (
+              <span className="handdrawn-box-alt bg-amber-300 text-black font-mono text-[11px] sm:text-xs font-black px-2.5 sm:px-3 py-0.5 sm:py-1 shadow-[2px_2px_0_#000] border-2 border-black">
+                DEMO SPEC
+              </span>
+            ) : (
+              <span className="handdrawn-box-alt bg-emerald-300 text-black font-mono text-[11px] sm:text-xs font-black px-2.5 sm:px-3 py-0.5 sm:py-1 shadow-[2px_2px_0_#000] border-2 border-black">
+                VERIFIED REAL
+              </span>
+            )}
             <span className="hidden sm:inline-flex items-center gap-1 handdrawn-btn bg-[#00E5FF] text-black font-doodle font-bold text-xs px-2.5 py-0.5 shadow-[2px_2px_0_#000]">
               <Coffee className="w-3.5 h-3.5 text-black" />
               <span>FRESHLY POURED</span>
@@ -286,7 +296,12 @@ function UiUxDetailModal({
         </div>
 
         <div className="flex items-center gap-3">
-          {project.repoLink && (
+          {project.isPrivate ? (
+            <div className="handdrawn-btn bg-slate-100 text-slate-800 font-doodle font-bold text-sm px-4 py-2 border-2 border-black flex items-center gap-2">
+              <Lock className="w-4 h-4 text-amber-500" />
+              <span>Private Repository</span>
+            </div>
+          ) : project.repoLink ? (
             <a
               href={project.repoLink}
               target="_blank"
@@ -296,7 +311,7 @@ function UiUxDetailModal({
               <GitBranch className="w-4 h-4" />
               <span>Design Artifacts</span>
             </a>
-          )}
+          ) : null}
 
           {project.liveLink && (
             <a
@@ -383,6 +398,17 @@ function DarkDetailModal({
             <span className="text-xs font-mono text-slate-500">
               PROJECT_ID: {(project.displayId || project.id).toUpperCase()}
             </span>
+            {project.isDemo ? (
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                DEMO SPEC
+              </span>
+            ) : (
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold border border-emerald-500/30 flex items-center gap-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                VERIFIED REAL
+              </span>
+            )}
           </div>
 
           <h2 className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight">
@@ -523,7 +549,12 @@ function DarkDetailModal({
         </div>
 
         <div className="flex items-center gap-3">
-          {project.repoLink && (
+          {project.isPrivate ? (
+            <div className="px-4 py-2.5 rounded-xl text-xs font-mono text-slate-400 bg-slate-900/60 border border-white/10 flex items-center gap-2">
+              <Lock className="w-3.5 h-3.5 text-amber-400" />
+              <span>Private Repository</span>
+            </div>
+          ) : project.repoLink ? (
             <a
               href={project.repoLink}
               target="_blank"
@@ -533,7 +564,7 @@ function DarkDetailModal({
               <GitBranch className="w-4 h-4 text-cyan-400" />
               <span>Source Repository</span>
             </a>
-          )}
+          ) : null}
 
           {project.liveLink && (
             <a

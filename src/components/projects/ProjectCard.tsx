@@ -209,11 +209,23 @@ function UiUxCard({
         {/* Visual Preview Strip */}
         <div className="h-32 rounded-2xl p-4 flex flex-col justify-between relative overflow-hidden bg-gradient-to-r from-yellow-200 via-pink-200 to-cyan-200 border-2 border-black">
           <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-900">
-            <span className="flex items-center gap-1">
-              <Activity className="w-3 h-3 text-pink-600 animate-pulse" />
-              VERIFIED ARCHITECTURE
-            </span>
-            <span className="text-slate-800">PRODUCTION GRADE</span>
+            {project.isDemo ? (
+              <>
+                <span className="flex items-center gap-1 text-amber-800">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-600 animate-ping" />
+                  DEMO SPECIFICATION
+                </span>
+                <span className="bg-amber-300 text-black px-1.5 py-0.5 rounded border border-black text-[9px] font-mono">SAMPLE DEMO</span>
+              </>
+            ) : (
+              <>
+                <span className="flex items-center gap-1">
+                  <Activity className="w-3 h-3 text-pink-600 animate-pulse" />
+                  VERIFIED ARCHITECTURE
+                </span>
+                <span className="text-slate-800">PRODUCTION GRADE</span>
+              </>
+            )}
           </div>
           <div className="font-mono text-xs font-bold text-black bg-white/80 px-2 py-1 rounded-lg border border-black inline-block self-start shadow-[2px_2px_0_#000]">
             {project.metrics?.[0] ? (
@@ -303,11 +315,23 @@ function DarkCard({
           }}
         >
           <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-400">
-            <span className="flex items-center gap-1">
-              <Activity className="w-3 h-3 text-emerald-400 animate-pulse" />
-              VERIFIED ARCHITECTURE
-            </span>
-            <span className="text-slate-500">PRODUCTION GRADE</span>
+            {project.isDemo ? (
+              <>
+                <span className="flex items-center gap-1.5 text-amber-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  DEMO SPECIFICATION
+                </span>
+                <span className="px-1.5 py-0.5 rounded bg-amber-500/15 border border-amber-500/30 text-amber-300 text-[9px]">SAMPLE DEMO</span>
+              </>
+            ) : (
+              <>
+                <span className="flex items-center gap-1">
+                  <Activity className="w-3 h-3 text-emerald-400 animate-pulse" />
+                  VERIFIED ARCHITECTURE
+                </span>
+                <span className="text-slate-500">PRODUCTION GRADE</span>
+              </>
+            )}
           </div>
           <div className="font-mono text-xs font-bold text-white/90">
             {project.metrics?.[0] ? (
@@ -568,11 +592,23 @@ function WebDevSpiderCard({
           }}
         >
           <div className="flex items-center justify-between text-[10px] font-mono font-bold text-slate-300">
-            <span className="flex items-center gap-1 text-red-300">
-              <Activity className="w-3 h-3 text-red-400" />
-              SYSTEM ARCHITECTURE
-            </span>
-            <span className="text-cyan-400/90 font-mono">CORE MODULE</span>
+            {project.isDemo ? (
+              <>
+                <span className="flex items-center gap-1 text-amber-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  DEMO / RESERVED SLOT
+                </span>
+                <span className="text-amber-400 font-mono text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30">PENDING SUBMISSION</span>
+              </>
+            ) : (
+              <>
+                <span className="flex items-center gap-1 text-red-300">
+                  <Activity className="w-3 h-3 text-red-400" />
+                  SYSTEM ARCHITECTURE
+                </span>
+                <span className="text-cyan-400/90 font-mono">CORE MODULE</span>
+              </>
+            )}
           </div>
 
           <div className="font-mono text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-red-500/30 inline-block self-start shadow-[0_0_12px_rgba(239,68,68,0.2)]">
