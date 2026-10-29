@@ -4,149 +4,126 @@ export interface StudentLinks {
   portfolio?: string;
   github?: string;
   leetcode?: string;
+  linkedin?: string;
+  hackerrank?: string;
 }
 
 export interface Student {
   slug: string;
   name: string;
-  role: string;
-  domainId: string;
   year: string;
-  tagline: string;
-  bio: string;
-  skills: string[];
+  role?: string;
+  domainId?: string;
+  tagline?: string;
+  bio?: string;
+  skills?: string[];
   links: StudentLinks;
   stats?: { label: string; value: string }[];
 }
 
 export const STUDENTS: Student[] = [
   {
-    slug: "aravind-kumar",
-    name: "Aravind Kumar",
-    role: "Full-Stack Engineer",
+    slug: "dhavaputhalvi-r",
+    name: "Dhavaputhalvi R",
+    year: "2023 – 2027",
+    links: {
+      portfolio:
+        "https://portfolio-final-60064325153.development.catalystserverless.in/app/index.html",
+      github: "https://github.com/Dhavaputhalvi",
+      linkedin: "https://www.linkedin.com/in/dhavaputhalvi-r-2478512a6",
+      hackerrank: "https://www.hackerrank.com/profile/dhavaputhalvira1",
+    },
+  },
+  {
+    slug: "dhanusha-baskaran",
+    name: "Dhanusha Baskaran",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://dhanusha1909.github.io/Portfolio/",
+      github: "https://github.com/Dhanusha1909/",
+      leetcode: "https://leetcode.com/u/Dhanusha_Baskaran",
+      linkedin: "https://www.linkedin.com/in/dhanusha-baskaran-6bb877297/",
+    },
+  },
+  {
+    slug: "harshavarthini-p",
+    name: "Harshavarthini P",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://harshavarthini-p-portfolio.lovable.app/",
+      github: "https://github.com/harshapalanivel5",
+      leetcode: "https://leetcode.com/u/6TSGJIOdPa/",
+      linkedin: "https://www.linkedin.com/in/harshavarthini-palanivel-a729662a5",
+    },
+  },
+  {
+    slug: "nisha-s",
+    name: "Nisha S",
+    year: "2023 – 2027",
+    links: {
+      linkedin: "https://www.linkedin.com/in/nisha-s-7b6b3b199",
+    },
+  },
+  {
+    slug: "lavanya-s-v",
+    name: "Lavanya S V",
+    year: "2023 – 2027",
+    links: {
+      github: "https://github.com/lavanaya2005sv-cmd/SV-LAVANYA-",
+      linkedin: "https://www.linkedin.com/in/lavanya-s-v-30296a2a5",
+    },
+  },
+  {
+    slug: "avandika-b-n",
+    name: "Avandika B N",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://avandika-dev.vercel.app/",
+      github: "https://github.com/Avandika-07",
+      linkedin: "https://www.linkedin.com/in/avandika-b-n-9b2151299",
+    },
+  },
+  {
+    slug: "k-sangameshwari",
+    name: "K. Sangameshwari",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://sangameshwarik-protfolio.vercel.app/",
+      github: "https://github.com/sangameshwarik",
+      linkedin: "https://www.linkedin.com/in/sangameshwari-k-36aa4435a/",
+    },
+  },
+  {
+    slug: "suganya-m",
+    name: "Suganya M",
+    year: "2023 – 2027",
+    links: {
+      github: "https://github.com/suganya2307/Suganya-M",
+      linkedin: "https://www.linkedin.com/in/suganya-m-b76059325",
+    },
+  },
+  {
+    slug: "saravanakumar-m",
+    name: "Saravanakumar M",
+    year: "2023 – 2027",
     domainId: "web-dev",
-    year: "2023 – 2027",
-    tagline: "Builds fast interfaces and the systems behind them.",
-    bio: "Works across the Next.js and FastAPI boundary. Ships internal tools for campus teams, then hardens them until they survive a full semester of real traffic.",
-    skills: ["Next.js 16", "TypeScript", "FastAPI", "PostgreSQL", "Tailwind CSS v4", "Docker"],
     links: {
-      portfolio: "https://aravind.dev",
-      github: "https://github.com/aravindkumar",
-      leetcode: "https://leetcode.com/u/aravindkumar",
-    },
-    stats: [
-      { label: "Projects shipped", value: "9" },
-      { label: "LeetCode solved", value: "420" },
-      { label: "Public repos", value: "23" },
-    ],
-  },
-  {
-    slug: "meenakshi-sundaram",
-    name: "Meenakshi Sundaram",
-    role: "ML Engineer",
-    domainId: "ai-ml",
-    year: "2023 – 2027",
-    tagline: "Turns model experiments into pipelines that hold up.",
-    bio: "Fine-tunes small language models and builds retrieval pipelines with LangGraph. Careful about evaluation before anything reaches a demo.",
-    skills: ["PyTorch", "Transformers", "LangGraph", "FastAPI", "Vector Search", "Python"],
-    links: {
-      github: "https://github.com/meenakshis",
-      leetcode: "https://leetcode.com/u/meenakshis",
-    },
-    stats: [
-      { label: "LeetCode solved", value: "310" },
-      { label: "Public repos", value: "14" },
-    ],
-  },
-  {
-    slug: "priyadharshini-r",
-    name: "Priyadharshini R",
-    role: "Cloud & Platform Engineer",
-    domainId: "cloud-devops",
-    year: "2023 – 2027",
-    tagline: "Keeps deployments boring, which is the goal.",
-    bio: "Builds multi-region Kubernetes setups and CI pipelines that fail early. Writes runbooks before writing dashboards.",
-    skills: ["Kubernetes", "Terraform", "AWS", "GitHub Actions", "Prometheus", "Go"],
-    links: {
-      portfolio: "https://priyadharshini.is-a.dev",
+      portfolio: "https://saravanawebdev.web.app",
+      github: "https://github.com/Saravanaanandh",
+      leetcode: "https://leetcode.com/u/SaravanaWebDev/",
+      linkedin: "https://www.linkedin.com/in/saravanawebdev",
     },
   },
   {
-    slug: "karthik-raja",
-    name: "Karthik Raja",
-    role: "Embedded Systems Engineer",
-    domainId: "cybersecurity",
+    slug: "rifath-shifa-m",
+    name: "Rifath Shifa M",
     year: "2023 – 2027",
-    tagline: "Firmware, radios, and the odd packet capture.",
-    bio: "Works on low-power sensor nodes and the firmware that keeps them alive. Prefers a logic analyser over a debugger when things get strange.",
-    skills: ["ESP32", "Embedded C", "MQTT", "RTOS", "Wireshark", "PCB Design"],
-    links: {},
-  },
-  {
-    slug: "divya-bharathi",
-    name: "Divya Bharathi",
-    role: "Mobile Engineer",
-    domainId: "mobile-dev",
-    year: "2023 – 2027",
-    tagline: "Ships Android apps that feel native, not ported.",
-    bio: "Compose-first Android developer. Builds offline-first flows, then measures frame time until the jank is gone.",
-    skills: ["Kotlin", "Jetpack Compose", "Room", "Coroutines", "Material 3", "Flutter"],
     links: {
-      github: "https://github.com/divyabharathi",
-      portfolio: "https://divya.dev",
+      portfolio: "https://shifagirl-portfolio.vercel.app",
+      github: "https://github.com/rifathshifa",
+      leetcode: "https://leetcode.com/u/LN9MepmyDn/",
+      linkedin: "https://www.linkedin.com/in/rifathshifa/",
     },
-    stats: [
-      { label: "Apps published", value: "4" },
-      { label: "Public repos", value: "11" },
-    ],
-  },
-  {
-    slug: "sathish-kumar",
-    name: "Sathish Kumar",
-    role: "Security Analyst",
-    domainId: "cybersecurity",
-    year: "2023 – 2027",
-    tagline: "Thinks about the request nobody else sent.",
-    bio: "Runs CTFs, writes small exploit tools, and audits campus deployments for the boring mistakes that break them.",
-    skills: ["Burp Suite", "Linux", "Python", "Nmap", "Cryptography", "OWASP"],
-    links: {
-      leetcode: "https://leetcode.com/u/sathishkumar",
-    },
-    stats: [{ label: "LeetCode solved", value: "260" }],
-  },
-  {
-    slug: "nandhini-v",
-    name: "Nandhini V",
-    role: "Product Designer",
-    domainId: "ui-ux",
-    year: "2023 – 2027",
-    tagline: "Designs the screen, then argues with the spacing.",
-    bio: "Interface design with a bias toward systems: type scales, spacing tokens, and motion that explains rather than decorates.",
-    skills: ["Figma", "Design Tokens", "Motion Design", "Accessibility", "Prototyping"],
-    links: {
-      portfolio: "https://nandhini.design",
-      github: "https://github.com/nandhiniv",
-    },
-  },
-  {
-    slug: "jeevan-anand",
-    name: "Jeevan Anand",
-    role: "Distributed Systems Engineer",
-    domainId: "web-dev",
-    year: "2023 – 2027",
-    tagline: "Interested in what happens when the second node arrives.",
-    bio: "Builds service meshes, event streams, and the observability around them. Wants the failure mode documented before the feature ships.",
-    skills: ["Spring Boot", "Kafka", "Redis", "gRPC", "Netflix Eureka", "Docker"],
-    links: {
-      portfolio: "https://jeevan.dev",
-      github: "https://github.com/jeevananand",
-      leetcode: "https://leetcode.com/u/jeevananand",
-    },
-    stats: [
-      { label: "Projects shipped", value: "12" },
-      { label: "LeetCode solved", value: "540" },
-      { label: "Public repos", value: "31" },
-    ],
   },
 ];
 
@@ -172,7 +149,12 @@ export function getLinkHandle(url: string): string {
   const segments = trimmed.split("/").filter(Boolean);
   const lastSegment = segments[segments.length - 1];
   if (segments.length > 1 && lastSegment && !lastSegment.startsWith("www.")) {
-    return lastSegment;
+    return lastSegment === "index.html" ? segments[segments.length - 2] : lastSegment;
   }
   return trimmed.includes("//") ? new URL(trimmed).hostname.replace(/^www\./, "") : trimmed;
+}
+
+export function getLinkHost(url: string): string {
+  const trimmed = url.replace(/^https?:\/\//, "").replace(/^www\./, "");
+  return trimmed.split("/")[0];
 }

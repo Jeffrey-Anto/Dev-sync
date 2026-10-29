@@ -14,6 +14,8 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
+  Binary,
+  Briefcase,
   Code2,
   GitBranch,
   Globe,
@@ -27,6 +29,7 @@ import { ConstellationBackground } from "@/components/backgrounds";
 import {
   getInitials,
   getLinkHandle,
+  getLinkHost,
   getStudentDomain,
   type Student,
   type StudentLinks,
@@ -56,9 +59,27 @@ const PLATFORMS: Record<
     cta: "Open LeetCode",
     icon: Code2,
   },
+  linkedin: {
+    label: "LinkedIn",
+    blurb: "Professional profile, internships, and the working network.",
+    cta: "Open LinkedIn",
+    icon: Briefcase,
+  },
+  hackerrank: {
+    label: "HackerRank",
+    blurb: "Practice tracks, certifications, and challenge results.",
+    cta: "Open HackerRank",
+    icon: Binary,
+  },
 };
 
-const PLATFORM_ORDER: PlatformKey[] = ["portfolio", "github", "leetcode"];
+const PLATFORM_ORDER: PlatformKey[] = [
+  "portfolio",
+  "github",
+  "leetcode",
+  "linkedin",
+  "hackerrank",
+];
 
 const BARCODE_WIDTHS = [3, 1, 2, 1, 4, 1, 2, 3, 1, 1, 3, 2, 1, 4, 2, 1, 2, 1, 3, 1, 2, 4, 1, 2];
 
@@ -196,7 +217,7 @@ function IdentityCard({ student, accent, accentRgb }: { student: Student; accent
         <div className="relative z-10 mt-7 text-center">
           <h2 className="text-2xl font-black tracking-tight text-white">{student.name}</h2>
           <p className="mt-1.5 font-mono text-[11px] uppercase tracking-[0.2em] text-slate-400">
-            {student.role}
+            {student.role ?? "CSE · Batch 2027"}
           </p>
         </div>
 
@@ -224,7 +245,7 @@ function IdentityCard({ student, accent, accentRgb }: { student: Student; accent
               Profiles listed
             </div>
             <div className="mt-1 font-mono text-xs text-slate-300">
-              {available.length > 0 ? `${available.length} / 3 public` : "On request"}
+              {available.length > 0 ? `${available.length} / 5 public` : "On request"}
             </div>
           </div>
           <div aria-hidden className="flex h-8 items-end gap-[3px] opacity-70">
@@ -258,7 +279,7 @@ function IdentityCard({ student, accent, accentRgb }: { student: Student; accent
         animate={reduce ? undefined : { y: [0, 7, 0] }}
         transition={{ duration: 5.2, repeat: Infinity, ease: "easeInOut" }}
       >
-        CSE / {student.domainId.toUpperCase()}
+        {student.domainId ? `CSE / ${student.domainId.toUpperCase()}` : "CSE / BATCH '27"}
       </motion.div>
     </div>
   );
@@ -333,7 +354,7 @@ function PlatformCard({ platform, url, accent, accentRgb }: {
         <div className="mt-1 flex items-baseline gap-2">
           <h3 className="text-xl font-bold tracking-tight text-white">{meta.label}</h3>
           <span className="truncate font-mono text-xs text-slate-400">
-            {platform === "portfolio" ? getLinkHandle(url) : `@${getLinkHandle(url)}`}
+            {platform === "portfolio" ? getLinkHost(url) : `@${getLinkHandle(url)}`}
           </span>
         </div>
         <p className="mt-2 font-sans text-sm leading-relaxed text-slate-400">{meta.blurb}</p>
@@ -419,42 +440,48 @@ export default function StudentProfile({ student }: { student: Student }) {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-4 font-mono text-xs uppercase tracking-[0.24em] text-slate-400 sm:text-sm"
             >
-              {student.role}
+              {student.role ?? "CSE · Batch 2027"}
             </motion.p>
 
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.28 }}
-              className="mt-6 max-w-xl font-sans text-base leading-relaxed text-slate-300 sm:text-lg"
-            >
-              {student.tagline}
-            </motion.p>
+            {student.tagline && (
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.28 }}
+                className="mt-6 max-w-xl font-sans text-base leading-relaxed text-slate-300 sm:text-lg"
+              >
+                {student.tagline}
+              </motion.p>
+            )}
 
-            <motion.p
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.36 }}
-              className="mt-3 max-w-xl font-sans text-sm leading-relaxed text-slate-400"
-            >
-              {student.bio}
-            </motion.p>
+            {student.bio && (
+              <motion.p
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.6, delay: 0.36 }}
+                className="mt-3 max-w-xl font-sans text-sm leading-relaxed text-slate-400"
+              >
+                {student.bio}
+              </motion.p>
+            )}
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.6, delay: 0.44 }}
-              className="mt-7 flex flex-wrap gap-2"
-            >
-              {student.skills.map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-slate-300 transition-colors hover:border-white/25 hover:text-white"
-                >
-                  {skill}
-                </span>
-              ))}
-            </motion.div>
+            {student.skills && student.skills.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.6, delay: 0.44 }}
+                className="mt-7 flex flex-wrap gap-2"
+              >
+                {student.skills.map((skill) => (
+                  <span
+                    key={skill}
+                    className="rounded-lg border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[11px] text-slate-300 transition-colors hover:border-white/25 hover:text-white"
+                  >
+                    {skill}
+                  </span>
+                ))}
+              </motion.div>
+            )}
 
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -545,7 +572,7 @@ export default function StudentProfile({ student }: { student: Student }) {
               </h2>
             </div>
             <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">
-              {available.length} of 3 platforms listed
+              {available.length} of 5 platforms listed
             </p>
           </div>
 

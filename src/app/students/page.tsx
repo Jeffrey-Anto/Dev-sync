@@ -6,6 +6,8 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   ArrowUpRight,
+  Binary,
+  Briefcase,
   Code2,
   GitBranch,
   Globe,
@@ -33,7 +35,10 @@ function StudentCard({ student, index }: { student: Student; index: number }) {
   const hasLinks =
     Boolean(student.links.portfolio) ||
     Boolean(student.links.github) ||
-    Boolean(student.links.leetcode);
+    Boolean(student.links.leetcode) ||
+    Boolean(student.links.linkedin) ||
+    Boolean(student.links.hackerrank);
+  const skills = student.skills ?? [];
 
   const handleMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = cardRef.current?.getBoundingClientRect();
@@ -114,57 +119,92 @@ function StudentCard({ student, index }: { student: Student; index: number }) {
               {student.name}
             </h3>
             <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400">
-              {student.role}
+              {student.role ?? "CSE · Batch 2027"}
             </p>
           </div>
 
-          <p className="relative z-10 mt-4 line-clamp-2 font-sans text-sm leading-relaxed text-slate-400">
-            {student.tagline}
-          </p>
+          {student.tagline && (
+            <p className="relative z-10 mt-4 line-clamp-2 font-sans text-sm leading-relaxed text-slate-400">
+              {student.tagline}
+            </p>
+          )}
 
-          <div className="relative z-10 mt-5 mb-6 flex flex-wrap gap-1.5">
-            {student.skills.slice(0, 3).map((skill) => (
+          {skills.length > 0 && (
+            <div className="relative z-10 mt-5 mb-6 flex flex-wrap gap-1.5">
+              {skills.slice(0, 3).map((skill) => (
+                <span
+                  key={skill}
+                  className="rounded-md border border-white/[0.07] bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-slate-400"
+                >
+                  {skill}
+                </span>
+              ))}
+              {skills.length > 3 && (
+                <span className="rounded-md px-1.5 py-0.5 font-mono text-[10px] text-slate-500">
+                  +{skills.length - 3}
+                </span>
+              )}
+            </div>
+          )}
+
+          <div
+            className={`relative z-10 mt-auto flex items-center gap-3 border-t border-white/[0.06] pt-4 ${
+              domain ? "justify-between" : "justify-end"
+            }`}
+          >
+            {domain && (
               <span
-                key={skill}
-                className="rounded-md border border-white/[0.07] bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-slate-400"
+                className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider"
+                style={{
+                  borderColor: `rgba(${accentRgb}, 0.28)`,
+                  backgroundColor: `rgba(${accentRgb}, 0.08)`,
+                  color: accent,
+                }}
               >
-                {skill}
-              </span>
-            ))}
-            {student.skills.length > 3 && (
-              <span className="rounded-md px-1.5 py-0.5 font-mono text-[10px] text-slate-500">
-                +{student.skills.length - 3}
+                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accent }} />
+                {domain.shortName}
               </span>
             )}
-          </div>
-
-          <div className="relative z-10 mt-auto flex items-center justify-between gap-3 border-t border-white/[0.06] pt-4">
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider"
-              style={{
-                borderColor: `rgba(${accentRgb}, 0.28)`,
-                backgroundColor: `rgba(${accentRgb}, 0.08)`,
-                color: accent,
-              }}
-            >
-              <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accent }} />
-              {domain?.shortName ?? "CSE"}
-            </span>
 
             <div className="flex items-center gap-1.5 text-slate-500">
               {student.links.portfolio && (
-                <span className="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]" title="Portfolio">
+                <span
+                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
+                  title="Portfolio"
+                >
                   <Globe className="h-3 w-3" />
                 </span>
               )}
               {student.links.github && (
-                <span className="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]" title="GitHub">
+                <span
+                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
+                  title="GitHub"
+                >
                   <GitBranch className="h-3 w-3" />
                 </span>
               )}
               {student.links.leetcode && (
-                <span className="flex h-6 w-6 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]" title="LeetCode">
+                <span
+                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
+                  title="LeetCode"
+                >
                   <Code2 className="h-3 w-3" />
+                </span>
+              )}
+              {student.links.linkedin && (
+                <span
+                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
+                  title="LinkedIn"
+                >
+                  <Briefcase className="h-3 w-3" />
+                </span>
+              )}
+              {student.links.hackerrank && (
+                <span
+                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
+                  title="HackerRank"
+                >
+                  <Binary className="h-3 w-3" />
                 </span>
               )}
               {!hasLinks && (
@@ -221,7 +261,8 @@ export default function StudentsPage() {
             className="mx-auto mt-5 max-w-2xl font-sans text-sm leading-relaxed text-slate-300 sm:text-base"
           >
             Every profile lists only what that engineer chose to make public — a portfolio, a GitHub
-            account, a LeetCode handle, or nothing at all. Open a card to see the full profile.
+            account, a LeetCode or HackerRank handle, a LinkedIn profile, or nothing at all. Open a
+            card to see the full profile.
           </motion.p>
 
           <motion.div

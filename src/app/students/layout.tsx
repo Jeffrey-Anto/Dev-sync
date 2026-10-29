@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Student Profiles — The GCES CSE 2027 Roster",
   description:
-    "Browse the GCES CSE Batch 2027 roster. Each profile lists the portfolio, GitHub, and LeetCode links that student chose to make public. Government College of Engineering Srirangam, Trichy.",
+    "Browse the GCES CSE Batch 2027 roster. Each profile lists the portfolio, GitHub, LeetCode, LinkedIn, and HackerRank links that student chose to make public. Government College of Engineering Srirangam, Trichy.",
   alternates: { canonical: "/students" },
   openGraph: {
     title: "Student Profiles — GCES CSE 2027 Collective",
