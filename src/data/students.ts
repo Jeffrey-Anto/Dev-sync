@@ -183,6 +183,19 @@ export function getLinkHandle(url: string): string {
   return trimmed.includes("//") ? new URL(trimmed).hostname.replace(/^www\./, "") : trimmed;
 }
 
+export function getGitHubAvatar(student: Student): string | undefined {
+  const github = student.links.github;
+  if (!github) return undefined;
+  try {
+    const url = new URL(github);
+    const username = url.pathname.split("/").filter(Boolean)[0];
+    if (!username) return undefined;
+    return `https://avatars.githubusercontent.com/${username}?v=4`;
+  } catch {
+    return undefined;
+  }
+}
+
 export function getLinkHost(url: string): string {
   const trimmed = url.replace(/^https?:\/\//, "").replace(/^www\./, "");
   return trimmed.split("/")[0];

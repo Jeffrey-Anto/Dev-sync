@@ -6,7 +6,7 @@ import { ArrowRight, ArrowUpRight, UserRound } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ConstellationBackground } from "@/components/backgrounds";
-import { STUDENTS, getInitials, getStudentDomain, type Student } from "@/data/students";
+import { STUDENTS, getInitials, getGitHubAvatar, getStudentDomain, type Student } from "@/data/students";
 import { PLATFORM_ORDER, PLATFORMS } from "@/components/students/platforms";
 import studentStats from "@/data/student-stats.json";
 
@@ -34,6 +34,8 @@ function StudentRow({ student }: { student: Student }) {
   const accentRgb = domain?.colorTheme.rgb ?? "129, 140, 248";
   const links = PLATFORM_ORDER.filter((key) => student.links[key]);
   const stats = STATS[student.slug] ?? {};
+  const [avatarFailed, setAvatarFailed] = useState(false);
+  const avatarUrl = getGitHubAvatar(student);
 
   return (
     <li className="group relative rounded-xl transition-colors duration-200 hover:bg-white/[0.03]">
@@ -50,14 +52,24 @@ function StudentRow({ student }: { student: Student }) {
           className="flex min-w-0 items-center gap-3.5 rounded-lg focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none"
         >
           <span
-            className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-lg border font-mono text-[13px] font-bold tracking-tight transition-transform duration-200 group-hover:scale-[1.03]"
+            className="relative flex h-11 w-11 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg border font-mono text-[13px] font-bold tracking-tight transition-transform duration-200 group-hover:scale-[1.03]"
             style={{
               background: `linear-gradient(145deg, rgba(${accentRgb}, 0.16), rgba(${accentRgb}, 0.03))`,
               borderColor: `rgba(${accentRgb}, 0.28)`,
               color: accent,
             }}
           >
-            {getInitials(student.name)}
+            {avatarUrl && !avatarFailed ? (
+              <img
+                src={avatarUrl}
+                alt={`${student.name} GitHub avatar`}
+                className="h-full w-full object-cover"
+                loading="lazy"
+                onError={() => setAvatarFailed(true)}
+              />
+            ) : (
+              getInitials(student.name)
+            )}
           </span>
 
           <span className="min-w-0">

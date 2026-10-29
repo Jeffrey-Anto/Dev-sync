@@ -23,6 +23,7 @@ import Footer from "@/components/Footer";
 import { ConstellationBackground } from "@/components/backgrounds";
 import {
   getInitials,
+  getGitHubAvatar,
   getLinkHandle,
   getLinkHost,
   getStudentDomain,
@@ -69,6 +70,8 @@ function IdentityCard({ student, accent, accentRgb }: { student: Student; accent
   const rotateY = useSpring(useTransform(px, [-0.5, 0.5], [-11, 11]), { stiffness: 140, damping: 18 });
 
   const available = PLATFORM_ORDER.filter((key) => student.links[key]);
+  const [avatarFailed, setAvatarFailed] = useState(false);
+  const avatarUrl = getGitHubAvatar(student);
 
   const handleMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (reduce) return;
@@ -150,7 +153,7 @@ function IdentityCard({ student, accent, accentRgb }: { student: Student; accent
               transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
             />
             <div
-              className="flex h-24 w-24 items-center justify-center rounded-3xl border font-mono text-4xl font-black tracking-tight"
+              className="flex h-24 w-24 items-center justify-center overflow-hidden rounded-3xl border font-mono text-4xl font-black tracking-tight"
               style={{
                 background: `linear-gradient(150deg, rgba(${accentRgb}, 0.28), rgba(${accentRgb}, 0.05))`,
                 borderColor: `rgba(${accentRgb}, 0.4)`,
@@ -158,7 +161,17 @@ function IdentityCard({ student, accent, accentRgb }: { student: Student; accent
                 textShadow: `0 0 30px rgba(${accentRgb}, 0.5)`,
               }}
             >
-              {getInitials(student.name)}
+              {avatarUrl && !avatarFailed ? (
+                <img
+                  src={avatarUrl}
+                  alt={`${student.name} GitHub avatar`}
+                  className="h-full w-full object-cover"
+                  loading="eager"
+                  onError={() => setAvatarFailed(true)}
+                />
+              ) : (
+                getInitials(student.name)
+              )}
             </div>
           </div>
         </div>
