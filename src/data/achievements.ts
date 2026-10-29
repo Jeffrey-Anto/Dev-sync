@@ -20,6 +20,24 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
   {
     id: "ach-1",
     indexStr: "01",
+    tag: "TOP 100 NATIONWIDE",
+    tagType: "hackathon",
+    tagColor: {
+      bg: "bg-purple-500/10",
+      text: "text-purple-400",
+      border: "border-purple-500/30",
+    },
+    title: "Niral Thiruvizha 3.0 — Grand Finale",
+    subTitle: "Top 100 Out of 24,411 Registered Teams",
+    description:
+      "Both teams selected among the Top 100 out of 24,411 registered teams and participated in the Grand Finale.",
+    institution: "GCE SRIRANGAM",
+    accentColor: "#A855F7",
+    gradientTheme: "from-purple-950/40 via-slate-900/60 to-black/80",
+  },
+  {
+    id: "ach-2",
+    indexStr: "02",
     tag: "OVERALL CHAMPIONS (2X)",
     tagType: "trophy",
     tagColor: {
@@ -36,8 +54,8 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     gradientTheme: "from-amber-950/40 via-slate-900/60 to-black/80",
   },
   {
-    id: "ach-2",
-    indexStr: "02",
+    id: "ach-3",
+    indexStr: "03",
     tag: "NATIONAL 1ST PRIZE",
     tagType: "prize",
     tagColor: {
@@ -52,24 +70,6 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#10B981",
     gradientTheme: "from-emerald-950/40 via-slate-900/60 to-black/80",
-  },
-  {
-    id: "ach-3",
-    indexStr: "03",
-    tag: "TOP 500 NATIONWIDE",
-    tagType: "hackathon",
-    tagColor: {
-      bg: "bg-purple-500/10",
-      text: "text-purple-400",
-      border: "border-purple-500/30",
-    },
-    title: "Top 500 Finalists — Niral Thiruvizha 2026",
-    subTitle: "Selected Out of 24,411 Registered Teams",
-    description:
-      "Two student teams selected among the Top 500 out of 24,411 registered teams at Niral Thiruvizha 2026.",
-    institution: "GCE SRIRANGAM",
-    accentColor: "#A855F7",
-    gradientTheme: "from-purple-950/40 via-slate-900/60 to-black/80",
   },
   {
     id: "ach-4",

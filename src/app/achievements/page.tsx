@@ -31,6 +31,15 @@ interface AchievementMilestone {
 
 const milestones: AchievementMilestone[] = [
   {
+    years: ["2026"],
+    title: "Niral Thiruvizha 3.0 — Grand Finale",
+    category: "Hackathon",
+    description:
+      "Both teams selected among the Top 100 out of 24,411 registered teams and participated in the Grand Finale.",
+    metric: "Top 100 / 24,411 Teams",
+    badgeColor: "text-purple-400 border-purple-500/30 bg-purple-500/10",
+  },
+  {
     years: ["2025", "2026"],
     title: "Two-Time Overall Champions at GCT Coimbatore",
     category: "Hackathon",
@@ -47,15 +56,6 @@ const milestones: AchievementMilestone[] = [
       "First Prize at Cipher Lab AI, a National-Level Hackathon, secured by CSE students.",
     metric: "1st Prize Winner",
     badgeColor: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
-  },
-  {
-    years: ["2026"],
-    title: "Top 500 Finalists at Niral Thiruvizha 2026",
-    category: "Hackathon",
-    description:
-      "Two student teams selected among the Top 500 out of 24,411 registered teams at Niral Thiruvizha 2026.",
-    metric: "Top 500 / 24,411 Teams",
-    badgeColor: "text-purple-400 border-purple-500/30 bg-purple-500/10",
   },
   {
     years: ["2026"],
@@ -107,22 +107,22 @@ interface SummaryCardItem {
 
 const summaryCards: SummaryCardItem[] = [
   {
-    name: "Generative AI Workshop (GUVI & HCL)",
+    name: "Niral Thiruvizha 3.0 — Grand Finale",
     count: "2026",
-    glowRgb: "236, 72, 153",
-    color: "text-pink-400",
-    bg: "from-pink-500/15 via-pink-950/20 to-transparent",
-    border: "border-pink-500/30 hover:border-pink-400",
-    icon: Brain,
+    glowRgb: "168, 85, 247",
+    color: "text-purple-400",
+    bg: "from-purple-500/15 via-purple-950/20 to-transparent",
+    border: "border-purple-500/30 hover:border-purple-400",
+    icon: Trophy,
   },
   {
-    name: "Oracle Java Learning Program",
-    count: "2025",
-    glowRgb: "244, 63, 94",
-    color: "text-rose-400",
-    bg: "from-rose-500/15 via-rose-950/20 to-transparent",
-    border: "border-rose-500/30 hover:border-rose-400",
-    icon: Code2,
+    name: "GCT Coimbatore Overall Trophy",
+    count: "2025 & 2026",
+    glowRgb: "245, 158, 11",
+    color: "text-amber-400",
+    bg: "from-amber-500/15 via-amber-950/20 to-transparent",
+    border: "border-amber-500/30 hover:border-amber-400",
+    icon: Trophy,
   },
   {
     name: "Cipher Lab AI National Hackathon",
@@ -134,13 +134,13 @@ const summaryCards: SummaryCardItem[] = [
     icon: Cpu,
   },
   {
-    name: "GCT Coimbatore Overall Trophy",
-    count: "2025 & 2026",
-    glowRgb: "245, 158, 11",
-    color: "text-amber-400",
-    bg: "from-amber-500/15 via-amber-950/20 to-transparent",
-    border: "border-amber-500/30 hover:border-amber-400",
-    icon: Trophy,
+    name: "Generative AI Workshop (GUVI & HCL)",
+    count: "2026",
+    glowRgb: "236, 72, 153",
+    color: "text-pink-400",
+    bg: "from-pink-500/15 via-pink-950/20 to-transparent",
+    border: "border-pink-500/30 hover:border-pink-400",
+    icon: Brain,
   },
 ];
 
@@ -283,6 +283,21 @@ export default function AchievementsPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-purple-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-purple-400 transition-all"
+          >
+            <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-400 w-fit mb-4">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">Top 100</div>
+            <div className="text-sm font-semibold text-purple-300 mt-1">Niral Thiruvizha 3.0</div>
+            <div className="text-xs text-slate-400 mt-1 font-mono">Both teams in Grand Finale (out of 24,411)</div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.1 }}
             className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-amber-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-amber-400 transition-all"
           >
             <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-400 w-fit mb-4">
@@ -297,7 +312,7 @@ export default function AchievementsPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
+            transition={{ delay: 0.2 }}
             className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-emerald-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-emerald-400 transition-all"
           >
             <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 w-fit mb-4">
@@ -306,21 +321,6 @@ export default function AchievementsPage() {
             <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">1st Prize</div>
             <div className="text-sm font-semibold text-emerald-300 mt-1">Cipher Lab AI Hackathon</div>
             <div className="text-xs text-slate-400 mt-1 font-mono">National-level Hackathon (2026)</div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-purple-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-purple-400 transition-all"
-          >
-            <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-400 w-fit mb-4">
-              <ShieldCheck className="w-6 h-6" />
-            </div>
-            <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">Top 500</div>
-            <div className="text-sm font-semibold text-purple-300 mt-1">Niral Thiruvizha 2026</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">2 teams out of 24,411 registered</div>
           </motion.div>
 
           <motion.div
