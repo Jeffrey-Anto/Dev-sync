@@ -28,6 +28,7 @@ export const STUDENTS: Student[] = [
     year: "2023 – 2027",
     links: {
       github: "https://github.com/3DBarath",
+      leetcode: "https://leetcode.com/u/LpkxOUY2H3/",
       linkedin: "https://www.linkedin.com/in/3dbarath/",
     },
   },
@@ -78,7 +79,7 @@ export const STUDENTS: Student[] = [
     name: "Lavanya S V",
     year: "2023 – 2027",
     links: {
-      github: "https://github.com/lavanaya2005sv-cmd/SV-LAVANYA-",
+      github: "https://github.com/Lavanya2005-SV",
       linkedin: "https://www.linkedin.com/in/lavanya-s-v-30296a2a5",
     },
   },
@@ -132,6 +133,16 @@ export const STUDENTS: Student[] = [
       github: "https://github.com/rifathshifa",
       leetcode: "https://leetcode.com/u/LN9MepmyDn/",
       linkedin: "https://www.linkedin.com/in/rifathshifa/",
+    },
+  },
+  {
+    slug: "nanthana-s",
+    name: "Nanthana S",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://nanthana2311.github.io/",
+      github: "https://github.com/Nanthana2311",
+      linkedin: "https://www.linkedin.com/in/nanthana-sengather-122a1b2a5",
     },
   },
 ];

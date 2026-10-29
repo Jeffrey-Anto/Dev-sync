@@ -21,6 +21,14 @@ for (const block of blocks) {
 
 const pause = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
+let previous = {};
+try {
+  const existing = await readFile(path.join(root, "src/data/student-stats.json"), "utf8");
+  previous = JSON.parse(existing)?.students ?? {};
+} catch {
+  previous = {};
+}
+
 const LEETCODE_QUERY = `query userStats($u: String!) {
   matchedUser(username: $u) {
     submitStatsGlobal {
@@ -33,7 +41,7 @@ const LEETCODE_QUERY = `query userStats($u: String!) {
 const stats = {};
 
 for (const student of roster) {
-  const entry = {};
+  const entry = { ...(previous[student.slug] ?? {}) };
 
   if (student.github) {
     try {
@@ -47,7 +55,7 @@ for (const student of roster) {
         }
       }
     } catch {
-      console.warn(`github failed: ${student.slug}`);
+      console.warn(`github failed, kept previous: ${student.slug}`);
     }
     await pause(400);
   }
@@ -66,7 +74,7 @@ for (const student of roster) {
       if (typeof solved === "number") entry.leetcodeSolved = solved;
       if (typeof submissions === "number") entry.leetcodeSubmissions = submissions;
     } catch {
-      console.warn(`leetcode failed: ${student.slug}`);
+      console.warn(`leetcode failed, kept previous: ${student.slug}`);
     }
     await pause(900);
   }
