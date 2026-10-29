@@ -40,3 +40,5 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 localhost_2026-08-20_23-35-52.html
+PageSpeed Insights*
+.opencode/
