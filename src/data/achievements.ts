@@ -14,6 +14,7 @@ export interface StudentAchievement {
   institution: string;
   accentColor: string;
   gradientTheme: string;
+  imageUrl?: string;
 }
 
 export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
@@ -34,6 +35,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#A855F7",
     gradientTheme: "from-purple-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/niral-thiruvizha.jpg",
   },
   {
     id: "ach-2",
@@ -52,6 +54,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#F59E0B",
     gradientTheme: "from-amber-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/gct-champions.jpg",
   },
   {
     id: "ach-3",
@@ -106,6 +109,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#3B82F6",
     gradientTheme: "from-blue-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/campus-solutions.jpg",
   },
   {
     id: "ach-6",
@@ -142,5 +146,6 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#F43F5E",
     gradientTheme: "from-rose-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/oracle-java.jpg",
   },
 ];
