@@ -71,6 +71,7 @@ export const STUDENTS: Student[] = [
     name: "Nisha S",
     year: "2023 – 2027",
     links: {
+      github: "https://github.com/Nisha3322",
       linkedin: "https://www.linkedin.com/in/nisha-s-7b6b3b199",
     },
   },
