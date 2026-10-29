@@ -19,6 +19,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export function generateStaticParams() {
+  return DOMAINS.map((domain) => ({
+    id: domain.id,
+  }));
+}
+
 export default function Layout({ children }: { children: React.ReactNode }) {
   return children;
 }

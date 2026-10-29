@@ -1,7 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import WaterLogoEntry from "@/components/WaterLogoEntry";
+import dynamic from "next/dynamic";
+
+const WaterLogoEntry = dynamic(() => import("@/components/WaterLogoEntry"), {
+  ssr: false,
+});
 
 export default function SiteEntry({ children }: { children: React.ReactNode }) {
   const [isEntered, setIsEntered] = useState(false);

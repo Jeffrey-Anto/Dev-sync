@@ -2,6 +2,7 @@
 
 import React, { use, useState, useRef, useMemo, useEffect } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
@@ -25,13 +26,33 @@ import {
 import { DOMAINS, PROJECTS, Project } from "@/data/domains";
 import DomainBackground from "@/components/domain-themes/DomainBackground";
 import ProjectCard from "@/components/projects/ProjectCard";
-import ProjectDetailModal from "@/components/projects/ProjectDetailModal";
-import { AndroidDemo } from "@/components/domain-themes/AndroidDemo";
-import MobileDevCinematicIntro from "@/components/domain-themes/MobileDevCinematicIntro";
-import MobileStickyProjectShowcase from "@/components/domain-themes/MobileStickyProjectShowcase";
-import CoffeePourAnimation from "@/components/domain-themes/CoffeePourAnimation";
-import SpidermanWebAnimation from "@/components/domain-themes/SpidermanWebAnimation";
 import FontSelector from "@/components/FontSelector";
+
+const ProjectDetailModal = dynamic(() => import("@/components/projects/ProjectDetailModal"), {
+  ssr: false,
+});
+
+const CoffeePourAnimation = dynamic(() => import("@/components/domain-themes/CoffeePourAnimation"), {
+  ssr: false,
+});
+
+const SpidermanWebAnimation = dynamic(() => import("@/components/domain-themes/SpidermanWebAnimation"), {
+  ssr: false,
+});
+
+const MobileDevCinematicIntro = dynamic(() => import("@/components/domain-themes/MobileDevCinematicIntro"), {
+  ssr: false,
+});
+
+const MobileStickyProjectShowcase = dynamic(
+  () => import("@/components/domain-themes/MobileStickyProjectShowcase"),
+  { ssr: true }
+);
+
+const AndroidDemo = dynamic(
+  () => import("@/components/domain-themes/AndroidDemo").then((mod) => mod.AndroidDemo),
+  { ssr: false }
+);
 
 const iconMap: Record<string, React.ComponentType<{ className?: string; style?: React.CSSProperties }>> = {
   Globe,

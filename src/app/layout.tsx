@@ -181,6 +181,8 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <link rel="preconnect" href="https://cdn.simpleicons.org" crossOrigin="" />
+        <link rel="dns-prefetch" href="https://cdn.simpleicons.org" />
         <Script
           id="devsync-font-group-init"
           strategy="beforeInteractive"
