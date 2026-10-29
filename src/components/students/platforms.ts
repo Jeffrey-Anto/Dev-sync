@@ -9,7 +9,7 @@ export const PLATFORMS: Record<
     label: string;
     blurb: string;
     cta: string;
-    icon: React.ComponentType<{ className?: string }>;
+    icon: React.ComponentType<{ className?: string; style?: React.CSSProperties }>;
   }
 > = {
   portfolio: {
