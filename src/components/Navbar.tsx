@@ -17,6 +17,7 @@ export default function Navbar() {
     { label: "Home", href: "/" },
     { label: "Domains", href: "/#domains" },
     { label: "Tech Stack", href: "/tech-stack" },
+    { label: "Students", href: "/students" },
     { label: "Achievements", href: "/achievements" },
     { label: "Recruit Us", href: "/recruit" },
   ];
@@ -41,10 +42,12 @@ export default function Navbar() {
 
     if (pathname === "/tech-stack") {
       setActiveTab(2);
-    } else if (pathname === "/achievements") {
+    } else if (pathname.startsWith("/students")) {
       setActiveTab(3);
-    } else if (pathname === "/recruit") {
+    } else if (pathname === "/achievements") {
       setActiveTab(4);
+    } else if (pathname === "/recruit") {
+      setActiveTab(5);
     } else if (pathname === "/") {
       if (typeof window !== "undefined" && window.location.hash === "#domains") {
         setActiveTab(1);
@@ -104,7 +107,7 @@ export default function Navbar() {
         </Link>
 
         {/* React Bits <GooeyNav /> Navigation Effect */}
-        <div className="hidden md:block">
+        <div className="hidden xl:block">
           <GooeyNav
             items={navLinks}
             activeIndex={activeTab}
@@ -119,7 +122,7 @@ export default function Navbar() {
         </div>
 
         {/* Sleek Right Action CTA & Font Dropdown (Desktop Only) */}
-        <div className="hidden md:flex items-center gap-3">
+        <div className="hidden xl:flex items-center gap-3">
           <FontSelector />
 
           <Link
@@ -154,7 +157,7 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu Toggle Button (Mobile Top Bar) */}
-        <div className="flex md:hidden items-center">
+        <div className="flex xl:hidden items-center">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white"
@@ -167,7 +170,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
-        <div className="md:hidden px-4 pt-4 pb-6 space-y-2 border-t border-white/[0.08] bg-[#050608]/98 backdrop-blur-2xl animate-in fade-in duration-200">
+        <div className="xl:hidden px-4 pt-4 pb-6 space-y-2 border-t border-white/[0.08] bg-[#050608]/98 backdrop-blur-2xl animate-in fade-in duration-200">
           {navLinks.map((link, idx) => (
             <Link
               key={link.label}
