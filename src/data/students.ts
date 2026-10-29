@@ -23,6 +23,15 @@ export interface Student {
 
 export const STUDENTS: Student[] = [
   {
+    slug: "barath-b",
+    name: "Barath B",
+    year: "2023 – 2027",
+    links: {
+      github: "https://github.com/3DBarath",
+      linkedin: "https://www.linkedin.com/in/3dbarath/",
+    },
+  },
+  {
     slug: "dhavaputhalvi-r",
     name: "Dhavaputhalvi R",
     year: "2023 – 2027",
