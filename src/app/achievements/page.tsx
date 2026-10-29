@@ -63,6 +63,7 @@ const milestones: AchievementMilestone[] = [
       "First Prize at Cipher Lab AI, a National-Level Hackathon, secured by CSE students.",
     metric: "1st Prize Winner",
     badgeColor: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+    imageUrl: "/achievements/cipher-lab.png",
   },
   {
     years: ["2026"],
@@ -72,6 +73,7 @@ const milestones: AchievementMilestone[] = [
       "100% Internship Achievement, with every eligible student successfully securing internship opportunities.",
     metric: "100% Verified Placements",
     badgeColor: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
+    imageUrl: "/achievements/internship-achievement.jpg",
   },
   {
     years: ["2026"],
@@ -91,6 +93,7 @@ const milestones: AchievementMilestone[] = [
       "Generative AI Skillset Workshop conducted for department students in association with GUVI and HCL, strengthening their knowledge of emerging AI technologies.",
     metric: "GUVI & HCL Certified",
     badgeColor: "text-pink-400 border-pink-500/30 bg-pink-500/10",
+    imageUrl: "/achievements/genai-workshop.jpg",
   },
   {
     years: ["2025"],
@@ -369,14 +372,32 @@ export default function AchievementsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-emerald-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-emerald-400 transition-all"
+            onClick={() =>
+              setSelectedImage({
+                url: "/achievements/cipher-lab.png",
+                title: "First Prize at Cipher Lab AI National Hackathon",
+              })
+            }
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-emerald-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-emerald-400 transition-all cursor-pointer"
           >
-            <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 w-fit mb-4">
-              <Award className="w-6 h-6" />
+            {/* Subtle Photo Background Glow on hover */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+              style={{ backgroundImage: `url('/achievements/cipher-lab.png')` }}
+            />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 w-fit">
+                  <Award className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-mono text-emerald-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-emerald-950/70 px-2 py-0.5 rounded-md border border-emerald-500/30">
+                  <ZoomIn className="w-3 h-3" /> Photo
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">1st Prize</div>
+              <div className="text-sm font-semibold text-emerald-300 mt-1">Cipher Lab AI Hackathon</div>
+              <div className="text-xs text-slate-400 mt-1 font-mono">National-level Hackathon (2026)</div>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">1st Prize</div>
-            <div className="text-sm font-semibold text-emerald-300 mt-1">Cipher Lab AI Hackathon</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">National-level Hackathon (2026)</div>
           </motion.div>
 
           <motion.div
@@ -384,14 +405,32 @@ export default function AchievementsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-cyan-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-cyan-400 transition-all"
+            onClick={() =>
+              setSelectedImage({
+                url: "/achievements/internship-achievement.jpg",
+                title: "100% Cohort Internship Achievement",
+              })
+            }
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-cyan-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-cyan-400 transition-all cursor-pointer"
           >
-            <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 w-fit mb-4">
-              <Briefcase className="w-6 h-6" />
+            {/* Subtle Photo Background Glow on hover */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+              style={{ backgroundImage: `url('/achievements/internship-achievement.jpg')` }}
+            />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 w-fit">
+                  <Briefcase className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-mono text-cyan-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-cyan-950/70 px-2 py-0.5 rounded-md border border-cyan-500/30">
+                  <ZoomIn className="w-3 h-3" /> Photo
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">100%</div>
+              <div className="text-sm font-semibold text-cyan-300 mt-1">Internship Achievement</div>
+              <div className="text-xs text-slate-400 mt-1 font-mono">Every eligible student (2026)</div>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">100%</div>
-            <div className="text-sm font-semibold text-cyan-300 mt-1">Internship Achievement</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Every eligible student (2026)</div>
           </motion.div>
         </div>
 

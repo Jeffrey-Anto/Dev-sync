@@ -73,6 +73,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#10B981",
     gradientTheme: "from-emerald-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/cipher-lab.png",
   },
   {
     id: "ach-4",
@@ -91,6 +92,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#06B6D4",
     gradientTheme: "from-cyan-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/internship-achievement.jpg",
   },
   {
     id: "ach-5",
@@ -128,6 +130,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#EC4899",
     gradientTheme: "from-pink-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/genai-workshop.jpg",
   },
   {
     id: "ach-7",
