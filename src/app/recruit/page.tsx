@@ -128,8 +128,9 @@ export default function RecruiterContactPage() {
           {/* Download Placement Brochure Button with Luxury Shimmer & Aura */}
           <div className="mt-8 flex items-center justify-center">
             <a
-              href="/placement-brochure-2026.pdf"
-              download
+              href="https://gces-rg.vercel.app/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="group relative inline-flex items-center justify-center p-[2px] rounded-2xl transition-all duration-300 hover:scale-105 active:scale-[0.98] cursor-pointer"
             >
               {/* Ambient Multi-Hue Pulsing Aura */}
