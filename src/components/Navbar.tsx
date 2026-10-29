@@ -2,10 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
-import GooeyNav from "@/components/GooeyNav";
-import FontSelector from "@/components/FontSelector";
+
+const GooeyNav = dynamic(() => import("@/components/GooeyNav"), { ssr: false });
+const FontSelector = dynamic(() => import("@/components/FontSelector"), { ssr: false });
 
 export default function Navbar() {
   const pathname = usePathname();
