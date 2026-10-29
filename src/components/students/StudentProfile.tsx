@@ -14,11 +14,6 @@ import {
   ArrowLeft,
   ArrowRight,
   ArrowUpRight,
-  Binary,
-  Briefcase,
-  Code2,
-  GitBranch,
-  Globe,
   GraduationCap,
   Sparkles,
   UserRound,
@@ -32,54 +27,8 @@ import {
   getLinkHost,
   getStudentDomain,
   type Student,
-  type StudentLinks,
 } from "@/data/students";
-
-type PlatformKey = keyof StudentLinks;
-
-const PLATFORMS: Record<
-  PlatformKey,
-  { label: string; blurb: string; cta: string; icon: React.ComponentType<{ className?: string }> }
-> = {
-  portfolio: {
-    label: "Portfolio",
-    blurb: "Case studies, writing, and the work shipped end to end.",
-    cta: "Open portfolio",
-    icon: Globe,
-  },
-  github: {
-    label: "GitHub",
-    blurb: "Source, commit history, and open-source contributions.",
-    cta: "Open GitHub",
-    icon: GitBranch,
-  },
-  leetcode: {
-    label: "LeetCode",
-    blurb: "Problem-solving record and contest consistency.",
-    cta: "Open LeetCode",
-    icon: Code2,
-  },
-  linkedin: {
-    label: "LinkedIn",
-    blurb: "Professional profile, internships, and the working network.",
-    cta: "Open LinkedIn",
-    icon: Briefcase,
-  },
-  hackerrank: {
-    label: "HackerRank",
-    blurb: "Practice tracks, certifications, and challenge results.",
-    cta: "Open HackerRank",
-    icon: Binary,
-  },
-};
-
-const PLATFORM_ORDER: PlatformKey[] = [
-  "portfolio",
-  "github",
-  "leetcode",
-  "linkedin",
-  "hackerrank",
-];
+import { PLATFORM_ORDER, PLATFORMS, type PlatformKey } from "@/components/students/platforms";
 
 const BARCODE_WIDTHS = [3, 1, 2, 1, 4, 1, 2, 3, 1, 1, 3, 2, 1, 4, 2, 1, 2, 1, 3, 1, 2, 4, 1, 2];
 

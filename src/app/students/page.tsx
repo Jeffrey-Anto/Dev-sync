@@ -3,26 +3,19 @@
 import React, { useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  Binary,
-  Briefcase,
-  Code2,
-  GitBranch,
-  Globe,
-  Sparkles,
-  UserRound,
-} from "lucide-react";
+import { ArrowRight, ArrowUpRight, Sparkles, UserRound } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ConstellationBackground } from "@/components/backgrounds";
 import {
   STUDENTS,
   getInitials,
+  getLinkHandle,
+  getLinkHost,
   getStudentDomain,
   type Student,
 } from "@/data/students";
+import { PLATFORM_ORDER, PLATFORMS } from "@/components/students/platforms";
 
 function StudentCard({ student, index }: { student: Student; index: number }) {
   const cardRef = useRef<HTMLDivElement>(null);
@@ -32,13 +25,8 @@ function StudentCard({ student, index }: { student: Student; index: number }) {
   const domain = getStudentDomain(student);
   const accent = domain?.colorTheme.primary ?? "#818CF8";
   const accentRgb = domain?.colorTheme.rgb ?? "129, 140, 248";
-  const hasLinks =
-    Boolean(student.links.portfolio) ||
-    Boolean(student.links.github) ||
-    Boolean(student.links.leetcode) ||
-    Boolean(student.links.linkedin) ||
-    Boolean(student.links.hackerrank);
   const skills = student.skills ?? [];
+  const links = PLATFORM_ORDER.filter((key) => student.links[key]);
 
   const handleMove = (event: React.MouseEvent<HTMLDivElement>) => {
     const rect = cardRef.current?.getBoundingClientRect();
@@ -54,168 +42,148 @@ function StudentCard({ student, index }: { student: Student; index: number }) {
       transition={{ duration: 0.55, delay: (index % 3) * 0.08, ease: [0.22, 1, 0.36, 1] }}
       className="h-full"
     >
-      <Link
-        href={`/students/${student.slug}`}
-        aria-label={`Open profile for ${student.name}`}
-        className="group block h-full rounded-3xl outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2 focus-visible:ring-offset-[#050608]"
+      <div
+        ref={cardRef}
+        onMouseMove={handleMove}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
+        className="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0a0d15]/80 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-white/25"
+        style={{
+          boxShadow: hovered
+            ? `0 24px 60px -24px rgba(${accentRgb}, 0.45), 0 0 0 1px rgba(${accentRgb}, 0.25)`
+            : "0 12px 40px -32px rgba(0,0,0,0.9)",
+        }}
       >
-        <div
-          ref={cardRef}
-          onMouseMove={handleMove}
-          onMouseEnter={() => setHovered(true)}
-          onMouseLeave={() => setHovered(false)}
-          className="relative flex h-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-[#0a0d15]/80 p-6 backdrop-blur-xl transition-all duration-300 group-hover:-translate-y-1.5 group-hover:border-white/25"
-          style={{
-            boxShadow: hovered
-              ? `0 24px 60px -24px rgba(${accentRgb}, 0.45), 0 0 0 1px rgba(${accentRgb}, 0.25)`
-              : "0 12px 40px -32px rgba(0,0,0,0.9)",
-          }}
-        >
-          {hovered && (
-            <div
-              className="pointer-events-none absolute -inset-px"
-              style={{
-                background: `radial-gradient(320px circle at ${pointer.x}px ${pointer.y}px, rgba(${accentRgb}, 0.16), transparent 68%)`,
-              }}
-            />
-          )}
-
+        {hovered && (
           <div
-            className="pointer-events-none absolute -top-24 -right-16 h-48 w-48 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-60"
-            style={{ background: `rgba(${accentRgb}, 0.35)` }}
+            className="pointer-events-none absolute -inset-px"
+            style={{
+              background: `radial-gradient(320px circle at ${pointer.x}px ${pointer.y}px, rgba(${accentRgb}, 0.16), transparent 68%)`,
+            }}
           />
+        )}
 
-          <div className="relative z-10 flex items-start justify-between">
-            <div className="relative">
-              <div
-                className="relative flex h-16 w-16 items-center justify-center rounded-2xl border font-mono text-xl font-black tracking-tight"
-                style={{
-                  background: `linear-gradient(145deg, rgba(${accentRgb}, 0.22), rgba(${accentRgb}, 0.04))`,
-                  borderColor: `rgba(${accentRgb}, 0.35)`,
-                  color: accent,
-                }}
-              >
-                {getInitials(student.name)}
-                <span
-                  className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
-                  style={{
-                    background: `radial-gradient(circle at 30% 20%, rgba(255,255,255,0.22), transparent 60%)`,
-                  }}
-                />
-              </div>
+        <div
+          className="pointer-events-none absolute -top-24 -right-16 h-48 w-48 rounded-full opacity-0 blur-3xl transition-opacity duration-500 group-hover:opacity-60"
+          style={{ background: `rgba(${accentRgb}, 0.35)` }}
+        />
+
+        <div className="relative z-10 flex items-start justify-between">
+          <div className="relative">
+            <div
+              className="relative flex h-16 w-16 items-center justify-center rounded-2xl border font-mono text-xl font-black tracking-tight"
+              style={{
+                background: `linear-gradient(145deg, rgba(${accentRgb}, 0.22), rgba(${accentRgb}, 0.04))`,
+                borderColor: `rgba(${accentRgb}, 0.35)`,
+                color: accent,
+              }}
+            >
+              {getInitials(student.name)}
               <span
-                className="absolute -right-1 -bottom-1 h-3 w-3 rounded-full ring-2 ring-[#0a0d15]"
-                style={{ backgroundColor: accent }}
+                className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                style={{
+                  background: `radial-gradient(circle at 30% 20%, rgba(255,255,255,0.22), transparent 60%)`,
+                }}
               />
             </div>
-
-            <span className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-slate-400 transition-all duration-300 group-hover:border-white/25 group-hover:bg-white/[0.08] group-hover:text-white">
-              <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-            </span>
+            <span
+              className="absolute -right-1 -bottom-1 h-3 w-3 rounded-full ring-2 ring-[#0a0d15]"
+              style={{ backgroundColor: accent }}
+            />
           </div>
 
-          <div className="relative z-10 mt-6">
-            <h3 className="text-lg font-bold tracking-tight text-white transition-colors duration-300 group-hover:text-white">
-              {student.name}
-            </h3>
-            <p className="mt-1 font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400">
+          <Link
+            href={`/students/${student.slug}`}
+            aria-label={`Open full profile for ${student.name}`}
+            className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] text-slate-400 transition-all duration-300 hover:border-white/25 hover:bg-white/[0.08] hover:text-white focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none"
+          >
+            <ArrowUpRight className="h-4 w-4" />
+          </Link>
+        </div>
+
+        <div className="relative z-10 mt-6">
+          <h3 className="text-lg font-bold tracking-tight text-white">{student.name}</h3>
+          <div className="mt-1.5 flex flex-wrap items-center gap-2">
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] text-slate-400">
               {student.role ?? "CSE · Batch 2027"}
             </p>
-          </div>
-
-          {student.tagline && (
-            <p className="relative z-10 mt-4 line-clamp-2 font-sans text-sm leading-relaxed text-slate-400">
-              {student.tagline}
-            </p>
-          )}
-
-          {skills.length > 0 && (
-            <div className="relative z-10 mt-5 mb-6 flex flex-wrap gap-1.5">
-              {skills.slice(0, 3).map((skill) => (
-                <span
-                  key={skill}
-                  className="rounded-md border border-white/[0.07] bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-slate-400"
-                >
-                  {skill}
-                </span>
-              ))}
-              {skills.length > 3 && (
-                <span className="rounded-md px-1.5 py-0.5 font-mono text-[10px] text-slate-500">
-                  +{skills.length - 3}
-                </span>
-              )}
-            </div>
-          )}
-
-          <div
-            className={`relative z-10 mt-auto flex items-center gap-3 border-t border-white/[0.06] pt-4 ${
-              domain ? "justify-between" : "justify-end"
-            }`}
-          >
             {domain && (
               <span
-                className="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider"
+                className="inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider"
                 style={{
                   borderColor: `rgba(${accentRgb}, 0.28)`,
                   backgroundColor: `rgba(${accentRgb}, 0.08)`,
                   color: accent,
                 }}
               >
-                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accent }} />
+                <span className="h-1 w-1 rounded-full" style={{ backgroundColor: accent }} />
                 {domain.shortName}
               </span>
             )}
-
-            <div className="flex items-center gap-1.5 text-slate-500">
-              {student.links.portfolio && (
-                <span
-                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
-                  title="Portfolio"
-                >
-                  <Globe className="h-3 w-3" />
-                </span>
-              )}
-              {student.links.github && (
-                <span
-                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
-                  title="GitHub"
-                >
-                  <GitBranch className="h-3 w-3" />
-                </span>
-              )}
-              {student.links.leetcode && (
-                <span
-                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
-                  title="LeetCode"
-                >
-                  <Code2 className="h-3 w-3" />
-                </span>
-              )}
-              {student.links.linkedin && (
-                <span
-                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
-                  title="LinkedIn"
-                >
-                  <Briefcase className="h-3 w-3" />
-                </span>
-              )}
-              {student.links.hackerrank && (
-                <span
-                  className="flex h-5 w-5 items-center justify-center rounded-md border border-white/10 bg-white/[0.03]"
-                  title="HackerRank"
-                >
-                  <Binary className="h-3 w-3" />
-                </span>
-              )}
-              {!hasLinks && (
-                <span className="font-mono text-[10px] tracking-wider text-slate-600">
-                  LINKS ON REQUEST
-                </span>
-              )}
-            </div>
           </div>
         </div>
-      </Link>
+
+        {student.tagline && (
+          <p className="relative z-10 mt-4 line-clamp-2 font-sans text-sm leading-relaxed text-slate-400">
+            {student.tagline}
+          </p>
+        )}
+
+        {skills.length > 0 && (
+          <div className="relative z-10 mt-4 flex flex-wrap gap-1.5">
+            {skills.slice(0, 3).map((skill) => (
+              <span
+                key={skill}
+                className="rounded-md border border-white/[0.07] bg-white/[0.03] px-2 py-0.5 font-mono text-[10px] text-slate-400"
+              >
+                {skill}
+              </span>
+            ))}
+          </div>
+        )}
+
+        <div className="relative z-10 mt-5 space-y-1.5">
+          {links.map((key) => {
+            const meta = PLATFORMS[key];
+            const Icon = meta.icon;
+            const url = student.links[key] as string;
+            return (
+              <a
+                key={key}
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${student.name} on ${meta.label}`}
+                className="group/link flex items-center gap-2.5 rounded-xl border border-white/[0.06] bg-white/[0.02] px-2.5 py-2 transition-colors hover:border-white/20 hover:bg-white/[0.06] focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none"
+              >
+                <span
+                  className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md border"
+                  style={{
+                    borderColor: `rgba(${accentRgb}, 0.25)`,
+                    backgroundColor: `rgba(${accentRgb}, 0.08)`,
+                    color: accent,
+                  }}
+                >
+                  <Icon className="h-3 w-3" />
+                </span>
+                <span className="flex-shrink-0 text-xs font-semibold text-slate-200">
+                  {meta.label}
+                </span>
+                <span className="min-w-0 flex-1 truncate text-right font-mono text-[10px] text-slate-500">
+                  {key === "portfolio" ? getLinkHost(url) : `@${getLinkHandle(url)}`}
+                </span>
+                <ArrowUpRight className="h-3 w-3 flex-shrink-0 text-slate-600 transition-colors group-hover/link:text-white" />
+              </a>
+            );
+          })}
+
+          {links.length === 0 && (
+            <p className="rounded-xl border border-dashed border-white/10 px-3 py-3 font-sans text-xs leading-relaxed text-slate-500">
+              No public links listed. Ask the placement desk for an introduction.
+            </p>
+          )}
+        </div>
+      </div>
     </motion.div>
   );
 }
@@ -250,8 +218,7 @@ export default function StudentsPage() {
           >
             The people behind
             <br />
-            the{" "}
-            <span className="animate-aurora-text inline-block">collective</span>
+            the <span className="animate-aurora-text inline-block">collective</span>
           </motion.h1>
 
           <motion.p
@@ -260,9 +227,8 @@ export default function StudentsPage() {
             transition={{ delay: 0.2, duration: 0.6 }}
             className="mx-auto mt-5 max-w-2xl font-sans text-sm leading-relaxed text-slate-300 sm:text-base"
           >
-            Every profile lists only what that engineer chose to make public — a portfolio, a GitHub
-            account, a LeetCode or HackerRank handle, a LinkedIn profile, or nothing at all. Open a
-            card to see the full profile.
+            Every public link sits directly on the card — no extra clicks. A student may list a
+            portfolio, GitHub, LeetCode or HackerRank handle, a LinkedIn profile, or none of them.
           </motion.p>
 
           <motion.div
