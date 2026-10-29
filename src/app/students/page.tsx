@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, ArrowUpRight, UserRound } from "lucide-react";
@@ -14,6 +14,15 @@ import {
   type Student,
 } from "@/data/students";
 import { PLATFORM_ORDER, PLATFORMS } from "@/components/students/platforms";
+
+type SortKey = "roster" | "name" | "leetcode" | "commits";
+
+const SORT_OPTIONS: { key: SortKey; label: string }[] = [
+  { key: "roster", label: "Roster" },
+  { key: "name", label: "A–Z" },
+  { key: "leetcode", label: "LeetCode" },
+  { key: "commits", label: "Commits" },
+];
 
 function StudentRow({ student, index }: { student: Student; index: number }) {
   const rowRef = useRef<HTMLDivElement>(null);
@@ -33,10 +42,16 @@ function StudentRow({ student, index }: { student: Student; index: number }) {
 
   return (
     <motion.li
+      layout="position"
       initial={{ opacity: 0, y: 14 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-40px" }}
-      transition={{ duration: 0.45, delay: Math.min(index * 0.04, 0.4), ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: 0.45,
+        delay: Math.min(index * 0.04, 0.4),
+        ease: [0.22, 1, 0.36, 1],
+        layout: { duration: 0.32, ease: [0.22, 1, 0.36, 1] },
+      }}
       className="border-t border-white/[0.06] first:border-t-0"
     >
       <div
@@ -113,6 +128,16 @@ function StudentRow({ student, index }: { student: Student; index: number }) {
                 >
                   <Icon className="h-3.5 w-3.5" style={{ color: accent }} />
                   {meta.label}
+                  {key === "github" && student.githubCommits !== undefined && (
+                    <span className="font-mono text-[10px] tabular-nums text-slate-500">
+                      {student.githubCommits}
+                    </span>
+                  )}
+                  {key === "leetcode" && student.leetcodeSolved !== undefined && (
+                    <span className="font-mono text-[10px] tabular-nums text-slate-500">
+                      {student.leetcodeSolved}
+                    </span>
+                  )}
                 </a>
               );
             })}
@@ -130,6 +155,28 @@ function StudentRow({ student, index }: { student: Student; index: number }) {
 }
 
 export default function StudentsPage() {
+  const [sort, setSort] = useState<SortKey>("roster");
+
+  const sortedStudents = useMemo(() => {
+    const list = [...STUDENTS];
+    switch (sort) {
+      case "name":
+        return list.sort((a, b) => a.name.localeCompare(b.name));
+      case "leetcode":
+        return list.sort(
+          (a, b) =>
+            (b.leetcodeSolved ?? -1) - (a.leetcodeSolved ?? -1) || a.name.localeCompare(b.name)
+        );
+      case "commits":
+        return list.sort(
+          (a, b) =>
+            (b.githubCommits ?? -1) - (a.githubCommits ?? -1) || a.name.localeCompare(b.name)
+        );
+      default:
+        return list;
+    }
+  }, [sort]);
+
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#050608] text-white selection:bg-indigo-500 selection:text-white">
       <ConstellationBackground opacity={0.4} particleCount={55} maxDistance={130} />
@@ -192,6 +239,33 @@ export default function StudentsPage() {
           </motion.div>
         </div>
 
+        <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+          <p className="font-sans text-[11px] text-slate-500">
+            Commit and LeetCode solved counts are public snapshots.
+          </p>
+          <div
+            role="group"
+            aria-label="Sort roster"
+            className="flex flex-wrap items-center gap-1 self-start rounded-full border border-white/[0.08] bg-white/[0.02] p-1 sm:self-auto"
+          >
+            {SORT_OPTIONS.map((option) => (
+              <button
+                key={option.key}
+                type="button"
+                onClick={() => setSort(option.key)}
+                aria-pressed={sort === option.key}
+                className={`min-h-10 rounded-full px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:outline-none sm:min-h-0 ${
+                  sort === option.key
+                    ? "bg-white/10 text-white"
+                    : "text-slate-500 hover:text-slate-200"
+                }`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
+        </div>
+
         <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-[#080b12]/70 backdrop-blur-xl">
           <div
             aria-hidden
@@ -205,9 +279,9 @@ export default function StudentsPage() {
               Public links
             </span>
           </div>
-          {STUDENTS.length > 0 ? (
+          {sortedStudents.length > 0 ? (
             <ul>
-              {STUDENTS.map((student, index) => (
+              {sortedStudents.map((student, index) => (
                 <StudentRow key={student.slug} student={student} index={index} />
               ))}
             </ul>
