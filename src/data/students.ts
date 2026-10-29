@@ -146,6 +146,14 @@ export const STUDENTS: Student[] = [
       linkedin: "https://www.linkedin.com/in/nanthana-sengather-122a1b2a5",
     },
   },
+  {
+    slug: "dalwin",
+    name: "Dalwin",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://dalwin-protfolio.onrender.com/",
+    },
+  },
 ];
 
 export function getStudent(slug: string): Student | undefined {
