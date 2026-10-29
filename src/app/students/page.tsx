@@ -43,7 +43,7 @@ function StudentRow({ student }: { student: Student }) {
         style={{ backgroundColor: accent }}
       />
 
-      <div className="flex flex-col gap-3 px-3 py-4 sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-6 sm:px-5 sm:py-4">
+      <div className="flex flex-col gap-3 px-3 py-4 lg:grid lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-6 lg:px-5 lg:py-4">
         <Link
           href={`/students/${student.slug}`}
           aria-label={`Open full profile for ${student.name}`}
@@ -77,7 +77,7 @@ function StudentRow({ student }: { student: Student }) {
           </span>
         </Link>
 
-        <div className="flex flex-wrap items-center gap-2 sm:justify-end">
+        <div className="flex flex-wrap items-center gap-2 lg:justify-end">
           {links.map((key) => {
             const meta = PLATFORMS[key];
             const Icon = meta.icon;
