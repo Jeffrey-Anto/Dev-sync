@@ -288,7 +288,8 @@ export default function DomainSelection() {
           onTouchStart={handleTouchStart}
           onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEnd}
-          className="relative w-full h-[470px] sm:h-[550px] flex items-center justify-center perspective-[1200px] touch-pan-y"
+          className="relative w-full h-[470px] sm:h-[550px] flex items-center justify-center touch-pan-y"
+          style={{ perspective: 1200 }}
         >
           {DOMAINS.map((domain, index) => {
             const Icon = iconMap[domain.icon] || Terminal;
@@ -661,9 +662,9 @@ function WarpDomainCard({
             x: -190,
             y: 0,
             z: -50,
-            scale: 0.76,
-            rotateY: 18,
-            opacity: 0.35,
+            scale: 0.82,
+            rotateY: 12,
+            opacity: 0.7,
             zIndex: 20,
           };
         case 1:
@@ -671,9 +672,9 @@ function WarpDomainCard({
             x: 190,
             y: 0,
             z: -50,
-            scale: 0.76,
-            rotateY: -18,
-            opacity: 0.35,
+            scale: 0.82,
+            rotateY: -12,
+            opacity: 0.7,
             zIndex: 20,
           };
         case -2:
@@ -681,9 +682,9 @@ function WarpDomainCard({
             x: -330,
             y: 0,
             z: -140,
-            scale: 0.55,
-            rotateY: 26,
-            opacity: 0.1,
+            scale: 0.65,
+            rotateY: 18,
+            opacity: 0.35,
             zIndex: 10,
           };
         case 2:
@@ -691,9 +692,9 @@ function WarpDomainCard({
             x: 330,
             y: 0,
             z: -140,
-            scale: 0.55,
-            rotateY: -26,
-            opacity: 0.1,
+            scale: 0.65,
+            rotateY: -18,
+            opacity: 0.35,
             zIndex: 10,
           };
         default:
@@ -701,8 +702,8 @@ function WarpDomainCard({
             x: offset < 0 ? -480 : 480,
             y: 0,
             z: -260,
-            scale: 0.4,
-            rotateY: offset < 0 ? 35 : -35,
+            scale: 0.45,
+            rotateY: offset < 0 ? 25 : -25,
             opacity: 0,
             zIndex: 0,
           };
@@ -716,7 +717,7 @@ function WarpDomainCard({
           x: 0,
           y: 0,
           z: 80,
-          scale: 1.04,
+          scale: 1.0,
           rotateY: 0,
           opacity: 1,
           zIndex: 30,
@@ -726,9 +727,9 @@ function WarpDomainCard({
           x: -310,
           y: 0,
           z: -70,
-          scale: 0.78,
-          rotateY: 22,
-          opacity: 0.65,
+          scale: 0.85,
+          rotateY: 14,
+          opacity: 0.85,
           zIndex: 20,
         };
       case 1:
@@ -736,9 +737,9 @@ function WarpDomainCard({
           x: 310,
           y: 0,
           z: -70,
-          scale: 0.78,
-          rotateY: -22,
-          opacity: 0.65,
+          scale: 0.85,
+          rotateY: -14,
+          opacity: 0.85,
           zIndex: 20,
         };
       case -2:
@@ -746,9 +747,9 @@ function WarpDomainCard({
           x: -560,
           y: 0,
           z: -200,
-          scale: 0.62,
-          rotateY: 34,
-          opacity: 0.3,
+          scale: 0.72,
+          rotateY: 22,
+          opacity: 0.5,
           zIndex: 10,
         };
       case 2:
@@ -756,9 +757,9 @@ function WarpDomainCard({
           x: 560,
           y: 0,
           z: -200,
-          scale: 0.62,
-          rotateY: -34,
-          opacity: 0.3,
+          scale: 0.72,
+          rotateY: -22,
+          opacity: 0.5,
           zIndex: 10,
         };
       default:
@@ -766,8 +767,8 @@ function WarpDomainCard({
           x: offset < 0 ? -780 : 780,
           y: 0,
           z: -360,
-          scale: 0.45,
-          rotateY: offset < 0 ? 45 : -45,
+          scale: 0.5,
+          rotateY: offset < 0 ? 30 : -30,
           opacity: 0,
           zIndex: 0,
         };
@@ -798,34 +799,35 @@ function WarpDomainCard({
       onMouseLeave={handleMouseLeave}
       onClick={onClick}
       style={{
-        transformStyle: "preserve-3d",
         position: "absolute",
-        willChange: "transform, opacity",
-        backfaceVisibility: "hidden",
+        transformStyle: "flat",
+        backfaceVisibility: "visible",
+        WebkitFontSmoothing: "antialiased",
+        MozOsxFontSmoothing: "grayscale",
+        textRendering: "optimizeLegibility",
       }}
-      className={`w-[calc(100vw-36px)] max-w-[340px] sm:w-[410px] h-[430px] sm:h-[470px] cursor-pointer rounded-3xl select-none transition-shadow duration-300 ${
+      className={`w-[calc(100vw-36px)] max-w-[340px] sm:w-[410px] h-[430px] sm:h-[470px] cursor-pointer rounded-3xl select-none transition-shadow duration-300 antialiased ${
         isCenter ? "cursor-pointer" : "cursor-pointer hover:brightness-125"
       }`}
     >
       {/* Outer Glow Halo for Center or Hovered Card */}
       <div
         className={`absolute -inset-1 rounded-3xl transition-opacity duration-300 blur-xl pointer-events-none ${
-          isCenter ? "opacity-90" : isHovered ? "opacity-60" : "opacity-20"
+          isCenter ? "opacity-75" : isHovered ? "opacity-50" : "opacity-15"
         }`}
         style={{
           background: isCenter
-            ? `radial-gradient(circle, ${domain.colorTheme.primary} 0%, rgba(${domain.colorTheme.rgb}, 0.5) 45%, transparent 75%)`
+            ? `radial-gradient(circle, ${domain.colorTheme.primary} 0%, rgba(${domain.colorTheme.rgb}, 0.4) 45%, transparent 75%)`
             : `radial-gradient(circle at ${spotlightPos.x}% ${spotlightPos.y}%, ${domain.colorTheme.primary}, transparent 70%)`,
-          transform: "translateZ(0)",
         }}
       />
 
       {/* Main Glass Card Surface */}
       <div
-        className={`relative h-full rounded-3xl backdrop-blur-xl p-5 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
+        className={`relative h-full rounded-3xl p-5 sm:p-8 flex flex-col justify-between overflow-hidden transition-all duration-300 ${
           isCenter
-            ? "bg-[#070a13]/95 shadow-2xl"
-            : "bg-[#06080e]/90 hover:bg-[#090d18]/95"
+            ? "bg-[#070a13] shadow-2xl"
+            : "bg-[#06080e] hover:bg-[#090d18]"
         }`}
         style={{
           border: isCenter
@@ -834,11 +836,11 @@ function WarpDomainCard({
             ? `1.5px solid rgba(${domain.colorTheme.rgb}, 0.7)`
             : `1px solid rgba(${domain.colorTheme.rgb}, 0.35)`,
           boxShadow: isCenter
-            ? `0 22px 60px -10px rgba(${domain.colorTheme.rgb}, 0.6), 0 0 30px rgba(${domain.colorTheme.rgb}, 0.3), inset 0 0 20px rgba(${domain.colorTheme.rgb}, 0.15)`
+            ? `0 22px 60px -10px rgba(${domain.colorTheme.rgb}, 0.6), 0 0 25px rgba(${domain.colorTheme.rgb}, 0.25), inset 0 0 20px rgba(${domain.colorTheme.rgb}, 0.1)`
             : isHovered
-            ? `0 16px 40px -10px rgba(${domain.colorTheme.rgb}, 0.45), 0 0 20px rgba(${domain.colorTheme.rgb}, 0.2)`
+            ? `0 16px 40px -10px rgba(${domain.colorTheme.rgb}, 0.45), 0 0 15px rgba(${domain.colorTheme.rgb}, 0.15)`
             : `0 10px 30px -10px rgba(0, 0, 0, 0.8)`,
-          backgroundImage: `linear-gradient(180deg, rgba(${domain.colorTheme.rgb}, ${isCenter ? 0.16 : 0.08}) 0%, rgba(6, 8, 14, 0.95) 45%, #05070c 100%)`,
+          backgroundImage: `linear-gradient(180deg, rgba(${domain.colorTheme.rgb}, ${isCenter ? 0.16 : 0.08}) 0%, rgba(6, 8, 14, 0.98) 45%, #05070c 100%)`,
         }}
       >
         {/* Dynamic Colored Spotlight Reflection */}
@@ -856,7 +858,7 @@ function WarpDomainCard({
           <div className="flex items-start justify-end mb-3 sm:mb-5">
             <span
               className="font-mono text-xs font-bold tracking-wider"
-              style={{ color: isCenter ? domain.colorTheme.secondary : "rgba(148, 163, 184, 0.7)" }}
+              style={{ color: isCenter ? domain.colorTheme.secondary : "rgba(203, 213, 225, 0.85)" }}
             >
               0{index + 1}
             </span>
@@ -866,21 +868,23 @@ function WarpDomainCard({
           <h3
             className="text-xl sm:text-3xl font-black text-white tracking-tight leading-snug mb-2 sm:mb-3"
             style={{
-              textShadow: isCenter ? `0 0 30px ${domain.colorTheme.glow}` : "none",
+              textShadow: isCenter
+                ? `0 2px 10px rgba(0, 0, 0, 0.9), 0 0 12px ${domain.colorTheme.glow}`
+                : "0 2px 8px rgba(0, 0, 0, 0.8)",
             }}
           >
             {domain.name}
           </h3>
 
           {/* Tagline */}
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed font-sans line-clamp-2 sm:line-clamp-3">
+          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans line-clamp-2 sm:line-clamp-3">
             {domain.tagline}
           </p>
         </div>
 
         {/* Middle Feature Highlights */}
         <div className="space-y-2 py-1 sm:py-2">
-          <div className="flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-xs font-mono text-slate-200">
+          <div className="flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-xs font-mono text-slate-100">
             <span
               className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
               style={{
@@ -897,7 +901,7 @@ function WarpDomainCard({
             </span>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-xs font-mono text-slate-200">
+          <div className="flex items-center gap-2 sm:gap-2.5 text-[11px] sm:text-xs font-mono text-slate-100">
             <span
               className="w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0"
               style={{
@@ -922,7 +926,7 @@ function WarpDomainCard({
             borderTop: `1px solid rgba(${domain.colorTheme.rgb}, 0.25)`,
           }}
         >
-          <span className="text-slate-400 text-[11px] truncate max-w-[140px]">
+          <span className="text-slate-300 text-[11px] truncate max-w-[140px]">
             {domain.techStack[0]} · {domain.techStack[1]}
           </span>
 
@@ -950,7 +954,7 @@ function WarpDomainCard({
           ) : (
             <span
               className="uppercase tracking-wider text-[11px] font-semibold transition-colors"
-              style={{ color: isHovered ? domain.colorTheme.secondary : "rgba(148, 163, 184, 0.6)" }}
+              style={{ color: isHovered ? domain.colorTheme.secondary : "rgba(226, 232, 240, 0.85)" }}
             >
               CLICK TO FOCUS
             </span>
