@@ -96,7 +96,7 @@ export const STUDENTS: Student[] = [
   },
   {
     slug: "k-sangameshwari",
-    name: "K. Sangameshwari",
+    name: "Sangameshwari K",
     year: "2023 – 2027",
     links: {
       portfolio: "https://sangameshwarik-protfolio.vercel.app/",
@@ -153,6 +153,27 @@ export const STUDENTS: Student[] = [
     links: {
       portfolio: "https://dalwin-protfolio.onrender.com/",
       github: "https://github.com/DALWINRAJU",
+    },
+  },
+  {
+    slug: "dhineshkumar-j",
+    name: "Dhineshkumar J",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://portfollio-sigma-six.vercel.app",
+      github: "https://github.com/dhineshdeveloper001-sketch",
+      linkedin: "https://www.linkedin.com/in/dhineshkumar-j-5a473a419",
+      leetcode: "https://leetcode.com/u/dhineshkumar_0001/",
+    },
+  },
+  {
+    slug: "jeffrey-anto-thomas-s",
+    name: "Jeffrey Anto Thomas S",
+    year: "2023 – 2027",
+    links: {
+      github: "https://github.com/Jeffrey-Anto",
+      linkedin: "https://www.linkedin.com/in/jeffreyantothomas",
+      leetcode: "https://leetcode.com/u/Jeffrey_Anto/",
     },
   },
 ];
