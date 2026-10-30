@@ -235,92 +235,7 @@ function WebOverlay({ webs }: { webs: WebLine[] }) {
   );
 }
 
-// ─── 2.5D Horizontal Perspective Highway Track ──────────────────────────────
-function GeometricPerspectiveRoad() {
-  const seams = Array.from({ length: 26 }, (_, i) => i * 48);
-  const dashes = Array.from({ length: 18 }, (_, i) => i * 68 + 10);
-
-  return (
-    <svg
-      viewBox="0 0 1200 110"
-      preserveAspectRatio="none"
-      className="absolute inset-0 w-full h-full pointer-events-none"
-    >
-      <defs>
-        <linearGradient id="highway-asphalt" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="#080a14" />
-          <stop offset="35%" stopColor="#0f1322" />
-          <stop offset="70%" stopColor="#151b30" />
-          <stop offset="100%" stopColor="#1a223d" />
-        </linearGradient>
-
-        <linearGradient id="top-guardrail" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#ef4444" stopOpacity="0.8" />
-          <stop offset="50%" stopColor="#818cf8" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#ef4444" stopOpacity="0.8" />
-        </linearGradient>
-
-        <linearGradient id="bottom-curb" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="#06b6d4" />
-          <stop offset="50%" stopColor="#38bdf8" />
-          <stop offset="100%" stopColor="#06b6d4" />
-        </linearGradient>
-      </defs>
-
-      {/* 1. Main Asphalt Surface */}
-      <rect x="0" y="0" width="1200" height="110" fill="url(#highway-asphalt)" />
-
-      {/* 2. Longitudinal Depth Strips */}
-      <rect x="0" y="0" width="1200" height="24" fill="#000000" opacity="0.35" />
-      <line x1="0" y1="24" x2="1200" y2="24" stroke="#38bdf8" strokeWidth="0.8" opacity="0.15" />
-      <line x1="0" y1="82" x2="1200" y2="82" stroke="#38bdf8" strokeWidth="0.8" opacity="0.15" />
-
-      {/* 3. 2.5D Isometric Diagonal Asphalt Seams */}
-      {seams.map((x, idx) => (
-        <line
-          key={`seam-${idx}`}
-          x1={x + 35}
-          y1="8"
-          x2={x}
-          y2="102"
-          stroke="#38bdf8"
-          strokeWidth="1.2"
-          opacity={idx % 2 === 0 ? 0.12 : 0.06}
-        />
-      ))}
-
-      {/* 4. Horizontal Center Lane Dashes */}
-      {dashes.map((dx, idx) => (
-        <g key={`dash-${idx}`}>
-          <polygon
-            points={`${dx},52 ${dx + 42},52 ${dx + 38},56 ${dx - 4},56`}
-            fill="#fbbf24"
-            opacity="0.85"
-          />
-          <line
-            x1={dx - 4}
-            y1="54"
-            x2={dx + 42}
-            y2="54"
-            stroke="#f59e0b"
-            strokeWidth="3"
-            opacity="0.3"
-          />
-        </g>
-      ))}
-
-      {/* 5. Top Far Guardrail */}
-      <rect x="0" y="0" width="1200" height="6" fill="url(#top-guardrail)" />
-      <line x1="0" y1="6" x2="1200" y2="6" stroke="#000000" strokeWidth="1.5" opacity="0.8" />
-      <line x1="0" y1="8" x2="1200" y2="8" stroke="#ffffff" strokeWidth="0.5" opacity="0.4" />
-
-      {/* 6. Bottom Near Curb */}
-      <rect x="0" y="102" width="1200" height="8" fill="url(#bottom-curb)" />
-      <line x1="0" y1="102" x2="1200" y2="102" stroke="#ffffff" strokeWidth="1.2" opacity="0.8" />
-      <line x1="0" y1="110" x2="1200" y2="110" stroke="#083344" strokeWidth="2" opacity="0.9" />
-    </svg>
-  );
-}
+// ─── Swing lane (invisible anchor for the sprite and the scroll trigger) ────
 
 export default function SpidermanWebAnimation({
   onTriggerSwing,
@@ -338,7 +253,7 @@ export default function SpidermanWebAnimation({
   const [revealedCount, setRevealedCount] = useState(0);
   const [activeWebs, setActiveWebs] = useState<WebLine[]>([]);
   const [frame, setFrame] = useState(0);
-  const [statusText, setStatusText] = useState("Scroll here — Spidey executes his full hero move combo!");
+  const [statusText, setStatusText] = useState("Spidey is on standby — press START HERO COMBO!");
 
   // Hide all cards initially on mount / show initial hanging 3D silk cocoons
   const hideAllCards = useCallback(() => {
@@ -692,10 +607,11 @@ export default function SpidermanWebAnimation({
   // ScrollTrigger auto-activation
   useEffect(() => {
     if (!roadTrackRef.current) return;
+    const road = roadTrackRef.current;
     const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: roadTrackRef.current,
-        start: "top 85%",
+      const st = ScrollTrigger.create({
+        trigger: road.closest("section") ?? road,
+        start: "top 70%",
         once: true,
         onEnter: () => {
           if (hasRunRef.current) return;
@@ -705,6 +621,7 @@ export default function SpidermanWebAnimation({
           );
         },
       });
+      (window as unknown as { __st?: ScrollTrigger }).__st = st;
     });
     return () => ctx.revert();
   }, [runSequence]);
@@ -726,24 +643,17 @@ export default function SpidermanWebAnimation({
       {/* Full-screen SVG Web Overlay */}
       <WebOverlay webs={activeWebs} />
 
-      {/* ─── 2.5D Horizontal Perspective Highway Track ─── */}
+      {/* ─── Swing lane ─── */}
       <div
         ref={roadTrackRef}
         className="relative w-full h-24 sm:h-28 flex items-center overflow-visible"
       >
-        {/* Background Asphalt Road Surface (Clipped nicely to rounded pill) */}
-        <div className="absolute inset-0 w-full h-full rounded-2xl border border-indigo-500/30 overflow-hidden shadow-[0_15px_40px_rgba(0,0,0,0.9),inset_0_1px_3px_rgba(255,255,255,0.1)] pointer-events-none">
-          <GeometricPerspectiveRoad />
-        </div>
-
         {/* ─── Spiderman Authentic Retro Game Sprite (Full Unclipped Z-Layer) ─── */}
         <div
           ref={runnerRef}
           className="absolute bottom-3 pointer-events-none z-30 overflow-visible"
           style={{ opacity: 0, transformOrigin: "center center" }}
         >
-          {/* Ground Contact Shadow */}
-          <div className="absolute bottom-1 left-1/2 -translate-x-1/2 w-16 h-3.5 bg-black/80 rounded-full blur-[2px] pointer-events-none" />
           <SpiderManSprite frameIndex={frame} action={actionState} />
         </div>
       </div>
@@ -757,7 +667,7 @@ export default function SpidermanWebAnimation({
               ? "All projects pulled down & revealed! 🕸️✨"
               : isRunning
                 ? statusText
-                : "Scroll here — Spidey executes his full hero move combo!"}
+                : "Spidey is on standby — press START HERO COMBO!"}
           </span>
         </div>
 
