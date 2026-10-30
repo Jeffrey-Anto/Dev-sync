@@ -18,10 +18,9 @@ type StudentStat = {
 const STATS = studentStats.students as Record<string, StudentStat>;
 const NUMBER = new Intl.NumberFormat("en-US");
 
-type SortKey = "roster" | "name" | "leetcode" | "contributions";
+type SortKey = "name" | "leetcode" | "contributions";
 
 const SORT_OPTIONS: { key: SortKey; label: string }[] = [
-  { key: "roster", label: "Roster" },
   { key: "name", label: "A–Z" },
   { key: "leetcode", label: "LeetCode" },
   { key: "contributions", label: "GitHub" },
@@ -128,7 +127,7 @@ function StudentRow({ student }: { student: Student }) {
 }
 
 export default function StudentsPage() {
-  const [sort, setSort] = useState<SortKey>("roster");
+  const [sort, setSort] = useState<SortKey>("name");
 
   const sortedStudents = useMemo(() => {
     const list = [...STUDENTS];
