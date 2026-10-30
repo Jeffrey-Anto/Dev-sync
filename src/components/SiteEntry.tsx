@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WaterLogoEntry from "@/components/WaterLogoEntry";
+import { setMotionPaused } from "@/lib/motion-pause";
 
 export default function SiteEntry({ children }: { children: React.ReactNode }) {
   const [isEntered, setIsEntered] = useState(() => {
@@ -10,6 +11,13 @@ export default function SiteEntry({ children }: { children: React.ReactNode }) {
     }
     return false;
   });
+
+  // The entry overlay is opaque. Freeze the page animations until it lifts so
+  // the 25px blur below only re-rasterises a static frame.
+  useEffect(() => {
+    setMotionPaused(!isEntered);
+    return () => setMotionPaused(false);
+  }, [isEntered]);
 
   const handleEnter = () => {
     setIsEntered(true);

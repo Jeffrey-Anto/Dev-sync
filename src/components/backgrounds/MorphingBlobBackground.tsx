@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef } from "react";
+import { isMotionPaused } from "@/lib/motion-pause";
 
 // --- Configuration ---
 
@@ -309,6 +310,7 @@ export default function MorphingBlobBackground({ className = "" }: { className?:
 
   const mouseTargetRef = useRef({ x: 50, y: 50, active: false });
   const mouseCurrentRef = useRef({ x: 50, y: 50 });
+  const hueRef = useRef<{ [clusterId: string]: number }>({});
 
   const clusterData = useMemo(() => {
     return CLUSTERS.map((cluster) => {
@@ -478,12 +480,18 @@ export default function MorphingBlobBackground({ className = "" }: { className?:
         });
 
         // 3. Update single cohesive iridescent hue
+        // Hue drifts ~5 deg/s, so 1 deg steps are invisible but skip most
+        // gradient invalidations.
         const curHue = (((c.hue + t * c.hueSpeed) % 360) + 360) % 360;
-        const stops = stopRefs.current[c.id];
-        if (stops) {
-          stops.stop0?.setAttribute("stop-color", `hsl(${curHue}, 96%, 66%)`);
-          stops.stop1?.setAttribute("stop-color", `hsl(${curHue}, 90%, 48%)`);
-          stops.stop2?.setAttribute("stop-color", `hsl(${curHue}, 94%, 28%)`);
+        const lastHue = hueRef.current[c.id];
+        if (lastHue === undefined || Math.abs(curHue - lastHue) >= 1) {
+          const stops = stopRefs.current[c.id];
+          if (stops) {
+            stops.stop0?.setAttribute("stop-color", `hsl(${curHue}, 96%, 66%)`);
+            stops.stop1?.setAttribute("stop-color", `hsl(${curHue}, 90%, 48%)`);
+            stops.stop2?.setAttribute("stop-color", `hsl(${curHue}, 94%, 28%)`);
+          }
+          hueRef.current[c.id] = curHue;
         }
       });
     };
@@ -500,6 +508,10 @@ export default function MorphingBlobBackground({ className = "" }: { className?:
     const startTime = performance.now();
     const tick = () => {
       if (!isVisible) return;
+      if (isMotionPaused()) {
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
       const elapsed = (performance.now() - startTime) / 1000;
       renderFrame(elapsed);
       rafId = requestAnimationFrame(tick);
@@ -593,7 +605,9 @@ export default function MorphingBlobBackground({ className = "" }: { className?:
             >
               <stop
                 ref={(el) => {
-                  if (!stopRefs.current[c.id]) stopRefs.current[c.id] = {} as any;
+                  if (!stopRefs.current[c.id]) {
+                    stopRefs.current[c.id] = { stop0: null, stop1: null, stop2: null };
+                  }
                   stopRefs.current[c.id].stop0 = el;
                 }}
                 offset="0%"
@@ -602,7 +616,9 @@ export default function MorphingBlobBackground({ className = "" }: { className?:
               />
               <stop
                 ref={(el) => {
-                  if (!stopRefs.current[c.id]) stopRefs.current[c.id] = {} as any;
+                  if (!stopRefs.current[c.id]) {
+                    stopRefs.current[c.id] = { stop0: null, stop1: null, stop2: null };
+                  }
                   stopRefs.current[c.id].stop1 = el;
                 }}
                 offset="55%"
@@ -611,7 +627,9 @@ export default function MorphingBlobBackground({ className = "" }: { className?:
               />
               <stop
                 ref={(el) => {
-                  if (!stopRefs.current[c.id]) stopRefs.current[c.id] = {} as any;
+                  if (!stopRefs.current[c.id]) {
+                    stopRefs.current[c.id] = { stop0: null, stop1: null, stop2: null };
+                  }
                   stopRefs.current[c.id].stop2 = el;
                 }}
                 offset="100%"

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { isMotionPaused } from "@/lib/motion-pause";
 
 interface CircuitTraceBackgroundProps {
   className?: string;
@@ -168,6 +169,10 @@ export default function CircuitTraceBackground({
 
     const render = () => {
       if (!isVisible) return;
+      if (isMotionPaused()) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
       time += 0.016;
 
       ctx.clearRect(0, 0, width, height);

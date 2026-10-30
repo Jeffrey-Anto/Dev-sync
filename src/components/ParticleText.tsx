@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { isMotionPaused } from "@/lib/motion-pause";
 import "./ParticleText.css";
 
 interface RgbColor {
@@ -196,18 +197,16 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
     };
 
     const render = (now: number) => {
+      if (isMotionPaused()) {
+        animationFrame = window.requestAnimationFrame(render);
+        return;
+      }
       if (!isVisible) {
         animationFrame = null;
         return;
       }
-      ctx.clearRect(0, 0, width, height);
 
-      if (glow && !reducedMotion) {
-        ctx.shadowBlur = particleSize * 3;
-        ctx.shadowColor = highlightColor;
-      } else {
-        ctx.shadowBlur = 0;
-      }
+      ctx.clearRect(0, 0, width, height);
 
       pointer.smoothX += (pointer.x - pointer.smoothX) * 0.18;
       pointer.smoothY += (pointer.y - pointer.smoothY) * 0.18;
@@ -267,7 +266,6 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
       });
 
       ctx.globalAlpha = 1;
-      ctx.shadowBlur = 0;
 
       if (gathering && complete) {
         gathering = false;
@@ -577,6 +575,13 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
         ref={canvasRef}
         className="particle-text__canvas"
         aria-hidden="true"
+        style={
+          glow
+            ? {
+                filter: `drop-shadow(0 0 ${particleSize * 3}px ${highlightColor})`,
+              }
+            : undefined
+        }
       />
       <span className="particle-text__sr">{text}</span>
     </div>

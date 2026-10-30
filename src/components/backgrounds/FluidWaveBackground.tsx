@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef } from "react";
+import { isMotionPaused } from "@/lib/motion-pause";
 
 interface FluidWaveBackgroundProps {
   className?: string;
@@ -341,6 +342,11 @@ export default function FluidWaveBackground({
 
     const render = (timestamp: number) => {
       if (!isVisible) return;
+      if (isMotionPaused()) {
+        lastTime = timestamp;
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
 
       const dt = Math.min((timestamp - lastTime) / 1000, 0.1);
       lastTime = timestamp;

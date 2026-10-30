@@ -31,7 +31,7 @@ type SpiderAction =
 
 // ─── Authentic 16/32-Bit Original Retro Game Spider-Man Sprite ──────────────
 // Uses transparent PNG sprite sheets with grounded baselines and pixel-perfect rendering
-function SpiderManSprite({
+const SpiderManSprite = React.memo(function SpiderManSprite({
   frameIndex = 0,
   action = "swing",
   scale = 1,
@@ -114,7 +114,7 @@ function SpiderManSprite({
       className="drop-shadow-[0_12px_20px_rgba(0,0,0,0.95)] select-none pointer-events-none"
     />
   );
-}
+});
 
 // ─── Dual-Layer Organic Silk Web Overlay (Overhead Swing Tether + Card Snatch Web) ───
 export interface WebLine {
@@ -374,9 +374,22 @@ export default function SpidermanWebAnimation({
       const swingState = { progress: 0 };
       const duration = 1.6;
 
+      // Cached once per swing: reading it every frame forced a layout each frame.
+      let coreOffset: { x: number; y: number } | null = null;
+
       tl.add(() => {
         setActionState("swing");
         setStatusText(`Spider-Man web-swinging across Project ${i + 1}… 🕸️`);
+
+        const coreEl = card.querySelector(".js-cocoon-core");
+        if (coreEl) {
+          const cRect = card.getBoundingClientRect();
+          const coreRect = coreEl.getBoundingClientRect();
+          coreOffset = {
+            x: coreRect.left + coreRect.width / 2 - cRect.left,
+            y: coreRect.top + coreRect.height * 0.4 - cRect.top,
+          };
+        }
       });
 
       tl.to(swingState, {
@@ -447,13 +460,11 @@ export default function SpidermanWebAnimation({
             const pullT = (t - 0.35) / 0.40;
 
             // Target the exact center of the Spider Chrysalis Logo on the cocoon
-            const coreEl = ref.current.querySelector(".js-cocoon-core");
             let targetLogoX = cardRect.left + cardRect.width / 2;
             let targetLogoY = cardRect.top + cardRect.height * 0.50; // Exact vertical center of cocoon
-            if (coreEl) {
-              const coreRect = coreEl.getBoundingClientRect();
-              targetLogoX = coreRect.left + coreRect.width / 2;
-              targetLogoY = coreRect.top + coreRect.height * 0.40; // Center of the diamond spider badge
+            if (coreOffset) {
+              targetLogoX = cardRect.left + coreOffset.x;
+              targetLogoY = cardRect.top + coreOffset.y; // Center of the diamond spider badge
             }
 
             // Web-shot travels down directly and locks onto the spider logo center
