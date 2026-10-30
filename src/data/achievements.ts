@@ -14,6 +14,7 @@ export interface StudentAchievement {
   institution: string;
   accentColor: string;
   gradientTheme: string;
+  imageUrl?: string;
 }
 
 export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
@@ -34,6 +35,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#A855F7",
     gradientTheme: "from-purple-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/niral-thiruvizha.jpg",
   },
   {
     id: "ach-2",
@@ -52,6 +54,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#F59E0B",
     gradientTheme: "from-amber-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/gct-champions.jpg",
   },
   {
     id: "ach-3",
@@ -70,6 +73,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#10B981",
     gradientTheme: "from-emerald-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/cipher-lab.png",
   },
   {
     id: "ach-4",
@@ -88,6 +92,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#06B6D4",
     gradientTheme: "from-cyan-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/internship-achievement.jpg",
   },
   {
     id: "ach-5",
@@ -106,6 +111,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#3B82F6",
     gradientTheme: "from-blue-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/campus-solutions.jpg",
   },
   {
     id: "ach-6",
@@ -124,6 +130,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#EC4899",
     gradientTheme: "from-pink-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/genai-workshop.jpg",
   },
   {
     id: "ach-7",
@@ -142,5 +149,6 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#F43F5E",
     gradientTheme: "from-rose-950/40 via-slate-900/60 to-black/80",
+    imageUrl: "/achievements/oracle-java.jpg",
   },
 ];

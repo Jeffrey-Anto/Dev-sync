@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useRef, useState, useEffect } from "react";
-import { motion, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence, useScroll, useTransform, useMotionValueEvent } from "framer-motion";
 import {
   Trophy,
   Award,
@@ -11,7 +12,7 @@ import {
   Shield,
   Cpu,
   Flame,
-  CheckCircle2,
+  X,
 } from "lucide-react";
 import { STUDENT_ACHIEVEMENTS, StudentAchievement } from "@/data/achievements";
 import { ConstellationBackground } from "@/components/backgrounds";
@@ -21,8 +22,18 @@ export default function AchievementSlider() {
   const trackRef = useRef<HTMLDivElement>(null);
   const [maxScrollDistance, setMaxScrollDistance] = useState(0);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [mounted, setMounted] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<{
+    url: string;
+    title: string;
+    subTitle?: string;
+  } | null>(null);
 
   const totalCards = STUDENT_ACHIEVEMENTS.length;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Track vertical scroll progress across the sticky cards container
   const { scrollYProgress } = useScroll({
@@ -55,6 +66,25 @@ export default function AchievementSlider() {
       clearTimeout(timer);
     };
   }, []);
+
+  // Keyboard shortcut to close lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedImage(null);
+      }
+    };
+
+    if (selectedImage) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [selectedImage]);
 
   // Transform vertical scroll progress into horizontal translation
   const x = useTransform(scrollYProgress, [0, 1], [0, -maxScrollDistance]);
@@ -200,6 +230,7 @@ export default function AchievementSlider() {
                   achievement={item}
                   index={index}
                   isActive={activeIndex === index}
+                  onOpenImage={setSelectedImage}
                 />
               ))}
             </motion.div>
@@ -221,6 +252,72 @@ export default function AchievementSlider() {
           </div>
         </div>
       </div>
+
+      {/* ── Photo Lightbox Modal mounted via React Portal to document.body (z-[99999], completely above navbar) ── */}
+      {mounted &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {selectedImage && (
+              <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/95 backdrop-blur-2xl overflow-y-auto">
+                {/* Backdrop click to dismiss */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 cursor-pointer"
+                  onClick={() => setSelectedImage(null)}
+                />
+
+                {/* Modal Dialog with generous margins so top words are NEVER cut off */}
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.94, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.94, y: 15 }}
+                  transition={{ type: "spring", damping: 26, stiffness: 320 }}
+                  className="relative z-10 max-w-4xl w-full bg-[#0a0d16] border border-white/20 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[82vh] my-auto"
+                >
+                  {/* Header: Protected with flex-shrink-0 and clear padding */}
+                  <div className="px-5 py-4 sm:px-7 sm:py-5 border-b border-white/10 flex items-start justify-between bg-slate-950/95 backdrop-blur-md gap-4 flex-shrink-0">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base sm:text-xl font-bold text-white tracking-tight leading-snug">
+                        {selectedImage.title}
+                      </h3>
+                      {selectedImage.subTitle && (
+                        <p className="text-xs sm:text-sm font-mono text-amber-400 mt-1">
+                          {selectedImage.subTitle}
+                        </p>
+                      )}
+                    </div>
+
+                    <button
+                      onClick={() => setSelectedImage(null)}
+                      aria-label="Close photo preview"
+                      className="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors cursor-pointer flex-shrink-0"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  {/* Full Image Display: scales dynamically to fit viewport */}
+                  <div className="relative flex-1 min-h-0 bg-black flex items-center justify-center overflow-hidden p-3 sm:p-5">
+                    <img
+                      src={selectedImage.url}
+                      alt={selectedImage.title}
+                      className="max-h-[55vh] sm:max-h-[60vh] w-auto max-w-full object-contain rounded-xl shadow-2xl"
+                    />
+                  </div>
+
+                  {/* Clean Footer: No "verified" at left bottom */}
+                  <div className="px-6 py-2.5 sm:py-3 border-t border-white/10 bg-slate-950/95 flex items-center justify-end text-[11px] font-mono text-slate-500 flex-shrink-0">
+                    <span>PRESS ESC OR CLICK OUTSIDE TO CLOSE</span>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
     </section>
   );
 }
@@ -229,10 +326,12 @@ function AchievementCard({
   achievement,
   index,
   isActive,
+  onOpenImage,
 }: {
   achievement: StudentAchievement;
   index: number;
   isActive: boolean;
+  onOpenImage?: (data: { url: string; title: string; subTitle?: string }) => void;
 }) {
   const getIcon = () => {
     switch (achievement.tagType) {
@@ -280,52 +379,52 @@ function AchievementCard({
           </span>
         </div>
 
-        {/* Visual Graphic Banner */}
+        {/* Visual Box: Photo Only (No honors archive, live, state&national, verified) */}
         <div
-          className={`relative h-28 sm:h-48 w-full rounded-2xl overflow-hidden mb-3 sm:mb-5 border border-white/10 bg-gradient-to-br ${achievement.gradientTheme} p-2.5 sm:p-4 flex flex-col justify-between shadow-inner`}
+          className={`relative h-44 sm:h-52 md:h-56 w-full rounded-2xl overflow-hidden mb-3 sm:mb-5 border border-white/10 ${
+            achievement.imageUrl ? "bg-slate-950 cursor-pointer hover:border-amber-400/50" : `bg-gradient-to-br ${achievement.gradientTheme}`
+          } shadow-inner group/banner transition-all duration-300`}
+          onClick={() => {
+            if (achievement.imageUrl && onOpenImage) {
+              onOpenImage({
+                url: achievement.imageUrl,
+                title: achievement.title,
+                subTitle: achievement.subTitle,
+              });
+            }
+          }}
         >
-          {/* Subtle Grid Background */}
-          <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
-
-          {/* Glowing Ambient Radial in Corner */}
-          <div
-            className="absolute -top-12 -right-12 w-36 h-36 rounded-full blur-2xl opacity-30 pointer-events-none"
-            style={{ backgroundColor: achievement.accentColor }}
-          />
-
-          {/* Top Status inside Visual */}
-          <div className="relative z-10 flex items-center justify-between">
-            <span className="text-[8.5px] sm:text-[9.5px] font-mono uppercase tracking-widest px-2 py-0.5 rounded-md bg-black/60 border border-white/10 text-slate-300 backdrop-blur-md">
-              HONORS ARCHIVE
-            </span>
-            <div className="w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_#34D399]" />
-          </div>
-
-          {/* Center Trophy / Stage Emblem Mock */}
-          <div className="relative z-10 my-auto flex flex-col items-center justify-center text-center">
-            <div
-              className="w-9 h-9 sm:w-13 sm:h-13 rounded-xl sm:rounded-2xl flex items-center justify-center mb-1 shadow-2xl transition-transform duration-300"
-              style={{
-                backgroundColor: `${achievement.accentColor}20`,
-                border: `1px solid ${achievement.accentColor}50`,
-                boxShadow: `0 0 20px ${achievement.accentColor}40`,
-              }}
-            >
-              <IconComponent className="w-4 h-4 sm:w-6 sm:h-6 text-white" />
+          {achievement.imageUrl ? (
+            /* Photo Only: clean, full-bleed, crisp */
+            <img
+              src={achievement.imageUrl}
+              alt={achievement.title}
+              className="w-full h-full object-cover object-center group-hover/banner:scale-105 transition-transform duration-500 ease-out will-change-transform"
+              loading="lazy"
+            />
+          ) : (
+            /* Clean emblem for non-photo cards without honors archive, live, verified, or state&national */
+            <div className="w-full h-full flex flex-col items-center justify-center relative p-4">
+              <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
+              <div
+                className="absolute -top-12 -right-12 w-36 h-36 rounded-full blur-2xl opacity-30 pointer-events-none"
+                style={{ backgroundColor: achievement.accentColor }}
+              />
+              <div
+                className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl flex items-center justify-center mb-2 shadow-2xl relative z-10 transition-transform duration-300"
+                style={{
+                  backgroundColor: `${achievement.accentColor}20`,
+                  border: `1px solid ${achievement.accentColor}50`,
+                  boxShadow: `0 0 20px ${achievement.accentColor}40`,
+                }}
+              >
+                <IconComponent className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
+              </div>
+              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-slate-300 font-semibold relative z-10">
+                COLLECTIVE RECOGNITION
+              </span>
             </div>
-            <span className="text-[8.5px] sm:text-[10px] font-mono uppercase tracking-wider text-slate-300 font-semibold">
-              COLLECTIVE RECOGNITION
-            </span>
-          </div>
-
-          {/* Bottom Accreditation Tag */}
-          <div className="relative z-10 flex items-center justify-between text-[8.5px] sm:text-[9.5px] font-mono text-slate-400">
-            <span className="flex items-center gap-1 text-slate-300">
-              <CheckCircle2 className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400" />
-              VERIFIED
-            </span>
-            <span className="text-amber-400/90 font-bold">STATE &amp; NATIONAL</span>
-          </div>
+          )}
         </div>
 
         {/* Title */}

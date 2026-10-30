@@ -543,11 +543,7 @@ function DarkDetailModal({
       </div>
 
       {/* Live Repository & Demo CTAs */}
-      <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-white/10">
-        <div className="text-xs font-mono text-slate-500">
-          COLLECTIVE CS VERIFIED ARTIFACT · NO INDIVIDUAL AUTHORSHIP
-        </div>
-
+      <div className="flex flex-wrap items-center justify-end gap-3 pt-6 border-t border-white/10">
         <div className="flex items-center gap-3">
           {project.isPrivate ? (
             <div className="px-4 py-2.5 rounded-xl text-xs font-mono text-slate-400 bg-slate-900/60 border border-white/10 flex items-center gap-2">

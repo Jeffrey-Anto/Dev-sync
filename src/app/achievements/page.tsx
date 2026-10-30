@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useState, useRef, MouseEvent } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useRef, useEffect, MouseEvent } from "react";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "framer-motion";
 import {
   Trophy,
   Award,
@@ -13,6 +14,9 @@ import {
   Brain,
   Code2,
   Cpu,
+  CheckCircle2,
+  X,
+  ZoomIn,
 } from "lucide-react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
@@ -27,6 +31,7 @@ interface AchievementMilestone {
   description: string;
   metric: string;
   badgeColor: string;
+  imageUrl?: string;
 }
 
 const milestones: AchievementMilestone[] = [
@@ -38,6 +43,7 @@ const milestones: AchievementMilestone[] = [
       "Both teams selected among the Top 100 out of 24,411 registered teams and participated in the Grand Finale.",
     metric: "Top 100 / 24,411 Teams",
     badgeColor: "text-purple-400 border-purple-500/30 bg-purple-500/10",
+    imageUrl: "/achievements/niral-thiruvizha.jpg",
   },
   {
     years: ["2025", "2026"],
@@ -47,6 +53,7 @@ const milestones: AchievementMilestone[] = [
       "Two-Time Overall Champions at Government College of Technology, Coimbatore, securing the championship title in two consecutive years.",
     metric: "2x Consecutive Champions",
     badgeColor: "text-amber-400 border-amber-500/30 bg-amber-500/10",
+    imageUrl: "/achievements/gct-champions.jpg",
   },
   {
     years: ["2026"],
@@ -56,6 +63,7 @@ const milestones: AchievementMilestone[] = [
       "First Prize at Cipher Lab AI, a National-Level Hackathon, secured by CSE students.",
     metric: "1st Prize Winner",
     badgeColor: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
+    imageUrl: "/achievements/cipher-lab.png",
   },
   {
     years: ["2026"],
@@ -65,6 +73,7 @@ const milestones: AchievementMilestone[] = [
       "100% Internship Achievement, with every eligible student successfully securing internship opportunities.",
     metric: "100% Verified Placements",
     badgeColor: "text-cyan-400 border-cyan-500/30 bg-cyan-500/10",
+    imageUrl: "/achievements/internship-achievement.jpg",
   },
   {
     years: ["2026"],
@@ -74,6 +83,7 @@ const milestones: AchievementMilestone[] = [
       "Student-Built Campus Solutions — Our students have successfully designed, developed, and deployed innovative applications such as the Hostel App, BloodLine, Mess Reduction App, and No Due App, helping streamline and enhance campus operations.",
     metric: "4 Campus Systems Live",
     badgeColor: "text-blue-400 border-blue-500/30 bg-blue-500/10",
+    imageUrl: "/achievements/campus-solutions.jpg",
   },
   {
     years: ["2026"],
@@ -83,6 +93,7 @@ const milestones: AchievementMilestone[] = [
       "Generative AI Skillset Workshop conducted for department students in association with GUVI and HCL, strengthening their knowledge of emerging AI technologies.",
     metric: "GUVI & HCL Certified",
     badgeColor: "text-pink-400 border-pink-500/30 bg-pink-500/10",
+    imageUrl: "/achievements/genai-workshop.jpg",
   },
   {
     years: ["2025"],
@@ -92,6 +103,7 @@ const milestones: AchievementMilestone[] = [
       "Oracle Java Learning Program — Department students successfully participated in an online Java learning program conducted by Oracle.",
     metric: "Oracle Validated",
     badgeColor: "text-rose-400 border-rose-500/30 bg-rose-500/10",
+    imageUrl: "/achievements/oracle-java.jpg",
   },
 ];
 
@@ -225,6 +237,27 @@ function InteractiveSummaryCard({ item, index }: { item: SummaryCardItem; index:
 }
 
 export default function AchievementsPage() {
+  const [selectedImage, setSelectedImage] = useState<{ url: string; title: string } | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setSelectedImage(null);
+    };
+    if (selectedImage) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [selectedImage]);
+
   return (
     <div className="relative min-h-screen bg-[#050608] text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between overflow-hidden">
       {/* Official Google Antigravity Swirl Particle Vortex Background - Clean & Spacious */}
@@ -283,14 +316,27 @@ export default function AchievementsPage() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-purple-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-purple-400 transition-all"
+            onClick={() => setSelectedImage({ url: "/achievements/niral-thiruvizha.jpg", title: "Niral Thiruvizha 3.0 — Grand Finale (Top 100 Nationwide)" })}
+            className="p-6 rounded-3xl bg-[#0c0f18]/60 border border-purple-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-purple-400 transition-all cursor-pointer"
           >
-            <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-400 w-fit mb-4">
-              <ShieldCheck className="w-6 h-6" />
+            {/* Subtle Photo Background Glow on hover */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+              style={{ backgroundImage: `url('/achievements/niral-thiruvizha.jpg')` }}
+            />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-400 w-fit">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-mono text-purple-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-purple-950/70 px-2 py-0.5 rounded-md border border-purple-500/30">
+                  <ZoomIn className="w-3 h-3" /> Photo
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">Top 100</div>
+              <div className="text-sm font-semibold text-purple-300 mt-1">Niral Thiruvizha 3.0</div>
+              <div className="text-xs text-slate-400 mt-1 font-mono">Both teams in Grand Finale (out of 24,411)</div>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">Top 100</div>
-            <div className="text-sm font-semibold text-purple-300 mt-1">Niral Thiruvizha 3.0</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Both teams in Grand Finale (out of 24,411)</div>
           </motion.div>
 
           <motion.div
@@ -298,14 +344,27 @@ export default function AchievementsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-amber-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-amber-400 transition-all"
+            onClick={() => setSelectedImage({ url: "/achievements/gct-champions.jpg", title: "Two-Time Overall Champions at GCT Coimbatore" })}
+            className="p-6 rounded-3xl bg-[#0c0f18]/60 border border-amber-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-amber-400 transition-all cursor-pointer"
           >
-            <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-400 w-fit mb-4">
-              <Trophy className="w-6 h-6" />
+            {/* Subtle Photo Background Glow on hover */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+              style={{ backgroundImage: `url('/achievements/gct-champions.jpg')` }}
+            />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-400 w-fit">
+                  <Trophy className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-mono text-amber-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-amber-950/70 px-2 py-0.5 rounded-md border border-amber-500/30">
+                  <ZoomIn className="w-3 h-3" /> Photo
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">2x</div>
+              <div className="text-sm font-semibold text-amber-300 mt-1">Overall Champions</div>
+              <div className="text-xs text-slate-400 mt-1 font-mono">GCT Coimbatore (2025 &amp; 2026)</div>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">2x</div>
-            <div className="text-sm font-semibold text-amber-300 mt-1">Overall Champions</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">GCT Coimbatore (2025 &amp; 2026)</div>
           </motion.div>
 
           <motion.div
@@ -313,14 +372,32 @@ export default function AchievementsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-emerald-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-emerald-400 transition-all"
+            onClick={() =>
+              setSelectedImage({
+                url: "/achievements/cipher-lab.png",
+                title: "First Prize at Cipher Lab AI National Hackathon",
+              })
+            }
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-emerald-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-emerald-400 transition-all cursor-pointer"
           >
-            <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 w-fit mb-4">
-              <Award className="w-6 h-6" />
+            {/* Subtle Photo Background Glow on hover */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+              style={{ backgroundImage: `url('/achievements/cipher-lab.png')` }}
+            />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 w-fit">
+                  <Award className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-mono text-emerald-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-emerald-950/70 px-2 py-0.5 rounded-md border border-emerald-500/30">
+                  <ZoomIn className="w-3 h-3" /> Photo
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">1st Prize</div>
+              <div className="text-sm font-semibold text-emerald-300 mt-1">Cipher Lab AI Hackathon</div>
+              <div className="text-xs text-slate-400 mt-1 font-mono">National-level Hackathon (2026)</div>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">1st Prize</div>
-            <div className="text-sm font-semibold text-emerald-300 mt-1">Cipher Lab AI Hackathon</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">National-level Hackathon (2026)</div>
           </motion.div>
 
           <motion.div
@@ -328,14 +405,32 @@ export default function AchievementsPage() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.3 }}
-            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-cyan-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-cyan-400 transition-all"
+            onClick={() =>
+              setSelectedImage({
+                url: "/achievements/internship-achievement.jpg",
+                title: "100% Cohort Internship Achievement",
+              })
+            }
+            className="p-6 rounded-3xl bg-[#0c0f18]/50 border border-cyan-500/30 backdrop-blur-md shadow-2xl relative overflow-hidden group hover:border-cyan-400 transition-all cursor-pointer"
           >
-            <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 w-fit mb-4">
-              <Briefcase className="w-6 h-6" />
+            {/* Subtle Photo Background Glow on hover */}
+            <div
+              className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
+              style={{ backgroundImage: `url('/achievements/internship-achievement.jpg')` }}
+            />
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-4">
+                <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 w-fit">
+                  <Briefcase className="w-6 h-6" />
+                </div>
+                <span className="text-[10px] font-mono text-cyan-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-cyan-950/70 px-2 py-0.5 rounded-md border border-cyan-500/30">
+                  <ZoomIn className="w-3 h-3" /> Photo
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">100%</div>
+              <div className="text-sm font-semibold text-cyan-300 mt-1">Internship Achievement</div>
+              <div className="text-xs text-slate-400 mt-1 font-mono">Every eligible student (2026)</div>
             </div>
-            <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">100%</div>
-            <div className="text-sm font-semibold text-cyan-300 mt-1">Internship Achievement</div>
-            <div className="text-xs text-slate-400 mt-1 font-mono">Every eligible student (2026)</div>
           </motion.div>
         </div>
 
@@ -367,7 +462,7 @@ export default function AchievementsPage() {
                 className="p-6 sm:p-8 rounded-3xl bg-[#0c0f18]/45 border border-white/10 hover:border-white/25 backdrop-blur-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 group"
               >
                 <div className="flex items-start gap-4">
-                  {/* Square Year Box (Clean without Q3/Q4, stacked 2025/2026 for GCT) */}
+                  {/* Square Year Box */}
                   <div className="flex flex-col items-center justify-center min-w-[4.25rem] px-2 py-3 rounded-2xl bg-slate-900/90 border border-white/10 flex-shrink-0 font-mono shadow-inner">
                     {item.years.map((yr, yIdx) => (
                       <span
@@ -396,8 +491,28 @@ export default function AchievementsPage() {
                   </div>
                 </div>
 
-                <div className="px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs font-mono text-cyan-300 font-bold whitespace-nowrap self-end sm:self-center">
-                  {item.metric}
+                <div className="flex items-center gap-3 self-end sm:self-center">
+                  {/* Photo Thumbnail if available */}
+                  {item.imageUrl && (
+                    <button
+                      onClick={() => setSelectedImage({ url: item.imageUrl!, title: item.title })}
+                      className="group/thumb relative w-20 h-12 sm:w-24 sm:h-14 rounded-xl overflow-hidden border border-white/20 hover:border-amber-400/80 transition-all shadow-md shrink-0 cursor-pointer"
+                      title="Click to view full photo"
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full h-full object-cover object-center group-hover/thumb:scale-110 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-black/40 group-hover/thumb:bg-black/10 transition-colors flex items-center justify-center">
+                        <ZoomIn className="w-3.5 h-3.5 text-white opacity-0 group-hover/thumb:opacity-100 transition-opacity" />
+                      </div>
+                    </button>
+                  )}
+
+                  <div className="px-4 py-2 rounded-xl bg-white/[0.03] border border-white/10 text-xs font-mono text-cyan-300 font-bold whitespace-nowrap">
+                    {item.metric}
+                  </div>
                 </div>
               </motion.div>
             ))}
@@ -456,6 +571,61 @@ export default function AchievementsPage() {
           </Link>
         </div>
       </main>
+
+      {/* Lightbox Modal (mounted via Portal to document.body, z-[99999]) */}
+      {mounted &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {selectedImage && (
+              <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4 sm:p-6 md:p-8 bg-black/95 backdrop-blur-2xl overflow-y-auto">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="absolute inset-0 cursor-pointer"
+                  onClick={() => setSelectedImage(null)}
+                />
+
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.94, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.94, y: 15 }}
+                  transition={{ type: "spring", damping: 26, stiffness: 320 }}
+                  className="relative z-10 max-w-4xl w-full bg-[#0a0d16] border border-white/20 rounded-3xl overflow-hidden shadow-2xl flex flex-col max-h-[82vh] my-auto"
+                >
+                  <div className="px-5 py-4 sm:px-7 sm:py-5 border-b border-white/10 flex items-start justify-between bg-slate-950/95 backdrop-blur-md gap-4 flex-shrink-0">
+                    <div className="min-w-0 flex-1">
+                      <h3 className="text-base sm:text-xl font-bold text-white tracking-tight leading-snug">
+                        {selectedImage.title}
+                      </h3>
+                    </div>
+                    <button
+                      onClick={() => setSelectedImage(null)}
+                      aria-label="Close preview"
+                      className="p-2 sm:p-2.5 rounded-full bg-white/10 hover:bg-white/20 text-slate-200 hover:text-white transition-colors cursor-pointer flex-shrink-0"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+
+                  <div className="relative flex-1 min-h-0 bg-black flex items-center justify-center overflow-hidden p-3 sm:p-5">
+                    <img
+                      src={selectedImage.url}
+                      alt={selectedImage.title}
+                      className="max-h-[55vh] sm:max-h-[60vh] w-auto max-w-full object-contain rounded-xl shadow-2xl"
+                    />
+                  </div>
+
+                  <div className="px-6 py-2.5 sm:py-3 border-t border-white/10 bg-slate-950/95 flex items-center justify-end text-[11px] font-mono text-slate-500 flex-shrink-0">
+                    <span>PRESS ESC OR CLICK OUTSIDE TO CLOSE</span>
+                  </div>
+                </motion.div>
+              </div>
+            )}
+          </AnimatePresence>,
+          document.body
+        )}
 
       <Footer />
     </div>

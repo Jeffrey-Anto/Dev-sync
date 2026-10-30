@@ -41,6 +41,11 @@ export default function RecruiterContactPage() {
   });
 
   const [attachedFiles, setAttachedFiles] = useState<string[]>([]);
+  const [filePayloads, setFilePayloads] = useState<
+    { filename: string; content: string; contentType?: string }[]
+  >([]);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitNotice, setSubmitNotice] = useState<string | null>(null);
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -67,20 +72,81 @@ export default function RecruiterContactPage() {
     return Object.keys(errs).length === 0;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    files.forEach((file) => {
+      setAttachedFiles((prev) => {
+        if (prev.length >= 5 || prev.includes(file.name)) return prev;
+        return [...prev, file.name];
+      });
+
+      if (file.size <= 5 * 1024 * 1024) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          const resultStr = reader.result as string;
+          const base64 = resultStr.includes(",") ? resultStr.split(",")[1] : resultStr;
+          setFilePayloads((prev) => [
+            ...prev.filter((p) => p.filename !== file.name),
+            {
+              filename: file.name,
+              content: base64,
+              contentType: file.type || "application/octet-stream",
+            },
+          ]);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    e.target.value = "";
+  };
+
+  const removeFile = (idx: number, fileName: string) => {
+    setAttachedFiles((prev) => prev.filter((_, i) => i !== idx));
+    setFilePayloads((prev) => prev.filter((p) => p.filename !== fileName));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validate()) return;
 
     setIsSubmitting(true);
-    setTimeout(() => {
-      console.log("Recruiter Drive Request Submitted:", formData, "Files:", attachedFiles);
-      setIsSubmitting(false);
+    setSubmitError(null);
+
+    try {
+      const res = await fetch("/api/recruit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...formData,
+          attachedFiles,
+          attachments: filePayloads,
+        }),
+      });
+
+      const data = await res.json();
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || "Failed to submit inquiry");
+      }
+
+      setSubmitNotice(data.message || null);
       setIsSubmitted(true);
-    }, 900);
+    } catch (err: any) {
+      console.error("Submission failed:", err);
+      setSubmitError(
+        err.message || "Failed to submit inquiry. Please try again or email placements.cse@gces.edu.in"
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleReset = () => {
     setIsSubmitted(false);
+    setSubmitError(null);
+    setSubmitNotice(null);
     setFormData({
       companyName: "",
       contactRep: "",
@@ -91,6 +157,7 @@ export default function RecruiterContactPage() {
       additionalReqs: "",
     });
     setAttachedFiles([]);
+    setFilePayloads([]);
     setErrors({});
   };
 
@@ -184,9 +251,12 @@ export default function RecruiterContactPage() {
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
                   <h4 className="text-2xl font-bold text-white mb-2">Placement Inquiry Received</h4>
-                  <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed mb-6 font-sans">
+                  <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed mb-4 font-sans">
                     Thank you, <strong>{formData.contactRep}</strong> ({formData.companyName}). Our placement coordination cell will review your criteria and respond with slot confirmations within 24 business hours.
                   </p>
+                  <div className="mb-6 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[11px]">
+                    Notification dispatched to placement officers.
+                  </div>
                   <button
                     onClick={handleReset}
                     className="px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold font-mono text-xs transition-all shadow-lg cursor-pointer"
@@ -358,14 +428,7 @@ export default function RecruiterContactPage() {
                               type="file"
                               multiple
                               className="hidden"
-                              onChange={(e) => {
-                                const newFiles = Array.from(e.target.files || []).map((f) => f.name);
-                                setAttachedFiles((prev) => {
-                                  const combined = Array.from(new Set([...prev, ...newFiles]));
-                                  return combined.slice(0, 5);
-                                });
-                                e.target.value = "";
-                              }}
+                              onChange={handleFileChange}
                             />
                           </label>
                         )}
@@ -378,7 +441,7 @@ export default function RecruiterContactPage() {
                             <span className="max-w-[180px] truncate">{fileName}</span>
                             <button
                               type="button"
-                              onClick={() => setAttachedFiles((prev) => prev.filter((_, i) => i !== idx))}
+                              onClick={() => removeFile(idx, fileName)}
                               className="text-slate-400 hover:text-white cursor-pointer ml-1"
                               aria-label="Remove attachment"
                             >
@@ -389,6 +452,14 @@ export default function RecruiterContactPage() {
                       </div>
                     </div>
                   </div>
+
+                  {/* Submission Error Banner */}
+                  {submitError && (
+                    <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-center gap-2">
+                      <AlertCircle className="w-4 h-4 flex-shrink-0 text-rose-400" />
+                      <span>{submitError}</span>
+                    </div>
+                  )}
 
                   {/* Submission Disclaimer Line */}
                   <p className="text-xs text-slate-400 font-sans leading-relaxed pt-2">
