@@ -5,9 +5,7 @@ import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import "./StrokeText.css";
 
-if (typeof window !== "undefined") {
-  gsap.registerPlugin(ScrollTrigger);
-}
+
 
 export interface StrokeTextProps {
   text?: string;
@@ -222,6 +220,7 @@ export const StrokeText: React.FC<StrokeTextProps> = ({
     } else {
       timeline = build();
       if (trigger === "scroll") {
+        gsap.registerPlugin(ScrollTrigger);
         scrollTrigger = ScrollTrigger.create({
           trigger: root,
           start: "top 82%",
