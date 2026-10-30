@@ -490,7 +490,27 @@ export default function FluidWaveBackground({
     lastTime = performance.now();
     animationFrameId = requestAnimationFrame(render);
 
+    let intersectionObserver: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      intersectionObserver = new IntersectionObserver(
+        ([entry]) => {
+          const inView = entry.isIntersecting && !document.hidden;
+          if (inView && !isVisible) {
+            isVisible = true;
+            lastTime = performance.now();
+            animationFrameId = requestAnimationFrame(render);
+          } else if (!inView && isVisible) {
+            isVisible = false;
+            cancelAnimationFrame(animationFrameId);
+          }
+        },
+        { rootMargin: "150px" }
+      );
+      intersectionObserver.observe(container);
+    }
+
     return () => {
+      intersectionObserver?.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       resizeObserver.disconnect();
       window.removeEventListener("pointermove", handlePointerMove);

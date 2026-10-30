@@ -259,7 +259,26 @@ export default function NeuralPulseBackground({
     handleResize();
     render();
 
+    let intersectionObserver: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      intersectionObserver = new IntersectionObserver(
+        ([entry]) => {
+          const nowVisible = entry.isIntersecting && !document.hidden;
+          if (nowVisible && !isVisible) {
+            isVisible = true;
+            render();
+          } else if (!nowVisible && isVisible) {
+            isVisible = false;
+            cancelAnimationFrame(animationFrameId);
+          }
+        },
+        { rootMargin: "150px" }
+      );
+      intersectionObserver.observe(canvas);
+    }
+
     return () => {
+      intersectionObserver?.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       resizeObserver.disconnect();
       window.removeEventListener("mousemove", handleMouseMove);

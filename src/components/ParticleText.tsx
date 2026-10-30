@@ -142,6 +142,7 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
     let width = 0;
     let height = 0;
     let dpr = 1;
+    let isVisible = true;
 
     const pointer = {
       active: false,
@@ -195,6 +196,10 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
     };
 
     const render = (now: number) => {
+      if (!isVisible) {
+        animationFrame = null;
+        return;
+      }
       ctx.clearRect(0, 0, width, height);
 
       if (glow && !reducedMotion) {
@@ -486,12 +491,49 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
     canvas.addEventListener("pointerleave", handlePointerLeave);
     canvas.addEventListener("click", handleClick);
 
+    const handleVisibility = () => {
+      const inView = !document.hidden;
+      if (inView !== isVisible) {
+        isVisible = inView;
+        if (isVisible) {
+          ensureRenderLoop();
+        } else if (animationFrame !== null) {
+          window.cancelAnimationFrame(animationFrame);
+          animationFrame = null;
+        }
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    let intersectionObserver: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      intersectionObserver = new IntersectionObserver(
+        ([entry]) => {
+          const inView = entry.isIntersecting && !document.hidden;
+          if (inView && !isVisible) {
+            isVisible = true;
+            ensureRenderLoop();
+          } else if (!inView && isVisible) {
+            isVisible = false;
+            if (animationFrame !== null) {
+              window.cancelAnimationFrame(animationFrame);
+              animationFrame = null;
+            }
+          }
+        },
+        { rootMargin: "150px" }
+      );
+      intersectionObserver.observe(container);
+    }
+
     const resizeObserver = new ResizeObserver(queueSample);
     resizeObserver.observe(container);
     sampleText();
 
     return () => {
       buildId += 1;
+      intersectionObserver?.disconnect();
+      document.removeEventListener("visibilitychange", handleVisibility);
       resizeObserver.disconnect();
       reduceMotionQuery?.removeEventListener(
         "change",

@@ -295,6 +295,7 @@ function computeWobblyPoints(
 }
 
 export default function MorphingBlobBackground({ className = "" }: { className?: string }) {
+  const containerRef = useRef<HTMLDivElement | null>(null);
   const parentPathRefs = useRef<(SVGPathElement | null)[]>([]);
   const subBlobPathRefs = useRef<{ [key: string]: SVGPathElement | null }>({});
 
@@ -487,25 +488,73 @@ export default function MorphingBlobBackground({ className = "" }: { className?:
       });
     };
 
+    // 1. Immediately render initial frame so SVG paths are populated on mount
+    renderFrame(0);
+
     if (reducedMotion) {
-      renderFrame(0);
       return;
     }
 
+    let isVisible = true;
     let rafId: number;
     const startTime = performance.now();
     const tick = () => {
+      if (!isVisible) return;
       const elapsed = (performance.now() - startTime) / 1000;
       renderFrame(elapsed);
       rafId = requestAnimationFrame(tick);
     };
 
+    // 2. Start animation loop immediately on mount
     rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
+
+    const container = containerRef.current;
+    let observer: IntersectionObserver | null = null;
+
+    const handleVisibility = () => {
+      if (document.hidden) {
+        isVisible = false;
+        cancelAnimationFrame(rafId);
+      } else if (container) {
+        const rect = container.getBoundingClientRect();
+        if (rect.bottom > -150 && rect.top < window.innerHeight + 150) {
+          if (!isVisible) {
+            isVisible = true;
+            rafId = requestAnimationFrame(tick);
+          }
+        }
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibility);
+
+    if (container && typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          const inView = entry.isIntersecting && !document.hidden;
+          if (inView && !isVisible) {
+            isVisible = true;
+            rafId = requestAnimationFrame(tick);
+          } else if (!inView && isVisible) {
+            isVisible = false;
+            cancelAnimationFrame(rafId);
+          }
+        },
+        { rootMargin: "150px" }
+      );
+      observer.observe(container);
+    }
+
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      observer?.disconnect();
+      cancelAnimationFrame(rafId);
+    };
   }, [clusterData]);
 
   return (
     <div
+      ref={containerRef}
       className={`absolute inset-0 pointer-events-none overflow-hidden select-none ${className}`}
       aria-hidden="true"
     >

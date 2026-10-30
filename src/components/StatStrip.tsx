@@ -72,16 +72,13 @@ function SpotlightStatCard({
   index: number;
 }) {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [isHovered, setIsHovered] = useState(false);
 
   const handleMouseMove = (e: MouseEvent<HTMLDivElement>) => {
     if (!cardRef.current) return;
     const rect = cardRef.current.getBoundingClientRect();
-    setMousePos({
-      x: e.clientX - rect.left,
-      y: e.clientY - rect.top,
-    });
+    cardRef.current.style.setProperty("--mouse-x", `${e.clientX - rect.left}px`);
+    cardRef.current.style.setProperty("--mouse-y", `${e.clientY - rect.top}px`);
   };
 
   const Icon = item.icon;
@@ -104,7 +101,7 @@ function SpotlightStatCard({
         style={{
           opacity: isHovered ? 1 : 0.4,
           background: isHovered
-            ? `radial-gradient(400px circle at ${mousePos.x}px ${mousePos.y}px, rgba(${item.glowRgb}, 0.8), transparent 60%)`
+            ? `radial-gradient(400px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(${item.glowRgb}, 0.8), transparent 60%)`
             : `linear-gradient(180deg, rgba(${item.glowRgb}, 0.35) 0%, rgba(255,255,255,0.05) 100%)`,
         }}
       />
@@ -116,7 +113,7 @@ function SpotlightStatCard({
           <div
             className="pointer-events-none absolute -inset-px transition-opacity duration-300"
             style={{
-              background: `radial-gradient(280px circle at ${mousePos.x}px ${mousePos.y}px, rgba(${item.glowRgb}, 0.12), transparent 70%)`,
+              background: `radial-gradient(280px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(${item.glowRgb}, 0.12), transparent 70%)`,
             }}
           />
         )}

@@ -245,7 +245,26 @@ export default function CircuitTraceBackground({
     handleResize();
     render();
 
+    let intersectionObserver: IntersectionObserver | null = null;
+    if (typeof IntersectionObserver !== "undefined") {
+      intersectionObserver = new IntersectionObserver(
+        ([entry]) => {
+          const inView = entry.isIntersecting && !document.hidden;
+          if (inView && !isVisible) {
+            isVisible = true;
+            render();
+          } else if (!inView && isVisible) {
+            isVisible = false;
+            cancelAnimationFrame(animationFrameId);
+          }
+        },
+        { rootMargin: "150px" }
+      );
+      intersectionObserver.observe(canvas);
+    }
+
     return () => {
+      intersectionObserver?.disconnect();
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       resizeObserver.disconnect();
       window.removeEventListener("mousemove", handleMouseMove);
