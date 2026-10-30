@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "stats": "node scripts/fetch-student-stats.mjs"
+    "stats": "bun scripts/fetch-student-stats.mjs"
   },
   "dependencies": {
     "framer-motion": "^13.1.0",
