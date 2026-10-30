@@ -2,18 +2,24 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
+import GooeyNav from "@/components/GooeyNav";
+import FontSelector from "@/components/FontSelector";
 
-const GooeyNav = dynamic(() => import("@/components/GooeyNav"), { ssr: false });
-const FontSelector = dynamic(() => import("@/components/FontSelector"), { ssr: false });
+const getTabFromPath = (path: string) => {
+  if (path === "/tech-stack") return 2;
+  if (path.startsWith("/students")) return 3;
+  if (path === "/achievements") return 4;
+  if (path === "/recruit") return 5;
+  return 0;
+};
 
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<number>(0);
+  const [activeTab, setActiveTab] = useState<number>(() => getTabFromPath(pathname));
 
   const navLinks = [
     { label: "Home", href: "/" },
@@ -42,25 +48,23 @@ export default function Navbar() {
       }
     };
 
-    if (pathname === "/tech-stack") {
-      setActiveTab(2);
-    } else if (pathname.startsWith("/students")) {
-      setActiveTab(3);
-    } else if (pathname === "/achievements") {
-      setActiveTab(4);
-    } else if (pathname === "/recruit") {
-      setActiveTab(5);
-    } else if (pathname === "/") {
+    if (pathname === "/") {
       if (typeof window !== "undefined" && window.location.hash === "#domains") {
         setActiveTab(1);
       } else if (window.scrollY < 300) {
         setActiveTab(0);
       }
+    } else {
+      setActiveTab(getTabFromPath(pathname));
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [pathname]);
+
+  if (pathname.startsWith("/domain/")) {
+    return null;
+  }
 
   const handleItemClick = (item: { label: string; href: string }, index: number) => {
     setActiveTab(index);

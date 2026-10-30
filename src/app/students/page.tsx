@@ -3,7 +3,6 @@
 import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, ArrowUpRight, UserRound } from "lucide-react";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ConstellationBackground } from "@/components/backgrounds";
 import { STUDENTS, getInitials, getGitHubAvatar, getStudentDomain, type Student } from "@/data/students";
@@ -165,8 +164,6 @@ export default function StudentsPage() {
     <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#050608] text-white selection:bg-indigo-500 selection:text-white">
       <ConstellationBackground opacity={0.35} particleCount={55} maxDistance={130} />
       <div className="pointer-events-none absolute inset-0 tech-grid-bg opacity-[0.14]" />
-
-      <Navbar />
 
       <main className="relative z-10 mx-auto w-full max-w-5xl flex-grow px-4 pt-28 pb-20 sm:px-6 lg:px-8">
         <header className="border-b border-white/[0.08] pb-8">

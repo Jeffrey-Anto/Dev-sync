@@ -39,10 +39,11 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
   const navRef = useRef<HTMLUListElement>(null);
   const filterRef = useRef<HTMLSpanElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
   const [activeIndex, setActiveIndex] = useState(
     controlledActiveIndex !== undefined ? controlledActiveIndex : initialActiveIndex
   );
+
+  const currentActive = controlledActiveIndex !== undefined ? controlledActiveIndex : activeIndex;
 
   useEffect(() => {
     if (controlledActiveIndex !== undefined) {
@@ -51,7 +52,6 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
         const activeLi = navRef.current.querySelectorAll("li")[controlledActiveIndex];
         if (activeLi) {
           updateEffectPosition(activeLi as HTMLElement);
-          textRef.current?.classList.add("active");
         }
       }
     }
@@ -119,7 +119,7 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
   };
 
   const updateEffectPosition = (element: HTMLElement) => {
-    if (!containerRef.current || !filterRef.current || !textRef.current) return;
+    if (!containerRef.current || !filterRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
     const pos = element.getBoundingClientRect();
 
@@ -130,8 +130,6 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
       height: `${pos.height}px`,
     };
     Object.assign(filterRef.current.style, styles);
-    Object.assign(textRef.current.style, styles);
-    textRef.current.innerText = element.innerText;
   };
 
   const handleClick = (
@@ -147,12 +145,6 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
     if (filterRef.current) {
       const particles = filterRef.current.querySelectorAll(".particle");
       particles.forEach((p) => filterRef.current?.removeChild(p));
-    }
-
-    if (textRef.current) {
-      textRef.current.classList.remove("active");
-      void textRef.current.offsetWidth;
-      textRef.current.classList.add("active");
     }
 
     if (filterRef.current) {
@@ -179,7 +171,6 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
     const activeLi = navRef.current.querySelectorAll("li")[activeIndex];
     if (activeLi) {
       updateEffectPosition(activeLi as HTMLElement);
-      textRef.current?.classList.add("active");
     }
 
     const resizeObserver = new ResizeObserver(() => {
@@ -219,7 +210,7 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
           {items.map((item, index) => (
             <li
               key={item.label}
-              className={activeIndex === index ? "active" : ""}
+              className={currentActive === index ? "active" : ""}
               onClick={(e) => handleClick(e, index)}
             >
               <Link
@@ -233,7 +224,6 @@ export const GooeyNav: React.FC<GooeyNavProps> = ({
         </ul>
       </nav>
       <span className="effect filter" ref={filterRef} />
-      <span className="effect text" ref={textRef} />
     </div>
   );
 };

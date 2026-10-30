@@ -41,6 +41,7 @@
   display: flex;
   position: relative;
   transform: translate3d(0, 0, 0.01px);
+  z-index: 2;
 }
 
 .gooey-nav-container nav ul {
@@ -50,7 +51,7 @@
   padding: 0.25em 0.5em;
   margin: 0;
   position: relative;
-  z-index: 3;
+  z-index: 2;
   color: white;
 }
 
@@ -67,14 +68,17 @@
 }
 
 .gooey-nav-container nav ul li a {
+  position: relative;
+  z-index: 2;
   display: inline-block;
   padding: 0.42em 0.72em;
   text-decoration: none;
-  color: inherit;
+  color: #ffffff;
   font-size: 0.82rem;
-  font-weight: 500;
+  font-weight: 600;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  transition: color 0.2s ease;
 }
 
 .gooey-nav-container nav ul li:focus-within:has(:focus-visible) {
@@ -93,8 +97,9 @@
   z-index: -1;
 }
 
-.gooey-nav-container nav ul li.active {
-  color: black;
+.gooey-nav-container nav ul li.active,
+.gooey-nav-container nav ul li.active a {
+  color: #000000 !important;
   text-shadow: none;
 }
 
@@ -114,18 +119,6 @@
   display: grid;
   place-items: center;
   z-index: 1;
-}
-
-.gooey-nav-container .effect.text {
-  color: white;
-  transition: color 0.3s ease;
-  font-size: 0.875rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-
-.gooey-nav-container .effect.text.active {
-  color: black;
 }
 
 .gooey-nav-container .effect.filter {

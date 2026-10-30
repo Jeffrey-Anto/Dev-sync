@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useMemo } from "react";
-import Navbar from "@/components/Navbar";
 import { IconCloud } from "@/components/magicui/icon-cloud";
 
 const allSlugs = [
@@ -91,8 +90,6 @@ export default function TechStackPage() {
 
   return (
     <div className="relative w-full h-screen bg-[#040508] text-white overflow-hidden flex flex-col">
-      <Navbar />
-
       <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[700px] bg-indigo-600/10 rounded-full blur-[150px] pointer-events-none" />
       <div className="absolute top-1/3 left-1/3 w-[450px] h-[450px] bg-cyan-500/10 rounded-full blur-[130px] pointer-events-none" />

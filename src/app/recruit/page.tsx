@@ -20,11 +20,9 @@ import {
   X,
   FileText,
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import { COHORT_STATS, DOMAINS } from "@/data/domains";
 import { getAggregatedTechStack } from "@/utils/techAggregation";
 import { FloatingBlobsBackground } from "@/components/backgrounds";
+import Footer from "@/components/Footer";
 
 export default function RecruiterContactPage() {
   const totalTechs = getAggregatedTechStack().length;
@@ -165,9 +163,6 @@ export default function RecruiterContactPage() {
     <div className="relative min-h-screen bg-[#050608] text-white selection:bg-indigo-500 selection:text-white flex flex-col justify-between overflow-hidden">
       {/* Floating Organic Blobs behind glassmorphic form */}
       <FloatingBlobsBackground />
-
-      {/* Global Navigation */}
-      <Navbar />
 
       <main className="relative z-10 pt-28 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow">
         {/* Ambient Grid */}

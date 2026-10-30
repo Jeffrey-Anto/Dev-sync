@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import Script from "next/script";
 import JsonLd, { organizationJsonLd, websiteJsonLd } from "@/components/JsonLd";
+import Navbar from "@/components/Navbar";
 import {
   Outfit,
   Inter,
@@ -205,6 +206,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col bg-[#050608] text-slate-100 selection:bg-indigo-500 selection:text-white">
         <JsonLd data={organizationJsonLd} />
         <JsonLd data={websiteJsonLd} />
+        <Navbar />
         {children}
       </body>
     </html>

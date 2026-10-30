@@ -19,7 +19,6 @@ import {
   ZoomIn,
 } from "lucide-react";
 import Link from "next/link";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { AuroraMeshBackground } from "@/components/backgrounds";
 import AntigravityField from "@/components/AntigravityField";
@@ -266,9 +265,6 @@ export default function AchievementsPage() {
         interactiveRadius={340}
         opacity={0.95}
       />
-
-      {/* Global Navigation */}
-      <Navbar />
 
       <main className="relative z-10 pt-28 pb-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex-grow">
 

@@ -18,7 +18,6 @@ import {
   Sparkles,
   UserRound,
 } from "lucide-react";
-import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { ConstellationBackground } from "@/components/backgrounds";
 import {
@@ -351,8 +350,6 @@ export default function StudentProfile({ student }: { student: Student }) {
       >
         {student.name}
       </div>
-
-      <Navbar />
 
       <main className="relative z-10 mx-auto w-full max-w-6xl flex-grow px-4 pt-28 pb-20 sm:px-6 lg:px-8">
         <motion.div
