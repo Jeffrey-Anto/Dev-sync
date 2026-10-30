@@ -207,6 +207,17 @@ export const STUDENTS: Student[] = [
       leetcode: "https://leetcode.com/u/Sathish__/",
     },
   },
+  {
+    slug: "benjamin-bruce-m",
+    name: "BENJAMIN BRUCE M",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://portfolio-pwu3.vercel.app",
+      github: "https://github.com/Benjamin23-B",
+      linkedin: "https://www.linkedin.com/in/benjamin-bruce-2888882a4",
+      leetcode: "https://leetcode.com/u/4ZvqvsSpDs/",
+    },
+  },
 ];
 
 export function getStudent(slug: string): Student | undefined {
