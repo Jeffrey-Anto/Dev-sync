@@ -406,11 +406,14 @@ export function IconCloud({
 
       if (mode === "intro") {
         const elapsed = (performance.now() - startTime) / 1000;
-        if (elapsed >= 1.0) {
+        const INTRO_DURATION = 2.8;
+        if (elapsed >= INTRO_DURATION) {
           beginUnbox();
         } else {
-          rotationY = 0.065;
-          rotationX = 0;
+          const progress = elapsed / INTRO_DURATION;
+          const speedFactor = 1 - Math.pow(progress, 3) * 0.45;
+          rotationY = 0.08 * speedFactor;
+          rotationX = 0.015 * (1 - progress);
           rotate();
         }
       } else if (mode === "columns") {
