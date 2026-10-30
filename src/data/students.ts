@@ -117,7 +117,6 @@ export const STUDENTS: Student[] = [
     slug: "saravanakumar-m",
     name: "Saravanakumar M",
     year: "2023 – 2027",
-    domainId: "web-dev",
     links: {
       portfolio: "https://saravanawebdev.web.app",
       github: "https://github.com/Saravanaanandh",
