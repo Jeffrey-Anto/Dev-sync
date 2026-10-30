@@ -176,6 +176,38 @@ export const STUDENTS: Student[] = [
       leetcode: "https://leetcode.com/u/Jeffrey_Anto/",
     },
   },
+  {
+    slug: "mukesh-s",
+    name: "Mukesh S",
+    year: "2023 – 2027",
+    links: {
+      portfolio:
+        "https://mukesh-portfolio-60043185046.development.catalystserverless.in/app/index.html",
+      github: "https://github.com/mukesh-offll-dev",
+      linkedin: "https://www.linkedin.com/in/mukesh-s-53188a2a4/",
+    },
+  },
+  {
+    slug: "bhavya-j",
+    name: "Bhavya J",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://folio-seven-zeta.vercel.app/",
+      github: "https://github.com/Bhavya-jayaraman",
+      linkedin: "https://www.linkedin.com/in/bhavyajayaraman/",
+    },
+  },
+  {
+    slug: "sathish-d",
+    name: "Sathish D",
+    year: "2023 – 2027",
+    links: {
+      portfolio: "https://sathish-devos.web.app",
+      github: "https://github.com/sathish437",
+      linkedin: "https://www.linkedin.com/in/sathish-dev4",
+      leetcode: "https://leetcode.com/u/Sathish__/",
+    },
+  },
 ];
 
 export function getStudent(slug: string): Student | undefined {
