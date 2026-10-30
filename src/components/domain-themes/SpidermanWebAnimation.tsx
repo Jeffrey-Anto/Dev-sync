@@ -609,7 +609,7 @@ export default function SpidermanWebAnimation({
     if (!roadTrackRef.current) return;
     const road = roadTrackRef.current;
     const ctx = gsap.context(() => {
-      const st = ScrollTrigger.create({
+      ScrollTrigger.create({
         trigger: road.closest("section") ?? road,
         start: "top 70%",
         once: true,
@@ -621,7 +621,6 @@ export default function SpidermanWebAnimation({
           );
         },
       });
-      (window as unknown as { __st?: ScrollTrigger }).__st = st;
     });
     return () => ctx.revert();
   }, [runSequence]);
@@ -639,7 +638,7 @@ export default function SpidermanWebAnimation({
   };
 
   return (
-    <div className="relative w-full mt-12 mb-6 select-none">
+    <div className="sticky bottom-0 z-40 w-full mt-12 mb-6 select-none pointer-events-none">
       {/* Full-screen SVG Web Overlay */}
       <WebOverlay webs={activeWebs} />
 
@@ -659,7 +658,7 @@ export default function SpidermanWebAnimation({
       </div>
 
       {/* ─── Retro Game Action & Status Bar ─── */}
-      <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 px-2">
+      <div className="mt-4 flex flex-col sm:flex-row items-center justify-between gap-3 px-2 pointer-events-auto">
         <div className="flex items-center gap-2.5 px-4 py-1.5 rounded-xl bg-red-950/40 border border-red-500/30 backdrop-blur-md text-xs font-mono text-red-300 shadow-[0_0_15px_rgba(239,68,68,0.15)]">
           <span className="text-base animate-bounce">🕷️</span>
           <span>

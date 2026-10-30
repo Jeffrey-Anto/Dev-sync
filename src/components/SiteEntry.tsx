@@ -1,22 +1,30 @@
 "use client";
 
 import React, { useState } from "react";
-import dynamic from "next/dynamic";
-
-const WaterLogoEntry = dynamic(() => import("@/components/WaterLogoEntry"), {
-  ssr: false,
-});
+import WaterLogoEntry from "@/components/WaterLogoEntry";
 
 export default function SiteEntry({ children }: { children: React.ReactNode }) {
-  const [isEntered, setIsEntered] = useState(false);
+  const [isEntered, setIsEntered] = useState(() => {
+    if (typeof window !== "undefined") {
+      return sessionStorage.getItem("devsync_site_entered") === "true";
+    }
+    return false;
+  });
+
+  const handleEnter = () => {
+    setIsEntered(true);
+    try {
+      sessionStorage.setItem("devsync_site_entered", "true");
+    } catch {}
+  };
 
   return (
     <>
-      <WaterLogoEntry isEntered={isEntered} onEnter={() => setIsEntered(true)} />
+      <WaterLogoEntry isEntered={isEntered} onEnter={handleEnter} />
       <div
         className={`flex flex-col flex-grow transition-all duration-1000 ease-out ${
           isEntered
-            ? "filter blur-0 scale-100 opacity-100"
+            ? "opacity-100"
             : "filter blur-[25px] scale-[0.97] opacity-20 pointer-events-none"
         }`}
       >

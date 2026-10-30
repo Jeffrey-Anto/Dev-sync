@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Globe,
@@ -239,11 +240,15 @@ export default function DomainSelection() {
       <div className="absolute inset-0 bg-radial from-indigo-950/20 via-transparent to-[#050608] pointer-events-none" />
 
       {/* 🌌 CINEMATIC SPACE-TIME WARP & WORMHOLE ENGINE 🌌 */}
-      <AnimatePresence>
-        {isWarping && selectedDomain && (
-          <SpaceTimeWarpOverlay domain={selectedDomain} />
+      {typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {isWarping && selectedDomain && (
+              <SpaceTimeWarpOverlay domain={selectedDomain} />
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         {/* Section Header */}
@@ -519,7 +524,7 @@ function SpaceTimeWarpOverlay({ domain }: SpaceTimeWarpOverlayProps) {
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.15 }}
-      className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center overflow-hidden"
+      className="fixed inset-0 z-[100] pointer-events-none flex items-center justify-center overflow-hidden"
     >
       {/* 1. High-Performance Hardware-Accelerated Space-Time Canvas */}
       <canvas ref={canvasRef} className="absolute inset-0 w-full h-full block" />
