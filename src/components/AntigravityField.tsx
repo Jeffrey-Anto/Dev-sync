@@ -167,6 +167,7 @@ export default function AntigravityField({
 
       const centerX = width * 0.5;
       const centerY = height * 0.45;
+      let fillColor = "";
 
       for (let i = 0; i < particles.length; i++) {
         const p = particles[i];
@@ -207,24 +208,35 @@ export default function AntigravityField({
         p.y += (targetY - p.y) * 0.12;
         p.rotation += (targetRotation - p.rotation) * 0.15;
 
-        // Render oriented dash / particle pill
-        ctx.save();
-        ctx.translate(p.x, p.y);
-        ctx.rotate(p.rotation);
+        // The outer rings extend past the viewport; keep their physics running
+        // but skip drawing pills that cannot be seen.
+        const halfLen = p.length * 0.5;
+        if (p.x < -halfLen || p.x > width + halfLen || p.y < -halfLen || p.y > height + halfLen) {
+          continue;
+        }
 
-        ctx.fillStyle = p.color;
+        // Render oriented dash / particle pill. setTransform is the
+        // translate+rotate matrix without a save/restore per particle.
+        const cos = Math.cos(p.rotation);
+        const sin = Math.sin(p.rotation);
+        ctx.setTransform(cos, sin, -sin, cos, p.x, p.y);
+
+        if (p.color !== fillColor) {
+          ctx.fillStyle = p.color;
+          fillColor = p.color;
+        }
         ctx.globalAlpha = p.alpha * opacity;
 
         // Rounded dash capsule
-        const halfLen = p.length * 0.5;
         const halfWid = p.width * 0.5;
 
         ctx.beginPath();
         ctx.roundRect(-halfWid, -halfLen, p.width, p.length, halfWid);
         ctx.fill();
-
-        ctx.restore();
       }
+
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.globalAlpha = 1;
 
       animationFrameId = requestAnimationFrame(render);
     };

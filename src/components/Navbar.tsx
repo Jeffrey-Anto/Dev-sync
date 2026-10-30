@@ -15,24 +15,27 @@ const getTabFromPath = (path: string) => {
   return 0;
 };
 
+const navLinks = [
+  { label: "Home", href: "/" },
+  { label: "Domains", href: "/#domains" },
+  { label: "Tech Stack", href: "/tech-stack" },
+  { label: "Students", href: "/students" },
+  { label: "Achievements", href: "/achievements" },
+  { label: "Recruit Us", href: "/recruit" },
+];
+
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<number>(() => getTabFromPath(pathname));
 
-  const navLinks = [
-    { label: "Home", href: "/" },
-    { label: "Domains", href: "/#domains" },
-    { label: "Tech Stack", href: "/tech-stack" },
-    { label: "Students", href: "/students" },
-    { label: "Achievements", href: "/achievements" },
-    { label: "Recruit Us", href: "/recruit" },
-  ];
-
   // Sync scroll and pathname
   useEffect(() => {
-    const handleScroll = () => {
+    let scrollFrame: number | null = null;
+
+    const updateFromScroll = () => {
+      scrollFrame = null;
       setScrolled(window.scrollY > 20);
 
       if (pathname === "/") {
@@ -48,6 +51,11 @@ export default function Navbar() {
       }
     };
 
+    // Scroll fires many times per frame; read layout at most once per frame.
+    const handleScroll = () => {
+      if (scrollFrame === null) scrollFrame = requestAnimationFrame(updateFromScroll);
+    };
+
     if (pathname === "/") {
       if (typeof window !== "undefined" && window.location.hash === "#domains") {
         setActiveTab(1);
@@ -59,7 +67,10 @@ export default function Navbar() {
     }
 
     window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollFrame !== null) cancelAnimationFrame(scrollFrame);
+    };
   }, [pathname]);
 
   if (pathname.startsWith("/domain/")) {

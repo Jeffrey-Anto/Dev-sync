@@ -248,14 +248,15 @@ export function getLinkHandle(url: string): string {
   return trimmed.includes("//") ? new URL(trimmed).hostname.replace(/^www\./, "") : trimmed;
 }
 
-export function getGitHubAvatar(student: Student): string | undefined {
+// size is the requested image width in pixels; without it GitHub serves the full 460px image.
+export function getGitHubAvatar(student: Student, size?: number): string | undefined {
   const github = student.links.github;
   if (!github) return undefined;
   try {
     const url = new URL(github);
     const username = url.pathname.split("/").filter(Boolean)[0];
     if (!username) return undefined;
-    return `https://avatars.githubusercontent.com/${username}?v=4`;
+    return `https://avatars.githubusercontent.com/${username}?v=4${size ? `&s=${size}` : ""}`;
   } catch {
     return undefined;
   }

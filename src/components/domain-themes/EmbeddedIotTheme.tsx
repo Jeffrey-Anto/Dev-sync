@@ -59,32 +59,47 @@ export default function EmbeddedIotTheme() {
       });
     }
 
+    // Traces and pads never move, so they are drawn once into an offscreen
+    // layer and blitted each frame; only the signal pulses are redrawn.
+    const staticLayer = document.createElement("canvas");
+    const drawStaticLayer = () => {
+      staticLayer.width = width;
+      staticLayer.height = height;
+      const sctx = staticLayer.getContext("2d");
+      if (!sctx) return;
+
+      traces.forEach((trace) => {
+        sctx.beginPath();
+        sctx.moveTo(trace.points[0].x, trace.points[0].y);
+        for (let p = 1; p < trace.points.length; p++) {
+          sctx.lineTo(trace.points[p].x, trace.points[p].y);
+        }
+        sctx.strokeStyle = "rgba(16, 185, 129, 0.12)";
+        sctx.lineWidth = 1.5;
+        sctx.stroke();
+
+        // Draw PCB Pads at trace vertices
+        trace.points.forEach((pt) => {
+          sctx.beginPath();
+          sctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
+          sctx.fillStyle = "rgba(16, 185, 129, 0.25)";
+          sctx.strokeStyle = "rgba(52, 211, 153, 0.4)";
+          sctx.lineWidth = 1;
+          sctx.fill();
+          sctx.stroke();
+        });
+      });
+    };
+    drawStaticLayer();
+    window.addEventListener("resize", drawStaticLayer);
+
     let time = 0;
     const render = () => {
       time += 0.03;
       ctx.clearRect(0, 0, width, height);
+      ctx.drawImage(staticLayer, 0, 0);
 
-      // Draw Static PCB Traces
       traces.forEach((trace) => {
-        ctx.beginPath();
-        ctx.moveTo(trace.points[0].x, trace.points[0].y);
-        for (let p = 1; p < trace.points.length; p++) {
-          ctx.lineTo(trace.points[p].x, trace.points[p].y);
-        }
-        ctx.strokeStyle = "rgba(16, 185, 129, 0.12)";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-
-        // Draw PCB Pads at trace vertices
-        trace.points.forEach((pt) => {
-          ctx.beginPath();
-          ctx.arc(pt.x, pt.y, 3, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(16, 185, 129, 0.25)";
-          ctx.strokeStyle = "rgba(52, 211, 153, 0.4)";
-          ctx.lineWidth = 1;
-          ctx.fill();
-          ctx.stroke();
-        });
 
         // Draw Travelling Electron / Signal Pulse along PCB trace
         trace.progress += trace.speed;
@@ -118,6 +133,7 @@ export default function EmbeddedIotTheme() {
 
     return () => {
       window.removeEventListener("resize", handleResize);
+      window.removeEventListener("resize", drawStaticLayer);
       cancelAnimationFrame(animationId);
     };
   }, []);

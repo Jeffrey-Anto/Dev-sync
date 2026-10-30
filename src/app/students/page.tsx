@@ -33,7 +33,7 @@ function StudentRow({ student }: { student: Student }) {
   const links = PLATFORM_ORDER.filter((key) => student.links[key]);
   const stats = STATS[student.slug] ?? {};
   const [avatarFailed, setAvatarFailed] = useState(false);
-  const avatarUrl = getGitHubAvatar(student);
+  const avatarUrl = getGitHubAvatar(student, 132);
 
   return (
     <li className="group relative rounded-xl transition-colors duration-200 hover:bg-white/[0.03]">
@@ -63,6 +63,7 @@ function StudentRow({ student }: { student: Student }) {
                 alt={`${student.name} GitHub avatar`}
                 className="h-full w-full object-cover"
                 loading="lazy"
+                decoding="async"
                 onError={() => setAvatarFailed(true)}
               />
             ) : (

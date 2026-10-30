@@ -128,7 +128,9 @@ export interface WebLine {
   type?: "overhead" | "snatch";
 }
 
-function WebOverlay({ webs }: { webs: WebLine[] }) {
+// Memoized: the parent re-renders on every idle sprite frame (110ms), while
+// the web lines only change during a swing.
+const WebOverlay = React.memo(function WebOverlay({ webs }: { webs: WebLine[] }) {
   if (!webs || webs.length === 0) return null;
 
   return (
@@ -233,7 +235,7 @@ function WebOverlay({ webs }: { webs: WebLine[] }) {
       })}
     </svg>
   );
-}
+});
 
 // ─── Swing lane (invisible anchor for the sprite and the scroll trigger) ────
 

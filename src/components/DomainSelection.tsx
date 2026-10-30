@@ -149,18 +149,25 @@ export default function DomainSelection() {
     [isWarping, router]
   );
 
-  const handleDomainClick = (domain: Domain, index: number) => {
-    if (isWarping) return;
+  const handleDomainClick = useCallback(
+    (domain: Domain, index: number) => {
+      if (isWarping) return;
 
-    // If clicking a side card, bring it smoothly to the center
-    if (index !== activeIndex) {
-      setActiveIndex(index);
-      return;
-    }
+      // If clicking a side card, bring it smoothly to the center
+      if (index !== activeIndex) {
+        setActiveIndex(index);
+        return;
+      }
 
-    // If clicking the active center card, trigger the space-time warp
-    triggerSpaceTimeWarp(domain);
-  };
+      // If clicking the active center card, trigger the space-time warp
+      triggerSpaceTimeWarp(domain);
+    },
+    [activeIndex, isWarping, triggerSpaceTimeWarp]
+  );
+
+  // Stable handlers let the memoized cards skip re-rendering on hover changes
+  const handleCardHover = useCallback((domainId: string) => setHoveredDomainId(domainId), []);
+  const handleCardLeave = useCallback(() => setHoveredDomainId(null), []);
 
   const handlePrev = useCallback(() => {
     if (isWarping) return;
@@ -315,10 +322,10 @@ export default function DomainSelection() {
                 isHovered={isHovered}
                 isSelected={isSelected}
                 isWarping={isWarping}
-                onHover={() => setHoveredDomainId(domain.id)}
-                onLeave={() => setHoveredDomainId(null)}
-                onClick={() => handleDomainClick(domain, index)}
-                onLaunch={() => triggerSpaceTimeWarp(domain)}
+                onHover={handleCardHover}
+                onLeave={handleCardLeave}
+                onClick={handleDomainClick}
+                onLaunch={triggerSpaceTimeWarp}
               />
             );
           })}
@@ -569,13 +576,13 @@ interface WarpDomainCardProps {
   isHovered: boolean;
   isSelected: boolean;
   isWarping: boolean;
-  onHover: () => void;
+  onHover: (domainId: string) => void;
   onLeave: () => void;
-  onClick: () => void;
-  onLaunch: () => void;
+  onClick: (domain: Domain, index: number) => void;
+  onLaunch: (domain: Domain) => void;
 }
 
-function WarpDomainCard({
+const WarpDomainCard = React.memo(function WarpDomainCard({
   domain,
   index,
   offset,
@@ -800,9 +807,9 @@ function WarpDomainCard({
         damping: 26,
       }}
       onMouseMove={handleMouseMove}
-      onMouseEnter={onHover}
+      onMouseEnter={() => onHover(domain.id)}
       onMouseLeave={handleMouseLeave}
-      onClick={onClick}
+      onClick={() => onClick(domain, index)}
       style={{
         position: "absolute",
         transformStyle: "flat",
@@ -939,7 +946,7 @@ function WarpDomainCard({
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onLaunch();
+                onLaunch(domain);
               }}
               className="group/btn relative inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl font-bold tracking-wider uppercase text-[11px] transition-all duration-300 hover:scale-105 active:scale-95 cursor-pointer shadow-lg"
               style={{
@@ -974,4 +981,4 @@ function WarpDomainCard({
       </div>
     </motion.div>
   );
-}
+});

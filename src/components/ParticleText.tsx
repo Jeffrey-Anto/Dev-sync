@@ -182,17 +182,50 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
       gathering = true;
     };
 
-    const drawParticle = (particle: Particle) => {
-      const size = particle.size;
-      ctx.fillStyle = particle.color;
+    // Particles are sorted by color, so consecutive opaque circles of one color
+    // share a single path and fill() instead of one fill per particle. Batching
+    // only happens at alpha 1, where a union fill looks identical to separate fills.
+    let fillColor = "";
+    let fillAlpha = 1;
+    let pathOpen = false;
 
+    const flushPath = () => {
+      if (pathOpen) {
+        ctx.fill();
+        pathOpen = false;
+      }
+    };
+
+    const drawParticle = (particle: Particle, alpha: number) => {
+      if (alpha !== 1 || particle.color !== fillColor) flushPath();
+      if (particle.color !== fillColor) {
+        ctx.fillStyle = particle.color;
+        fillColor = particle.color;
+      }
+      if (alpha !== fillAlpha) {
+        ctx.globalAlpha = alpha;
+        fillAlpha = alpha;
+      }
+
+      const size = particle.size;
       if (size <= 2.1) {
         ctx.fillRect(particle.x - size / 2, particle.y - size / 2, size, size);
         return;
       }
 
+      const radius = size / 2;
+      if (alpha === 1) {
+        if (!pathOpen) {
+          ctx.beginPath();
+          pathOpen = true;
+        }
+        ctx.moveTo(particle.x + radius, particle.y);
+        ctx.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
+        return;
+      }
+
       ctx.beginPath();
-      ctx.arc(particle.x, particle.y, size / 2, 0, Math.PI * 2);
+      ctx.arc(particle.x, particle.y, radius, 0, Math.PI * 2);
       ctx.fill();
     };
 
@@ -207,6 +240,9 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
       }
 
       ctx.clearRect(0, 0, width, height);
+      fillColor = "";
+      fillAlpha = 1;
+      ctx.globalAlpha = 1;
 
       pointer.smoothX += (pointer.x - pointer.smoothX) * 0.18;
       pointer.smoothY += (pointer.y - pointer.smoothY) * 0.18;
@@ -261,10 +297,10 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
         particle.x += (baseX - particle.x) * follow;
         particle.y += (baseY - particle.y) * follow;
 
-        ctx.globalAlpha = clamp(0.35 + progress * 0.65, 0, 1);
-        drawParticle(particle);
+        drawParticle(particle, clamp(0.35 + progress * 0.65, 0, 1));
       });
 
+      flushPath();
       ctx.globalAlpha = 1;
 
       if (gathering && complete) {
@@ -428,6 +464,7 @@ export const ParticleText: React.FC<ParticleTextProps> = ({
           delay: seed * stagger,
         };
       });
+      particles.sort((a, b) => (a.color < b.color ? -1 : a.color > b.color ? 1 : 0));
 
       pointer.x = width / 2;
       pointer.y = height / 2;

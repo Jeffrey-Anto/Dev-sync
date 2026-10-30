@@ -62,7 +62,7 @@ const milestones: AchievementMilestone[] = [
       "First Prize at Cipher Lab AI, a National-Level Hackathon, secured by CSE students.",
     metric: "1st Prize Winner",
     badgeColor: "text-emerald-400 border-emerald-500/30 bg-emerald-500/10",
-    imageUrl: "/achievements/cipher-lab.png",
+    imageUrl: "/achievements/cipher-lab.jpg",
   },
   {
     years: ["2026"],
@@ -370,7 +370,7 @@ export default function AchievementsPage() {
             transition={{ delay: 0.2 }}
             onClick={() =>
               setSelectedImage({
-                url: "/achievements/cipher-lab.png",
+                url: "/achievements/cipher-lab.jpg",
                 title: "First Prize at Cipher Lab AI National Hackathon",
               })
             }
@@ -379,7 +379,7 @@ export default function AchievementsPage() {
             {/* Subtle Photo Background Glow on hover */}
             <div
               className="absolute inset-0 bg-cover bg-center opacity-10 group-hover:opacity-20 transition-opacity duration-500 pointer-events-none"
-              style={{ backgroundImage: `url('/achievements/cipher-lab.png')` }}
+              style={{ backgroundImage: `url('/achievements/cipher-lab.jpg')` }}
             />
             <div className="relative z-10">
               <div className="flex items-center justify-between mb-4">
@@ -498,6 +498,8 @@ export default function AchievementsPage() {
                       <img
                         src={item.imageUrl}
                         alt={item.title}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-cover object-center group-hover/thumb:scale-110 transition-transform duration-300"
                       />
                       <div className="absolute inset-0 bg-black/40 group-hover/thumb:bg-black/10 transition-colors flex items-center justify-center">
