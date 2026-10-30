@@ -237,6 +237,17 @@ function WebOverlay({ webs }: { webs: WebLine[] }) {
 
 // ─── Swing lane (invisible anchor for the sprite and the scroll trigger) ────
 
+const SWING_HANDS = [
+  { ox: -14.5, oy: -21.0 }, // frame 0: gloves reaching back into swing
+  { ox: 14.5,  oy: -19.0 }, // frame 1: gloves reaching forward
+  { ox: 9.5,   oy: -28.0 }, // frame 2: gloves holding web above
+  { ox: 5.0,   oy: -28.0 }, // frame 3: gloves at apex of swing
+  { ox: -2.0,  oy: -25.0 }, // frame 4: gloves ascending
+  { ox: -2.0,  oy: -27.0 }, // frame 5: gloves high kick
+  { ox: -16.0, oy: -24.0 }, // frame 6: gloves releasing
+  { ox: -21.5, oy: -29.0 }, // frame 7: gloves in somersault
+];
+
 export default function SpidermanWebAnimation({
   onTriggerSwing,
   swingCount,
@@ -244,16 +255,23 @@ export default function SpidermanWebAnimation({
 }: SpidermanWebAnimationProps) {
   const roadTrackRef = useRef<HTMLDivElement>(null);
   const runnerRef = useRef<HTMLDivElement>(null);
-  const hasRunRef = useRef(false);
   const tlRef = useRef<gsap.core.Timeline | null>(null);
+  const idleIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const [isRunning, setIsRunning] = useState(false);
-  const [actionState, setActionState] = useState<SpiderAction>("swing");
+  const [actionState, setActionState] = useState<SpiderAction>("idle");
   const [allDone, setAllDone] = useState(false);
   const [revealedCount, setRevealedCount] = useState(0);
   const [activeWebs, setActiveWebs] = useState<WebLine[]>([]);
   const [frame, setFrame] = useState(0);
-  const [statusText, setStatusText] = useState("Spidey is on standby — press START HERO COMBO!");
+  const [statusText, setStatusText] = useState("Spidey is on standby — scroll down to unveil projects! 🕷️");
+
+  // Per-card reveal queue & scroll state
+  const queueRef = useRef<number[]>([]);
+  const isProcessingRef = useRef(false);
+  const revealedSetRef = useRef<Set<number>>(new Set());
+  const currentCardIndexRef = useRef<number | null>(null);
+  const hasUserScrolledRef = useRef(false);
 
   // Hide all cards initially on mount / show initial hanging 3D silk cocoons
   const hideAllCards = useCallback(() => {
@@ -290,127 +308,142 @@ export default function SpidermanWebAnimation({
     hideAllCards();
   }, [hideAllCards]);
 
-  // ─── Seamless Continuous Web-Swinging & Acrobatic Chain ───────────────────
-  const runSequence = useCallback(() => {
-    const validRefs = cardRefs.filter((r) => r.current);
-    if (!validRefs.length || !runnerRef.current || !roadTrackRef.current) return;
+  // Start continuous subtle idle sprite loop
+  const startIdleLoop = useCallback(() => {
+    if (idleIntervalRef.current) clearInterval(idleIntervalRef.current);
+    setActionState("idle");
+    let idleF = 0;
+    idleIntervalRef.current = setInterval(() => {
+      idleF = (idleF + 1) % 11;
+      setFrame(idleF);
+    }, 110);
+  }, []);
 
-    tlRef.current?.kill();
-    setIsRunning(true);
-    setAllDone(false);
-    setRevealedCount(0);
-    setActiveWebs([]);
-    setActionState("swing");
+  const stopIdleLoop = useCallback(() => {
+    if (idleIntervalRef.current) {
+      clearInterval(idleIntervalRef.current);
+      idleIntervalRef.current = null;
+    }
+  }, []);
 
-    hideAllCards();
+  // ─── Single Card Reveal: Spidey swings to Card `index`, shoots web & breaks cocoon ───
+  const revealSingleCard = useCallback(
+    (index: number, onComplete: () => void) => {
+      const card = cardRefs[index]?.current;
+      const runner = runnerRef.current;
+      const road = roadTrackRef.current;
+      if (!card || !runner || !road) {
+        onComplete();
+        return;
+      }
 
-    const runner = runnerRef.current;
-    const road = roadTrackRef.current;
-    const roadRect = road.getBoundingClientRect();
+      stopIdleLoop();
+      tlRef.current?.kill();
 
-    // Initial setup: Spider-Man appears ready to swing in from high left
-    gsap.set(runner, { x: -100, y: -65, rotation: 25, opacity: 1, scale: 1.25 });
+      const roadRect = road.getBoundingClientRect();
+      const cardRect = card.getBoundingClientRect();
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        setIsRunning(false);
-        setAllDone(true);
-        setActiveWebs([]);
+      const cardCenterX = cardRect.left + cardRect.width / 2 - roadRect.left;
+      const targetCardX = cardCenterX - 45;
 
-        // Heroic Landing & Stance Finale
-        setActionState("landing");
-        gsap.set(runner, { y: 12, rotation: 0 });
-        setFrame(4);
+      // Determine starting position: from previous card location or entrance from left
+      const prevIdx = currentCardIndexRef.current;
+      let startX: number;
+      const currentRunnerOpacity = gsap.getProperty(runner, "opacity") as number;
 
-        // Rise into classic ready idle stance
-        gsap.delayedCall(0.5, () => {
-          setActionState("idle");
-          gsap.to(runner, { y: 0, duration: 0.3, ease: "back.out(2)" });
+      if (currentRunnerOpacity <= 0.05 || prevIdx === null) {
+        // First entry
+        startX = Math.max(-100, targetCardX - 220);
+        gsap.set(runner, { x: startX, y: -65, rotation: 25, opacity: 1, scale: 1.25 });
+      } else {
+        startX = gsap.getProperty(runner, "x") as number;
+      }
 
-          let idleFrame = 0;
-          const idleInt = setInterval(() => {
-            idleFrame = (idleFrame + 1) % 11;
-            setFrame(idleFrame);
-          }, 110);
-
-          // Exit swing after victory pose
-          gsap.delayedCall(1.6, () => {
-            clearInterval(idleInt);
-            setActionState("swing");
-            gsap.to(runner, {
-              x: roadRect.width + 160,
-              y: -90,
-              rotation: -28,
-              duration: 1.1,
-              ease: "power2.inOut",
-              onComplete: () => {
-                gsap.set(runner, { opacity: 0 });
-              },
-            });
-          });
-        });
-      },
-    });
-    tlRef.current = tl;
-
-    // Measured Glove Hand Coordinates (spidey_swing_strip)
-    const SWING_HANDS = [
-      { ox: -14.5, oy: -21.0 }, // frame 0: gloves reaching back into swing
-      { ox: 14.5,  oy: -19.0 }, // frame 1: gloves reaching forward
-      { ox: 9.5,   oy: -28.0 }, // frame 2: gloves holding web above
-      { ox: 5.0,   oy: -28.0 }, // frame 3: gloves at apex of swing
-      { ox: -2.0,  oy: -25.0 }, // frame 4: gloves ascending
-      { ox: -2.0,  oy: -27.0 }, // frame 5: gloves high kick
-      { ox: -16.0, oy: -24.0 }, // frame 6: gloves releasing
-      { ox: -21.5, oy: -29.0 }, // frame 7: gloves in somersault
-    ];
-
-    validRefs.forEach((ref, i) => {
-      const card = ref.current!;
-
-      // ────────────────────────────────────────────────────────────────────────
-      // PHASE A: Seamless Web-Swing Swoop across Card `i`
-      // ────────────────────────────────────────────────────────────────────────
-      const swingState = { progress: 0 };
-      const duration = 1.6;
-
-      // Cached once per swing: reading it every frame forced a layout each frame.
+      // Read diamond spider badge center
       let coreOffset: { x: number; y: number } | null = null;
+      const coreEl = card.querySelector(".js-cocoon-core");
+      if (coreEl) {
+        const cRect = card.getBoundingClientRect();
+        const coreRect = coreEl.getBoundingClientRect();
+        coreOffset = {
+          x: coreRect.left + coreRect.width / 2 - cRect.left,
+          y: coreRect.top + coreRect.height * 0.4 - cRect.top,
+        };
+      }
 
-      tl.add(() => {
-        setActionState("swing");
-        setStatusText(`Spider-Man web-swinging across Project ${i + 1}… 🕸️`);
+      setActionState("swing");
+      setStatusText(`Spider-Man web-swinging to Project ${index + 1}… 🕸️`);
 
-        const coreEl = card.querySelector(".js-cocoon-core");
-        if (coreEl) {
-          const cRect = card.getBoundingClientRect();
-          const coreRect = coreEl.getBoundingClientRect();
-          coreOffset = {
-            x: coreRect.left + coreRect.width / 2 - cRect.left,
-            y: coreRect.top + coreRect.height * 0.4 - cRect.top,
-          };
-        }
+      const swingState = { progress: 0 };
+      const duration = 1.35;
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          setActiveWebs([]);
+          currentCardIndexRef.current = index;
+
+          const totalValid = cardRefs.filter((r) => r.current).length;
+          const isFinal = revealedSetRef.current.size >= totalValid;
+
+          // Heroic landing pose
+          setActionState("landing");
+          gsap.set(runner, { y: 12, rotation: 0 });
+          setFrame(4);
+
+          if (isFinal) {
+            setAllDone(true);
+            setStatusText("All projects pulled down & revealed! 🕸️✨");
+
+            // Exit victory sequence
+            gsap.delayedCall(0.5, () => {
+              startIdleLoop();
+              gsap.to(runner, { y: 0, duration: 0.3, ease: "back.out(2)" });
+
+              gsap.delayedCall(1.6, () => {
+                stopIdleLoop();
+                setActionState("swing");
+                gsap.to(runner, {
+                  x: roadRect.width + 160,
+                  y: -90,
+                  rotation: -28,
+                  duration: 1.1,
+                  ease: "power2.inOut",
+                  onComplete: () => {
+                    gsap.set(runner, { opacity: 0 });
+                    onComplete();
+                  },
+                });
+              });
+            });
+          } else {
+            // Settle into ready idle stance waiting for user scroll
+            gsap.delayedCall(0.3, () => {
+              startIdleLoop();
+              gsap.to(runner, { y: 0, duration: 0.25, ease: "back.out(2)" });
+              setStatusText(`Project ${index + 1} unlocked! Scroll down for next… 🕷️`);
+              onComplete();
+            });
+          }
+        },
       });
 
+      tlRef.current = tl;
+
+      // ── Swing Arc & Dual Web Overlay ──
       tl.to(swingState, {
         progress: 1,
         duration: duration,
         ease: "power1.inOut",
         onUpdate: function () {
-          if (!roadTrackRef.current || !ref.current || !runnerRef.current) return;
+          if (!roadTrackRef.current || !cardRefs[index]?.current || !runnerRef.current) return;
           const currentRoad = roadTrackRef.current.getBoundingClientRect();
-          const cardRect = ref.current.getBoundingClientRect();
+          const cRect = cardRefs[index].current!.getBoundingClientRect();
 
-          const cardCenterX = cardRect.left + cardRect.width / 2 - currentRoad.left;
-          const targetCardX = cardCenterX - 45;
-
-          // Seamless continuity: Start where previous flip/swing finished
-          const prevX = i === 0 ? -90 : targetCardX - 160;
-          const nextX = i === validRefs.length - 1 ? currentRoad.width + 120 : targetCardX + 160;
+          const cCenterX = cRect.left + cRect.width / 2 - currentRoad.left;
+          const destX = cCenterX - 45;
 
           const t = swingState.progress;
-          const currentX = gsap.utils.interpolate(prevX, nextX, t);
-          // Parabolic swing arc
+          const currentX = gsap.utils.interpolate(startX, destX, t);
           const currentY = -65 + 72 * Math.sin(t * Math.PI);
           const currentRotation = 26 * (1 - 2 * t);
 
@@ -436,8 +469,8 @@ export default function SpidermanWebAnimation({
           const shooterX = cx + shootRotX;
           const shooterY = cy + shootRotY;
 
-          const anchorX = cardRect.left + cardRect.width / 2;
-          const anchorY = Math.max(15, cardRect.top - 120);
+          const anchorX = cRect.left + cRect.width / 2;
+          const anchorY = Math.max(15, cRect.top - 120);
 
           const overheadOpacity = t < 0.82 ? 1 : Math.max(0, 1 - (t - 0.82) / 0.18);
           const swingBow = 24 * Math.sin(t * Math.PI);
@@ -459,16 +492,14 @@ export default function SpidermanWebAnimation({
           if (t >= 0.35 && t <= 0.75) {
             const pullT = (t - 0.35) / 0.40;
 
-            // Target the exact center of the Spider Chrysalis Logo on the cocoon
-            let targetLogoX = cardRect.left + cardRect.width / 2;
-            let targetLogoY = cardRect.top + cardRect.height * 0.50; // Exact vertical center of cocoon
+            let targetLogoX = cRect.left + cRect.width / 2;
+            let targetLogoY = cRect.top + cRect.height * 0.50;
             if (coreOffset) {
-              targetLogoX = cardRect.left + coreOffset.x;
-              targetLogoY = cardRect.top + coreOffset.y; // Center of the diamond spider badge
+              targetLogoX = cRect.left + coreOffset.x;
+              targetLogoY = cRect.top + coreOffset.y;
             }
 
-            // Web-shot travels down directly and locks onto the spider logo center
-            const startSkyY = Math.max(15, cardRect.top - 140);
+            const startSkyY = Math.max(15, cRect.top - 140);
             const currentImpactY = pullT < 0.22
               ? startSkyY + (targetLogoY - startSkyY) * (pullT / 0.22)
               : targetLogoY;
@@ -538,9 +569,9 @@ export default function SpidermanWebAnimation({
             });
           }
         }
-      }, "<+0.50");
+      }, "<+0.45");
 
-      // Card blooms / hatches forward into place like an emerging butterfly
+      // Card blooms / hatches forward into place
       tl.to(
         card,
         {
@@ -549,7 +580,8 @@ export default function SpidermanWebAnimation({
           duration: 0.85,
           ease: "elastic.out(1.1, 0.45)",
           onStart: () => {
-            setRevealedCount((prev) => prev + 1);
+            revealedSetRef.current.add(index);
+            setRevealedCount(revealedSetRef.current.size);
           },
           onComplete: () => {
             gsap.set(card, { pointerEvents: "auto" });
@@ -573,80 +605,131 @@ export default function SpidermanWebAnimation({
         },
         "<"
       );
+    },
+    [cardRefs, startIdleLoop, stopIdleLoop]
+  );
 
-      // ────────────────────────────────────────────────────────────────────────
-      // PHASE B: Mid-Air Acrobatic Somersault Flip Transition to Next Card
-      // ────────────────────────────────────────────────────────────────────────
-      if (i < validRefs.length - 1) {
-        const nextCard = validRefs[i + 1].current!;
+  // ─── Process the Reveal Queue (One by One) ───
+  const processQueue = useCallback(() => {
+    if (isProcessingRef.current) return;
+    if (!hasUserScrolledRef.current) return; // Do not open anything before user scrolls!
+    if (queueRef.current.length === 0) {
+      setIsRunning(false);
+      return;
+    }
 
-        tl.add(() => {
-          setActiveWebs([]);
-          setActionState("flip");
-          setStatusText("Spider-Man executing mid-air flip into next swing… 🤸‍♂️");
-        });
+    const nextIndex = queueRef.current.shift()!;
+    // If already revealed, skip to next in queue
+    if (revealedSetRef.current.has(nextIndex)) {
+      processQueue();
+      return;
+    }
 
-        const flipObj = { t: 0 };
-        tl.to(flipObj, {
-          t: 1,
-          duration: 0.75,
-          ease: "power1.inOut",
-          onUpdate: function () {
-            if (!roadTrackRef.current || !card || !nextCard || !runnerRef.current) return;
-            const currentRoad = roadTrackRef.current.getBoundingClientRect();
-            const c1Rect = card.getBoundingClientRect();
-            const c2Rect = nextCard.getBoundingClientRect();
+    isProcessingRef.current = true;
+    setIsRunning(true);
 
-            const c1X = c1Rect.left + c1Rect.width / 2 - currentRoad.left - 45 + 160;
-            const c2X = c2Rect.left + c2Rect.width / 2 - currentRoad.left - 45 - 160;
-
-            const t = flipObj.t;
-            const fX = gsap.utils.interpolate(c1X, c2X, t);
-            // Slight mid-air parabolic rise and dip
-            const fY = -65 - 18 * Math.sin(t * Math.PI);
-
-            const fIdx = Math.min(9, Math.floor(t * 10));
-            setFrame(fIdx);
-
-            gsap.set(runner, { x: fX, y: fY, rotation: 0 });
-          },
-        });
-      }
+    revealSingleCard(nextIndex, () => {
+      isProcessingRef.current = false;
+      processQueue();
     });
-  }, [cardRefs, hideAllCards]);
+  }, [revealSingleCard]);
 
-  // ScrollTrigger auto-activation
+  // ─── ScrollTrigger Activation: Individual Card Triggers on Scroll ───
   useEffect(() => {
     if (!roadTrackRef.current) return;
-    const road = roadTrackRef.current;
+
+    const validRefs = cardRefs.filter((r) => r.current);
+    if (!validRefs.length) return;
+
+    // Listen for actual user scroll before unlocking reveal execution
+    const handleScroll = () => {
+      if (!hasUserScrolledRef.current && window.scrollY > 30) {
+        hasUserScrolledRef.current = true;
+        processQueue();
+      }
+    };
+
+    // If page is refreshed while already scrolled down
+    if (typeof window !== "undefined" && window.scrollY > 40) {
+      hasUserScrolledRef.current = true;
+    }
+
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
     const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: road.closest("section") ?? road,
-        start: "top 70%",
-        once: true,
-        onEnter: () => {
-          if (hasRunRef.current) return;
-          hasRunRef.current = true;
-          requestAnimationFrame(() =>
-            requestAnimationFrame(() => runSequence())
-          );
-        },
+      cardRefs.forEach((r, idx) => {
+        if (!r.current) return;
+        ScrollTrigger.create({
+          trigger: r.current,
+          start: "top 82%", // Triggers only when this card scrolls into view
+          once: true,
+          onEnter: () => {
+            if (!revealedSetRef.current.has(idx)) {
+              queueRef.current.push(idx);
+              if (hasUserScrolledRef.current) {
+                processQueue();
+              }
+            }
+          },
+        });
       });
     });
-    return () => ctx.revert();
-  }, [runSequence]);
 
-  // Manual Trigger
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh();
+    }, 250);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      clearTimeout(refreshTimer);
+      ctx.revert();
+      stopIdleLoop();
+    };
+  }, [cardRefs, processQueue, stopIdleLoop]);
+
+  // ─── Manual Trigger / START HERO COMBO button ───
+  const handleButtonClick = () => {
+    if (isRunning) return;
+
+    hasUserScrolledRef.current = true;
+    const totalValid = cardRefs.filter((r) => r.current).length;
+
+    // If all cards were already revealed, reset and run combo again
+    if (revealedSetRef.current.size >= totalValid) {
+      revealedSetRef.current.clear();
+      setAllDone(false);
+      setRevealedCount(0);
+      currentCardIndexRef.current = null;
+      hideAllCards();
+      queueRef.current = cardRefs.map((_, i) => i);
+      processQueue();
+      onTriggerSwing?.();
+      return;
+    }
+
+    // Otherwise, push all remaining unrevealed cards into the queue
+    for (let i = 0; i < totalValid; i++) {
+      if (!revealedSetRef.current.has(i) && !queueRef.current.includes(i)) {
+        queueRef.current.push(i);
+      }
+    }
+    processQueue();
+    onTriggerSwing?.();
+  };
+
+  // Sync external swingCount trigger
   useEffect(() => {
     if (swingCount > 0) {
-      hasRunRef.current = false;
-      runSequence();
+      hasUserScrolledRef.current = true;
+      const totalValid = cardRefs.filter((r) => r.current).length;
+      for (let i = 0; i < totalValid; i++) {
+        if (!revealedSetRef.current.has(i) && !queueRef.current.includes(i)) {
+          queueRef.current.push(i);
+        }
+      }
+      processQueue();
     }
   }, [swingCount]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  const handleButtonClick = () => {
-    if (!isRunning) onTriggerSwing?.();
-  };
 
   return (
     <div className="sticky bottom-0 z-40 w-full mt-12 mb-6 select-none pointer-events-none">
@@ -675,9 +758,7 @@ export default function SpidermanWebAnimation({
           <span>
             {allDone
               ? "All projects pulled down & revealed! 🕸️✨"
-              : isRunning
-                ? statusText
-                : "Spidey is on standby — press START HERO COMBO!"}
+              : statusText}
           </span>
         </div>
 
