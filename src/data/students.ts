@@ -27,6 +27,7 @@ export const STUDENTS: Student[] = [
     name: "Barath B",
     year: "2023 – 2027",
     links: {
+      portfolio: "https://3dbarath.github.io",
       github: "https://github.com/3DBarath",
       leetcode: "https://leetcode.com/u/LpkxOUY2H3/",
       linkedin: "https://www.linkedin.com/in/3dbarath/",

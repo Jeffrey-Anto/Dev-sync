@@ -25,6 +25,9 @@ import {
   VolumeX,
   ChevronLeft,
   ChevronRight,
+  Camera,
+  Video,
+  Mic,
 } from "lucide-react";
 import { Project, Domain } from "@/data/domains";
 import { PhoneFrame } from "./MobileDevCinematicIntro";
@@ -393,7 +396,138 @@ function SmetScreen() {
 }
 
 // =========================================================================
-// 4. MAIN STICKY CENTER-PINNED MOBILE PROJECT SHOWCASE
+// 4. IN-DEVICE MOBILE SCREEN FOR PROJECT 4: EXTRACAM WIRELESS VIRTUAL CAMERA
+// =========================================================================
+function ExtraCamScreen() {
+  const [isStreaming, setIsStreaming] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
+
+  const handleToggleStream = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setIsStreaming((prev) => !prev);
+  };
+
+  return (
+    <div className="relative w-full h-full bg-[#030712] text-slate-100 p-2.5 sm:p-3 pt-5 sm:pt-6 flex flex-col justify-between select-none overflow-hidden font-mono">
+      {/* Dynamic Scanline Viewfinder Grid */}
+      <div className="absolute inset-0 opacity-15 pointer-events-none bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:12px_12px]" />
+
+      {/* Top Status */}
+      <div className="flex-shrink-0">
+        <div className="flex items-center justify-between text-[8.5px] text-amber-300/80 mb-1.5 px-0.5">
+          <span>09:41</span>
+          <div className="flex items-center gap-1">
+            <span
+              className={`text-[7.5px] px-1.5 py-0.2 rounded font-bold border flex items-center gap-1 ${
+                isStreaming
+                  ? "bg-amber-500/20 text-amber-300 border-amber-500/30"
+                  : "bg-slate-800 text-slate-400 border-white/10"
+              }`}
+            >
+              <span
+                className={`w-1.5 h-1.5 rounded-full ${
+                  isStreaming ? "bg-amber-400 animate-ping" : "bg-slate-500"
+                }`}
+              />
+              {isStreaming ? "LIVE RTSP" : "STANDBY"}
+            </span>
+            <Wifi className="w-2.5 h-2.5 text-amber-400" />
+            <Battery className="w-3 h-3 text-emerald-400" />
+          </div>
+        </div>
+
+        {/* Viewfinder Header Banner */}
+        <div className="p-2 rounded-xl bg-amber-950/40 border border-amber-500/30 flex items-center justify-between mb-1.5">
+          <div className="flex items-center gap-1.5">
+            <div className="w-6 h-6 rounded-lg bg-amber-500/20 flex items-center justify-center border border-amber-400/30">
+              <Camera className="w-3.5 h-3.5 text-amber-400" />
+            </div>
+            <div>
+              <h5 className="text-[10px] font-bold text-white">ExtraCam AV</h5>
+              <p className="text-[7px] text-amber-400">MediaCodec H.264 · Sub-100ms</p>
+            </div>
+          </div>
+          <span className="text-[7.5px] font-bold text-slate-300">1080p60</span>
+        </div>
+      </div>
+
+      {/* Simulated Live Camera Viewfinder Screen */}
+      <div className="relative flex-1 min-h-[140px] max-h-[220px] rounded-2xl bg-gradient-to-b from-[#0a0f1d] via-[#050811] to-[#020409] border border-amber-500/30 overflow-hidden p-2.5 flex flex-col justify-between shadow-inner my-1">
+        {/* Crosshair Viewfinder Lines */}
+        <div className="absolute inset-4 border border-dashed border-amber-500/20 rounded-xl pointer-events-none flex items-center justify-center">
+          <div className="w-8 h-8 border border-amber-400/40 rounded-full flex items-center justify-center">
+            <div className="w-1.5 h-1.5 bg-amber-400 rounded-full animate-pulse" />
+          </div>
+        </div>
+
+        {/* Live Video Telemetry Overlay */}
+        <div className="relative z-10 flex items-center justify-between text-[7.5px] font-mono text-amber-300/90 bg-black/60 px-2 py-1 rounded-lg border border-amber-500/20">
+          <span>BITRATE: 12.4 Mbps</span>
+          <span>LATENCY: 18ms</span>
+          <span>60 FPS</span>
+        </div>
+
+        {/* Soundwave / Audio Level Meter */}
+        <div className="relative z-10 p-2 rounded-xl bg-black/70 border border-white/5 space-y-1">
+          <div className="flex items-center justify-between text-[7px] text-slate-300 font-bold">
+            <span className="flex items-center gap-1">
+              <Mic className="w-2.5 h-2.5 text-amber-400" />
+              HARDWARE AAC
+            </span>
+            <span className="text-emerald-400">-6 dB PEAK</span>
+          </div>
+          <div className="flex items-center gap-0.5 h-1.5">
+            {[40, 75, 90, 60, 85, 95, 70, 50, 80, 65, 45, 90, 100, 70].map((h, i) => (
+              <div
+                key={i}
+                className="flex-1 rounded-full bg-gradient-to-t from-emerald-500 via-amber-400 to-rose-500 opacity-80"
+                style={{ height: isStreaming ? `${h}%` : "15%" }}
+              />
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Camera Control Action Buttons */}
+      <div className="flex-shrink-0 pt-1 space-y-1.5">
+        <div className="grid grid-cols-2 gap-1.5">
+          <button
+            onClick={handleToggleStream}
+            className={`py-1.5 rounded-xl font-bold text-[8.5px] border flex items-center justify-center gap-1 transition-all cursor-pointer ${
+              isStreaming
+                ? "bg-rose-500/20 text-rose-300 border-rose-500/40 hover:bg-rose-500/30"
+                : "bg-emerald-500/20 text-emerald-300 border-emerald-500/40 hover:bg-emerald-500/30"
+            }`}
+          >
+            <Video className="w-2.5 h-2.5" />
+            {isStreaming ? "STOP STREAM" : "START STREAM"}
+          </button>
+          <button
+            onClick={(e) => {
+              e.stopPropagation();
+              setIsMuted(!isMuted);
+            }}
+            className="py-1.5 rounded-xl bg-slate-900 border border-white/10 hover:border-amber-500/40 text-slate-200 font-bold text-[8.5px] flex items-center justify-center gap-1 transition-all cursor-pointer"
+          >
+            {isMuted ? (
+              <VolumeX className="w-2.5 h-2.5 text-rose-400" />
+            ) : (
+              <Volume2 className="w-2.5 h-2.5 text-amber-400" />
+            )}
+            {isMuted ? "UNMUTE" : "MUTE MIC"}
+          </button>
+        </div>
+
+        <p className="text-[7px] text-center text-slate-400">
+          TCP Direct Socket · Zero Cloud Relay
+        </p>
+      </div>
+    </div>
+  );
+}
+
+// =========================================================================
+// 5. MAIN STICKY CENTER-PINNED MOBILE PROJECT SHOWCASE
 // =========================================================================
 interface MobileStickyProjectShowcaseProps {
   projects: Project[];
@@ -452,6 +586,7 @@ export default function MobileStickyProjectShowcase({
     if (activeProjectIndex === 0) return <GcesHostelScreen key="gceshostel" />;
     if (activeProjectIndex === 1) return <ConnectLnxScreen key="connectlnx" />;
     if (activeProjectIndex === 2) return <SmetScreen key="smet" />;
+    if (activeProjectIndex === 3) return <ExtraCamScreen key="extracam" />;
     return <GcesHostelScreen key="default" />;
   };
 
@@ -460,6 +595,7 @@ export default function MobileStickyProjectShowcase({
     "from-cyan-500/25 via-blue-500/10 to-transparent shadow-[0_0_90px_rgba(0,229,255,0.25)]",
     "from-teal-500/25 via-cyan-500/10 to-transparent shadow-[0_0_90px_rgba(20,184,166,0.25)]",
     "from-emerald-500/25 via-teal-500/10 to-transparent shadow-[0_0_90px_rgba(16,185,129,0.25)]",
+    "from-amber-500/25 via-orange-500/10 to-transparent shadow-[0_0_90px_rgba(245,158,11,0.25)]",
   ];
 
   return (
@@ -747,6 +883,7 @@ export default function MobileStickyProjectShowcase({
                   {idx === 0 && <GcesHostelScreen />}
                   {idx === 1 && <ConnectLnxScreen />}
                   {idx === 2 && <SmetScreen />}
+                  {idx === 3 && <ExtraCamScreen />}
                 </PhoneFrame>
               </div>
 
