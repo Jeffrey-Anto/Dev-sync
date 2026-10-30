@@ -1,8 +1,8 @@
 {
-  "generatedAt": "2026-10-29T18:51:20.917Z",
+  "generatedAt": "2026-10-30T04:11:06.428Z",
   "students": {
     "barath-b": {
-      "githubContributions": 3478,
+      "githubContributions": 3485,
       "leetcodeSolved": 23,
       "leetcodeSubmissions": 31
     },
@@ -49,6 +49,27 @@
     },
     "dalwin": {
       "githubContributions": 29
+    },
+    "dhineshkumar-j": {
+      "githubContributions": 191,
+      "leetcodeSolved": 23,
+      "leetcodeSubmissions": 23
+    },
+    "jeffrey-anto-thomas-s": {
+      "githubContributions": 25,
+      "leetcodeSolved": 77,
+      "leetcodeSubmissions": 81
+    },
+    "mukesh-s": {
+      "githubContributions": 246
+    },
+    "bhavya-j": {
+      "githubContributions": 53
+    },
+    "sathish-d": {
+      "githubContributions": 273,
+      "leetcodeSolved": 36,
+      "leetcodeSubmissions": 37
     }
   }
 }
