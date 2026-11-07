@@ -7,7 +7,7 @@ import {
   Mail,
   User,
   Send,
-  Download,
+  Eye,
   Calendar,
   CheckCircle2,
   Phone,
@@ -187,7 +187,7 @@ export default function RecruiterContactPage() {
             A cohort of 60 Computer Science students with hands-on project experience across six core technology domains.
           </p>
 
-          {/* Download Placement Brochure Button with Luxury Shimmer & Aura */}
+          {/* View Placement Brochure Button with Luxury Shimmer & Aura */}
           <div className="mt-8 flex items-center justify-center">
             <a
               href="https://gces-rg.vercel.app/"
@@ -215,9 +215,9 @@ export default function RecruiterContactPage() {
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400 shadow-[0_0_8px_#22d3ee]" />
                 </span>
 
-                <Download className="w-4 h-4 text-cyan-300 group-hover:translate-y-0.5 transition-transform" />
+                <Eye className="w-4 h-4 text-cyan-300 group-hover:translate-y-0.5 transition-transform" />
                 <span className="relative z-10 group-hover:text-cyan-200 transition-colors">
-                  Download Placement Brochure (PDF)
+                  View Placement Brochure
                 </span>
               </span>
             </a>
