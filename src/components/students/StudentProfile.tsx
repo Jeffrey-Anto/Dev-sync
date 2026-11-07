@@ -330,9 +330,33 @@ function ContributionHistory({ entry, accent, accentRgb }: { entry?: StudentStat
   const years = Object.keys(byYear)
     .filter((k) => !Number.isNaN(Number(k)))
     .sort((a, b) => Number(a) - Number(b));
-  if (years.length === 0) return null;
+  const solved = entry?.leetcodeSolved ?? 0;
+  const subs = entry?.leetcodeSubmissions ?? 0;
+  if (years.length === 0 && subs === 0) return null;
   const max = Math.max(...years.map((y) => byYear[y] ?? 0), 1);
   const total = entry?.githubContributions ?? years.reduce((acc, y) => acc + (byYear[y] ?? 0), 0);
+  const acc = subs > 0 ? Math.round((solved / subs) * 100) : 0;
+  const R = 34;
+  const CIRC = 2 * Math.PI * R;
+  const dash = (acc / 100) * CIRC;
+  const diffs = [
+    { label: "Easy", value: entry?.leetcodeEasy ?? 0, color: "#00B8A3" },
+    { label: "Medium", value: entry?.leetcodeMedium ?? 0, color: "#FFC01E" },
+    { label: "Hard", value: entry?.leetcodeHard ?? 0, color: "#FF375F" },
+  ];
+  const diffMax = Math.max(...diffs.map((d) => d.value), 1);
+  const W = 640;
+  const H = 180;
+  const PADX = 28;
+  const PADY = 28;
+  const logScale = (v: number) => (Math.log10(v + 1) / Math.log10(max + 1)) * (H - PADY * 1.6);
+  const points = years.map((y, i) => {
+    const x = years.length === 1 ? W / 2 : PADX + (i * (W - PADX * 2)) / (years.length - 1);
+    const yPos = H - PADY - logScale(byYear[y] ?? 0);
+    return { x, y: yPos, year: y, value: byYear[y] ?? 0 };
+  });
+  const linePath = points.map((p, i) => `${i === 0 ? "M" : "L"} ${p.x} ${p.y}`).join(" ");
+  const areaPath = points.length ? `${linePath} L ${points[points.length - 1].x} ${H - PADY} L ${points[0].x} ${H - PADY} Z` : "";
   return (
     <motion.section
       initial={{ opacity: 0, y: 20 }}
@@ -341,53 +365,82 @@ function ContributionHistory({ entry, accent, accentRgb }: { entry?: StudentStat
       transition={{ duration: 0.55 }}
       className="mt-16 overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0a0d15]/70 p-6 backdrop-blur-xl sm:p-8"
     >
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+      <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
         <div>
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]" style={{ color: accent }}>
-            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accent }} />
-            GitHub · All-time
-          </div>
-          <h2 className="mt-2 text-xl font-extrabold tracking-tight text-white sm:text-2xl">Contribution history</h2>
-        </div>
-        <div className="text-left sm:text-right">
-          <div className="font-mono text-2xl font-black text-white sm:text-3xl">{total.toLocaleString()}</div>
-          <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">Total contributions</div>
-        </div>
-      </div>
-      <div
-        role="img"
-        aria-label={`GitHub contributions by year: ${years.map((y) => `${y} ${byYear[y] ?? 0}`).join(", ")}`}
-        className="mt-8 flex h-40 items-end gap-2 sm:gap-3"
-      >
-        {years.map((year, i) => {
-          const value = byYear[year] ?? 0;
-          const isMax = value === max;
-          return (
-            <div key={year} className="group flex min-w-0 flex-1 flex-col items-center gap-2">
-              <span className="font-mono text-[10px] text-slate-400 opacity-0 transition-opacity group-hover:opacity-100">{value.toLocaleString()}</span>
-              <motion.div
-                initial={{ height: "0%" }}
-                whileInView={{ height: `${(value / max) * 100}%` }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.7, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
-                className="w-full rounded-t-md"
-                style={{
-                  backgroundColor: isMax ? accent : `rgba(${accentRgb}, 0.32)`,
-                  boxShadow: isMax ? `0 0 24px rgba(${accentRgb}, 0.5)` : "none",
-                  minHeight: "4px",
-                }}
-                title={`${year}: ${value.toLocaleString()}`}
-              />
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]" style={{ color: accent }}>
+                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accent }} />
+                GitHub · All-time
+              </div>
+              <h2 className="mt-2 text-xl font-extrabold tracking-tight text-white">Contribution trend</h2>
             </div>
-          );
-        })}
-      </div>
-      <div className="mt-3 flex gap-2 sm:gap-3">
-        {years.map((year) => (
-          <span key={year} className="flex-1 text-center font-mono text-[10px] tracking-widest text-slate-500">
-            {year}
-          </span>
-        ))}
+            <div className="text-right">
+              <div className="font-mono text-2xl font-black text-white">{total.toLocaleString()}</div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">Total · log scale</div>
+            </div>
+          </div>
+          {years.length > 0 && (
+            <>
+              <svg viewBox={`0 0 ${W} ${H}`} className="mt-6 h-44 w-full" role="img" aria-label={`GitHub contributions by year: ${years.map((y) => `${y} ${byYear[y] ?? 0}`).join(", ")}`}>
+                {[0.25, 0.5, 0.75].map((t) => (
+                  <line key={t} x1={PADX} x2={W - PADX} y1={PADY + t * (H - PADY * 1.6)} y2={PADY + t * (H - PADY * 1.6)} stroke="rgba(255,255,255,0.06)" strokeDasharray="3 4" />
+                ))}
+                <path d={areaPath} fill={`rgba(${accentRgb}, 0.12)`} />
+                <path d={linePath} fill="none" stroke={accent} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" />
+                {points.map((p) => (
+                  <g key={p.year} className="group">
+                    <circle cx={p.x} cy={p.y} r={6} fill={accent} className="cursor-pointer" />
+                    <circle cx={p.x} cy={p.y} r={3} fill="#0a0d15" />
+                    <text x={p.x} y={p.y - 12} textAnchor="middle" fill="#cbd5e1" fontSize={11} fontFamily="monospace" opacity={0} className="transition-opacity group-hover:opacity-100">
+                      {p.value.toLocaleString()}
+                    </text>
+                    <title>{`${p.year}: ${p.value.toLocaleString()}`}</title>
+                  </g>
+                ))}
+                {points.map((p) => (
+                  <text key={`y-${p.year}`} x={p.x} y={H - 8} textAnchor="middle" fill="#64748b" fontSize={11} fontFamily="monospace">
+                    {p.year}
+                  </text>
+                ))}
+              </svg>
+            </>
+          )}
+        </div>
+        <div>
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em] text-[#FFA116]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#FFA116]" />
+            LeetCode · All-time
+          </div>
+          <h3 className="mt-2 text-xl font-extrabold tracking-tight text-white">Solved breakdown</h3>
+          <div className="mt-5 flex items-center gap-5">
+            <div className="relative h-24 w-24 shrink-0">
+              <svg viewBox="0 0 80 80" className="h-full w-full -rotate-90">
+                <circle cx={40} cy={40} r={R} fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth={8} />
+                <circle cx={40} cy={40} r={R} fill="none" stroke="#FFA116" strokeWidth={8} strokeLinecap="round" strokeDasharray={`${dash} ${CIRC}`} />
+              </svg>
+              <div className="absolute inset-0 flex flex-col items-center justify-center">
+                <span className="font-mono text-lg font-black text-white">{acc}%</span>
+                <span className="font-mono text-[9px] uppercase tracking-widest text-slate-500">accept</span>
+              </div>
+            </div>
+            <div className="min-w-0">
+              <div className="font-mono text-2xl font-black text-white">{solved.toLocaleString()}</div>
+              <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">solved · {subs.toLocaleString()} submissions</div>
+            </div>
+          </div>
+          <div className="mt-6 space-y-3">
+            {diffs.map((d) => (
+              <div key={d.label} className="flex items-center gap-3">
+                <span className="w-14 font-mono text-[11px] uppercase tracking-widest text-slate-400">{d.label}</span>
+                <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/[0.06]">
+                  <div className="h-full rounded-full" style={{ width: `${(d.value / diffMax) * 100}%`, backgroundColor: d.color }} />
+                </div>
+                <span className="w-8 text-right font-mono text-xs text-slate-300">{d.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </motion.section>
   );

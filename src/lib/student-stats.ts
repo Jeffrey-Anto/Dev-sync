@@ -8,6 +8,12 @@ export type StudentStatsEntry = {
   githubContributionsByYear?: Record<string, number>;
   leetcodeSolved?: number;
   leetcodeSubmissions?: number;
+  leetcodeEasy?: number;
+  leetcodeMedium?: number;
+  leetcodeHard?: number;
+  leetcodeEasySubmissions?: number;
+  leetcodeMediumSubmissions?: number;
+  leetcodeHardSubmissions?: number;
 };
 
 export type StudentStats = Record<string, StudentStatsEntry>;
@@ -76,6 +82,22 @@ async function fetchOne(slug: string, githubUrl?: string, leetcodeUrl?: string):
         const submissions = progress?.totalSubmissionNum?.find((row: { difficulty: string }) => row.difficulty === "All")?.count;
         if (typeof solved === "number") entry.leetcodeSolved = solved;
         if (typeof submissions === "number") entry.leetcodeSubmissions = submissions;
+        const ac = progress?.acSubmissionNum ?? [];
+        const tot = progress?.totalSubmissionNum ?? [];
+        const pick = (arr: Array<{ difficulty: string; count: number }>, label: string) =>
+          arr.find((row) => row.difficulty === label)?.count;
+        const e = pick(ac, "Easy");
+        const m = pick(ac, "Medium");
+        const h = pick(ac, "Hard");
+        if (typeof e === "number") entry.leetcodeEasy = e;
+        if (typeof m === "number") entry.leetcodeMedium = m;
+        if (typeof h === "number") entry.leetcodeHard = h;
+        const es = pick(tot, "Easy");
+        const ms = pick(tot, "Medium");
+        const hs = pick(tot, "Hard");
+        if (typeof es === "number") entry.leetcodeEasySubmissions = es;
+        if (typeof ms === "number") entry.leetcodeMediumSubmissions = ms;
+        if (typeof hs === "number") entry.leetcodeHardSubmissions = hs;
       } catch {
         /* keep stale */
       }
