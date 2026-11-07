@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import StudentProfile from "@/components/students/StudentProfile";
 import { STUDENTS, getStudent } from "@/data/students";
+import { getStudentStats } from "@/lib/student-stats";
+
+export const revalidate = 86400;
 
 export function generateStaticParams() {
   return STUDENTS.map((student) => ({ slug: student.slug }));
@@ -41,5 +44,7 @@ export default async function StudentPage({
 
   if (!student) notFound();
 
-  return <StudentProfile student={student} />;
+  const stats = await getStudentStats();
+
+  return <StudentProfile student={student} stats={stats[slug]} />;
 }

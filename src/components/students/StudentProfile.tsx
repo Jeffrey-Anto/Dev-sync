@@ -29,14 +29,7 @@ import {
   type Student,
 } from "@/data/students";
 import { PLATFORM_ORDER, PLATFORMS, type PlatformKey } from "@/components/students/platforms";
-import studentStats from "@/data/student-stats.json";
-
-type StatsEntry = {
-  githubContributions?: number;
-  githubContributionsByYear?: Record<string, number>;
-};
-
-const STATS = studentStats.students as Record<string, StatsEntry>;
+import type { StudentStatsEntry } from "@/lib/student-stats";
 
 const BARCODE_WIDTHS = [3, 1, 2, 1, 4, 1, 2, 3, 1, 1, 3, 2, 1, 4, 2, 1, 2, 1, 3, 1, 2, 4, 1, 2];
 
@@ -332,8 +325,7 @@ function PlatformCard({ platform, url, accent, accentRgb }: {
   );
 }
 
-function ContributionHistory({ slug, accent, accentRgb }: { slug: string; accent: string; accentRgb: string }) {
-  const entry = STATS[slug];
+function ContributionHistory({ entry, accent, accentRgb }: { entry?: StudentStatsEntry; accent: string; accentRgb: string }) {
   const byYear = entry?.githubContributionsByYear ?? {};
   const years = Object.keys(byYear)
     .filter((k) => !Number.isNaN(Number(k)))
@@ -401,7 +393,7 @@ function ContributionHistory({ slug, accent, accentRgb }: { slug: string; accent
   );
 }
 
-export default function StudentProfile({ student }: { student: Student }) {
+export default function StudentProfile({ student, stats }: { student: Student; stats?: StudentStatsEntry }) {
   const domain = getStudentDomain(student);
   const accent = domain?.colorTheme.primary ?? "#818CF8";
   const accentRgb = domain?.colorTheme.rgb ?? "129, 140, 248";
@@ -596,7 +588,7 @@ export default function StudentProfile({ student }: { student: Student }) {
           </motion.section>
         )}
 
-        <ContributionHistory slug={student.slug} accent={accent} accentRgb={accentRgb} />
+        <ContributionHistory entry={stats} accent={accent} accentRgb={accentRgb} />
 
         <section className="mt-20">
           <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
