@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import StudentProfile from "@/components/students/StudentProfile";
-import { STUDENTS, getStudent } from "@/data/students";
+import { STUDENTS, getStudent, getStudentDomain } from "@/data/students";
 import { getStudentStats } from "@/lib/student-stats";
 
 export const revalidate = 86400;
@@ -22,13 +22,17 @@ export async function generateMetadata({
     return { title: "Student not found" };
   }
 
+  const subtitle = student.role ?? getStudentDomain(student)?.shortName ?? "CSE 2027";
+  const description =
+    student.tagline ?? `${student.name} — ${subtitle}, GCE Srirangam, Batch 2027.`;
+
   return {
-    title: `${student.name} — ${student.role}`,
-    description: student.tagline,
+    title: `${student.name} — ${subtitle}`,
+    description,
     alternates: { canonical: `/students/${student.slug}` },
     openGraph: {
-      title: `${student.name} — ${student.role} | GCES CSE 2027`,
-      description: student.tagline,
+      title: `${student.name} — ${subtitle} | GCES CSE 2027`,
+      description,
       url: `/students/${student.slug}`,
     },
   };

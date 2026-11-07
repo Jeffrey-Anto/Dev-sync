@@ -120,7 +120,7 @@ async function fetchAll(): Promise<StudentStats> {
   return out;
 }
 
-const cachedFetchAll = unstable_cache(fetchAll, ["student-stats"], {
+const cachedFetchAll = unstable_cache(fetchAll, ["student-stats-v2"], {
   revalidate: 86400,
   tags: ["student-stats"],
 });
