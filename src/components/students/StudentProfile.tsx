@@ -29,6 +29,14 @@ import {
   type Student,
 } from "@/data/students";
 import { PLATFORM_ORDER, PLATFORMS, type PlatformKey } from "@/components/students/platforms";
+import studentStats from "@/data/student-stats.json";
+
+type StatsEntry = {
+  githubContributions?: number;
+  githubContributionsByYear?: Record<string, number>;
+};
+
+const STATS = studentStats.students as Record<string, StatsEntry>;
 
 const BARCODE_WIDTHS = [3, 1, 2, 1, 4, 1, 2, 3, 1, 1, 3, 2, 1, 4, 2, 1, 2, 1, 3, 1, 2, 4, 1, 2];
 
@@ -324,6 +332,75 @@ function PlatformCard({ platform, url, accent, accentRgb }: {
   );
 }
 
+function ContributionHistory({ slug, accent, accentRgb }: { slug: string; accent: string; accentRgb: string }) {
+  const entry = STATS[slug];
+  const byYear = entry?.githubContributionsByYear ?? {};
+  const years = Object.keys(byYear)
+    .filter((k) => !Number.isNaN(Number(k)))
+    .sort((a, b) => Number(a) - Number(b));
+  if (years.length === 0) return null;
+  const max = Math.max(...years.map((y) => byYear[y] ?? 0), 1);
+  const total = entry?.githubContributions ?? years.reduce((acc, y) => acc + (byYear[y] ?? 0), 0);
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-80px" }}
+      transition={{ duration: 0.55 }}
+      className="mt-16 overflow-hidden rounded-3xl border border-white/[0.08] bg-[#0a0d15]/70 p-6 backdrop-blur-xl sm:p-8"
+    >
+      <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]" style={{ color: accent }}>
+            <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accent }} />
+            GitHub · All-time
+          </div>
+          <h2 className="mt-2 text-xl font-extrabold tracking-tight text-white sm:text-2xl">Contribution history</h2>
+        </div>
+        <div className="text-left sm:text-right">
+          <div className="font-mono text-2xl font-black text-white sm:text-3xl">{total.toLocaleString()}</div>
+          <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-500">Total contributions</div>
+        </div>
+      </div>
+      <div
+        role="img"
+        aria-label={`GitHub contributions by year: ${years.map((y) => `${y} ${byYear[y] ?? 0}`).join(", ")}`}
+        className="mt-8 flex h-40 items-end gap-2 sm:gap-3"
+      >
+        {years.map((year, i) => {
+          const value = byYear[year] ?? 0;
+          const isMax = value === max;
+          return (
+            <div key={year} className="group flex min-w-0 flex-1 flex-col items-center gap-2">
+              <span className="font-mono text-[10px] text-slate-400 opacity-0 transition-opacity group-hover:opacity-100">{value.toLocaleString()}</span>
+              <motion.div
+                initial={{ height: "0%" }}
+                whileInView={{ height: `${(value / max) * 100}%` }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.7, delay: i * 0.06, ease: [0.22, 1, 0.36, 1] }}
+                className="w-full rounded-t-md"
+                style={{
+                  backgroundColor: isMax ? accent : `rgba(${accentRgb}, 0.32)`,
+                  boxShadow: isMax ? `0 0 24px rgba(${accentRgb}, 0.5)` : "none",
+                  minHeight: "4px",
+                }}
+                title={`${year}: ${value.toLocaleString()}`}
+              />
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-3 flex gap-2 sm:gap-3">
+        {years.map((year) => (
+          <span key={year} className="flex-1 text-center font-mono text-[10px] tracking-widest text-slate-500">
+            {year}
+          </span>
+        ))}
+      </div>
+    </motion.section>
+  );
+}
+
 export default function StudentProfile({ student }: { student: Student }) {
   const domain = getStudentDomain(student);
   const accent = domain?.colorTheme.primary ?? "#818CF8";
@@ -518,6 +595,8 @@ export default function StudentProfile({ student }: { student: Student }) {
             ))}
           </motion.section>
         )}
+
+        <ContributionHistory slug={student.slug} accent={accent} accentRgb={accentRgb} />
 
         <section className="mt-20">
           <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">

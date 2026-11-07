@@ -243,8 +243,8 @@ export default function StudentsPage() {
 
         <div className="mt-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
           <p className="max-w-[46ch] text-xs leading-relaxed text-slate-400">
-            GitHub counts cover the last 12 months. LeetCode counts are accepted solutions. Links
-            open in a new tab.
+            GitHub counts are all-time. LeetCode counts are accepted solutions. Links open in a new
+            tab.
           </p>
           <Link
             href="/recruit"
