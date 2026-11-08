@@ -12,9 +12,6 @@ import {
   CheckCircle2,
   Phone,
   MapPin,
-  Sparkles,
-  ShieldCheck,
-  ArrowRight,
   AlertCircle,
   Paperclip,
   X,
@@ -171,11 +168,6 @@ export default function RecruiterContactPage() {
 
         {/* Page Hero Framing */}
         <div className="text-center max-w-4xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-xs font-mono text-emerald-300 mb-4">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>NOW OPEN FOR RECRUITMENT</span>
-          </div>
-
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight">
             Why Recruit From the <br className="hidden sm:inline" />
             <span className="inline-block animate-aurora-text font-black drop-shadow-[0_0_35px_rgba(56,189,248,0.5)]">
@@ -183,9 +175,6 @@ export default function RecruiterContactPage() {
             </span>
           </h1>
 
-          <p className="text-sm sm:text-base text-slate-300 mt-4 max-w-3xl mx-auto font-sans leading-relaxed">
-            A cohort of 60 Computer Science students with hands-on project experience across six core technology domains.
-          </p>
 
           {/* View Placement Brochure Button with Luxury Shimmer & Aura */}
           <div className="mt-8 flex items-center justify-center">
@@ -249,9 +238,6 @@ export default function RecruiterContactPage() {
                   <p className="text-xs sm:text-sm text-slate-300 max-w-md mx-auto leading-relaxed mb-4 font-sans">
                     Thank you, <strong>{formData.contactRep}</strong> ({formData.companyName}). Our placement coordination cell will review your criteria and respond with slot confirmations within 24 business hours.
                   </p>
-                  <div className="mb-6 px-4 py-2 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-[11px]">
-                    Notification dispatched to placement officers.
-                  </div>
                   <button
                     onClick={handleReset}
                     className="px-6 py-2.5 rounded-full bg-amber-400 hover:bg-amber-300 text-black font-bold font-mono text-xs transition-all shadow-lg cursor-pointer"
@@ -456,11 +442,6 @@ export default function RecruiterContactPage() {
                     </div>
                   )}
 
-                  {/* Submission Disclaimer Line */}
-                  <p className="text-xs text-slate-400 font-sans leading-relaxed pt-2">
-                    By submitting this inquiry, our placement team will contact you to coordinate the recruitment process.
-                  </p>
-
                   {/* Bottom Actions */}
                   <div className="flex items-center justify-end gap-3 pt-2">
                     <button
@@ -495,13 +476,8 @@ export default function RecruiterContactPage() {
                 </div>
                 <div>
                   <h4 className="text-base font-bold text-white">Department Placement Cell</h4>
-                  <span className="text-xs font-mono text-slate-400">Office of Corporate Relations &amp; Drives</span>
                 </div>
               </div>
-
-              <p className="text-xs text-slate-300 leading-relaxed font-sans mb-6">
-                Our placement team coordinates pre-placement talks, technical assessments, interviews, coding tests, and campus recruitment drives.
-              </p>
 
               <div className="space-y-3 font-mono text-xs text-slate-300">
                 <div className="flex items-center gap-3 p-3 rounded-xl bg-black/40 border border-white/5">
