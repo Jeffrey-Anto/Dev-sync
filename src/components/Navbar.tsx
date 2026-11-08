@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ArrowRight, Menu, X } from "lucide-react";
@@ -89,12 +90,15 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
         {/* Brand / Logo */}
         <Link href="/" className="flex items-center gap-3.5 group">
-          {/* Refined Geometric Monogram */}
-          <div data-logo-slot className="relative w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500/20 via-cyan-500/10 to-transparent border border-white/15 flex items-center justify-center transition-all duration-300 group-hover:border-indigo-400/60 group-hover:shadow-[0_0_20px_rgba(99,102,241,0.35)]">
-            <span className="font-mono text-sm font-black text-indigo-300 group-hover:text-cyan-300 transition-colors">
-              //
-            </span>
-            <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-cyan-400 ring-2 ring-[#050608] animate-pulse" />
+          <div data-logo-slot className="relative w-10 h-10 flex items-center justify-center transition-transform duration-300 group-hover:scale-105">
+            <Image
+              src="/logo.webp"
+              alt="Government College of Engineering Srirangam logo"
+              width={40}
+              height={34}
+              priority
+              className="w-full h-full object-contain drop-shadow-[0_0_10px_rgba(212,175,55,0.35)]"
+            />
           </div>
 
           <div className="flex flex-col">
