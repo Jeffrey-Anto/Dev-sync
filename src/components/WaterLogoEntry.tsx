@@ -357,9 +357,6 @@ export default function WaterLogoEntry({ onEnter, isEntered }: WaterLogoEntryPro
           >
             CLICK TO ENTER
           </button>
-          <span className="text-[10px] text-slate-400 font-mono tracking-widest uppercase opacity-80">
-            Government College of Engineering, Srirangam
-          </span>
         </div>
       </div>
     </div>

@@ -131,14 +131,6 @@ export default function AchievementSlider() {
     <section id="achievements-showcase" className="relative z-20 bg-[#040507] border-t border-white/10">
       {/* ── 1. NORMAL SCROLLING SECTION TITLE (Scrolls away naturally; NOT locked) ── */}
       <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-16 sm:pt-20 pb-4 sm:pb-6">
-        <div className="flex items-center gap-2 mb-2.5 sm:mb-3">
-          <span className="h-[2px] w-6 bg-amber-400" />
-          <span className="font-mono text-xs tracking-widest text-amber-400 font-bold uppercase">
-            EXCELLENCE IN ACTION
-          </span>
-        </div>
-
-        {/* Display Headline */}
         <h2 className="text-3xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight uppercase leading-[0.95] font-sans">
           OUR STUDENT <br />
           <span className="inline-block animate-deep-color-flow">
@@ -308,10 +300,6 @@ export default function AchievementSlider() {
                     />
                   </div>
 
-                  {/* Clean Footer: No "verified" at left bottom */}
-                  <div className="px-6 py-2.5 sm:py-3 border-t border-white/10 bg-slate-950/95 flex items-center justify-end text-[11px] font-mono text-slate-500 flex-shrink-0">
-                    <span>PRESS ESC OR CLICK OUTSIDE TO CLOSE</span>
-                  </div>
                 </motion.div>
               </div>
             )}
@@ -420,9 +408,6 @@ function AchievementCard({
               >
                 <IconComponent className="w-6 h-6 sm:w-7 sm:h-7 text-white" />
               </div>
-              <span className="text-[9px] sm:text-[10px] font-mono uppercase tracking-wider text-slate-300 font-semibold relative z-10">
-                COLLECTIVE RECOGNITION
-              </span>
             </div>
           )}
         </div>

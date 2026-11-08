@@ -106,9 +106,6 @@ export default function Navbar() {
                 &apos;27
               </span>
             </div>
-            <span className="text-xs sm:text-[13px] text-slate-300 font-sans tracking-normal hidden sm:block">
-              GCE Srirangam · Placement Showcase
-            </span>
           </div>
         </Link>
 

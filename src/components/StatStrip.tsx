@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState, MouseEvent } from "react";
 import { motion, useInView } from "framer-motion";
-import { Users, LayoutGrid, Rocket, Sparkles } from "lucide-react";
+import { Users, LayoutGrid, Rocket } from "lucide-react";
 import { COHORT_STATS } from "@/data/domains";
 import { FluidWaveBackground } from "@/components/backgrounds";
 
@@ -63,7 +63,6 @@ function SpotlightStatCard({
     icon: React.ComponentType<{ className?: string }>;
     value: number;
     suffix: string;
-    subtext: string;
     gradient: string;
     glowRgb: string;
     accentText: string;
@@ -147,10 +146,6 @@ function SpotlightStatCard({
             {item.label}
           </div>
 
-          <div className="text-xs sm:text-sm font-mono text-slate-400 mt-1 flex items-center gap-2">
-            <span>{item.subtext}</span>
-            <Sparkles className="w-3 h-3 text-slate-600 group-hover:text-cyan-400 group-hover:scale-110 transition-all opacity-0 group-hover:opacity-100" />
-          </div>
         </div>
 
         {/* Bottom Ambient Glow Halo */}
@@ -172,7 +167,6 @@ export default function StatStrip() {
       icon: Users,
       value: COHORT_STATS.totalEngineers,
       suffix: "",
-      subtext: "100% CS Undergraduates",
       gradient: "from-indigo-500/20 to-indigo-500/5",
       glowRgb: "99, 102, 241", // Indigo
       accentText: "text-indigo-400",
@@ -183,7 +177,6 @@ export default function StatStrip() {
       icon: LayoutGrid,
       value: COHORT_STATS.domainsCount,
       suffix: "",
-      subtext: "Cross-functional tracks",
       gradient: "from-cyan-500/20 to-cyan-500/5",
       glowRgb: "6, 182, 212", // Cyan
       accentText: "text-cyan-400",
@@ -194,7 +187,6 @@ export default function StatStrip() {
       icon: Rocket,
       value: COHORT_STATS.totalProjects,
       suffix: "+",
-      subtext: "Live verified systems",
       gradient: "from-pink-500/20 to-pink-500/5",
       glowRgb: "236, 72, 153", // Pink
       accentText: "text-pink-400",
@@ -207,10 +199,7 @@ export default function StatStrip() {
       <FluidWaveBackground opacity={0.75} intensity="medium" speed={1.1} />
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12 sm:mb-16">
-          <span className="text-xs font-mono tracking-widest text-indigo-400 uppercase bg-indigo-500/10 px-3.5 py-1 rounded-full border border-indigo-500/20">
-            AGGREGATE PERFORMANCE TELEMETRY
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-white mt-3 tracking-tight">
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
             Cohort Volume &amp; Technical Rigor
           </h2>
         </div>

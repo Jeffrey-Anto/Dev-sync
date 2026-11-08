@@ -32,9 +32,6 @@ export default function Footer() {
                   COLLECTIVE<span className="text-indigo-400">.CSE</span>
                 </span>
               </div>
-              <p className="text-xs text-slate-400 leading-relaxed max-w-sm mb-5 font-sans">
-                A collective showcase of 60 Computer Science students, their skills, projects, and technical capabilities.
-              </p>
               <Link
                 href="/recruit"
                 className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/25 hover:border-emerald-500/50 text-emerald-400 hover:text-emerald-300 text-xs font-mono transition-all duration-300 group shadow-[0_0_15px_rgba(16,185,129,0.15)] hover:shadow-[0_0_20px_rgba(16,185,129,0.3)] cursor-pointer"
@@ -71,10 +68,6 @@ export default function Footer() {
             <h4 className="text-xs font-mono uppercase tracking-widest text-slate-300 font-semibold mb-4">
               RECRUITER DESK & PLACEMENT OFFICE
             </h4>
-            <p className="text-xs text-slate-400 leading-relaxed mb-4 font-sans">
-              Connect with our placement team to schedule a campus drive.
-            </p>
-
             <div className="space-y-2">
               <div className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-xs font-mono text-slate-300">
                 <Mail className="w-4 h-4 text-indigo-400" />
@@ -94,11 +87,6 @@ export default function Footer() {
           <div className="flex items-center gap-1.5 font-medium tracking-wider text-slate-400">
             <span className="text-sm sm:text-base font-bold text-slate-400">©</span>
             <span>GOVERNMENT COLLEGE OF ENGINEERING SRIRANGAM</span>
-          </div>
-
-          {/* Center: Cohort Motto */}
-          <div className="text-center font-semibold tracking-widest text-slate-400 text-[11px] sm:text-xs">
-            ONE COHORT. MULTIPLE CAPABILITIES.
           </div>
 
           {/* Right: Back to top */}

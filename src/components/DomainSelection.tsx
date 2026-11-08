@@ -12,13 +12,10 @@ import {
   Smartphone,
   ShieldAlert,
   ArrowUpRight,
-  Sparkles,
   Terminal,
   ChevronLeft,
   ChevronRight,
-  Compass,
   Palette,
-  Zap,
 } from "lucide-react";
 import { DOMAINS, Domain } from "@/data/domains";
 import { NeuralPulseBackground } from "@/components/backgrounds";
@@ -253,17 +250,6 @@ export default function DomainSelection() {
       <div className="relative z-10 max-w-7xl mx-auto w-full">
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-16 px-2">
-          <motion.div
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-900/80 border border-slate-800 text-xs font-mono text-cyan-400 mb-3 sm:mb-4 shadow-md backdrop-blur-md"
-          >
-            <Compass className="w-3.5 h-3.5 text-indigo-400" />
-            <span>3D CIRCULAR CAPABILITY ORBIT</span>
-          </motion.div>
-
           <motion.h2
             initial={{ opacity: 0, y: 15 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -277,15 +263,6 @@ export default function DomainSelection() {
             </span>
           </motion.h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15 }}
-            className="text-xs sm:text-base text-slate-400 mt-2.5 sm:mt-3 font-sans"
-          >
-            Swipe or click surrounding cards to orbit. Tap center card to launch space-time warp.
-          </motion.p>
         </div>
 
         {/* 3D Circular Deck / Spatial Viewport with Touch Gesture Support */}
@@ -365,17 +342,6 @@ export default function DomainSelection() {
           ))}
         </div>
 
-        {/* Action Cue */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.6 }}
-          className="mt-8 text-center text-xs font-mono text-slate-500 flex items-center justify-center gap-2"
-        >
-          <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
-          <span>Click centered card or press Enter to warp to domain</span>
-        </motion.div>
       </div>
     </section>
   );
@@ -546,10 +512,6 @@ function SpaceTimeWarpOverlay({ domain }: SpaceTimeWarpOverlayProps) {
           {domain.name}
         </h2>
 
-        <div className="text-xs sm:text-sm text-slate-200 font-mono flex items-center gap-2 mt-2">
-          <Zap className="w-4 h-4 animate-bounce" style={{ color: domain.colorTheme.secondary }} />
-          <span>ENTERING SPECIALIZATION MATRIX...</span>
-        </div>
       </motion.div>
     </motion.div>
   );
@@ -880,11 +842,6 @@ function WarpDomainCard({
           >
             {domain.name}
           </h3>
-
-          {/* Tagline */}
-          <p className="text-xs sm:text-sm text-slate-200 leading-relaxed font-sans line-clamp-2 sm:line-clamp-3">
-            {domain.tagline}
-          </p>
         </div>
 
         {/* Middle Feature Highlights */}

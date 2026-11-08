@@ -3,7 +3,6 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { ChevronDown, ArrowRight, Briefcase } from "lucide-react";
-import { COHORT_STATS } from "@/data/domains";
 import MorphingBlobBackground from "@/components/backgrounds/MorphingBlobBackground";
 import ParticleText from "@/components/ParticleText";
 import StrokeText from "@/components/StrokeText";
@@ -56,9 +55,6 @@ export default function HeroSection() {
             />
           </div>
 
-          <span className="text-[9px] sm:text-[11px] md:text-xs font-mono text-slate-400 tracking-wider text-center leading-relaxed">
-            DEPARTMENT OF COMPUTER SCIENCE &amp; ENGINEERING &nbsp;·&nbsp; TIRUCHIRAPPALLI &nbsp;·&nbsp; BATCH 2023–2027
-          </span>
         </motion.div>
 
         {/* 2. Main Hero Headline with React Bits <ParticleText /> */}
@@ -135,20 +131,6 @@ export default function HeroSection() {
           </div>
         </motion.div>
 
-        {/* 4. Stat Line: 60 CSE STUDENTS · 6 TECHNICAL DOMAINS · 18+ PROJECTS */}
-        <motion.div
-          initial={{ opacity: 0, y: 15 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 text-xs sm:text-sm md:text-base font-mono text-cyan-300 mt-4 mb-6 sm:mb-8 max-w-3xl px-2"
-        >
-          <span className="font-semibold">{COHORT_STATS.totalEngineers} CSE STUDENTS</span>
-          <span className="text-indigo-400">·</span>
-          <span className="font-semibold">{COHORT_STATS.domainsCount} TECHNICAL DOMAINS</span>
-          <span className="text-indigo-400">·</span>
-          <span className="font-semibold">{COHORT_STATS.totalProjects}+ PROJECTS</span>
-        </motion.div>
-
         {/* 6. Recruiter CTAs (Primary & Secondary) */}
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -211,9 +193,9 @@ export default function HeroSection() {
       >
         <a
           href="#stats"
+          aria-label="Scroll to stats"
           className="flex flex-col items-center gap-2 group text-xs font-mono text-slate-400 hover:text-cyan-400 transition-colors"
         >
-          <span className="tracking-widest uppercase text-[10px]">Scroll To Capability Matrix</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
