@@ -121,14 +121,6 @@ function IdentityCard({ student, accent, accentRgb }: { student: Student; accent
         <span className="pointer-events-none absolute bottom-4 left-4 h-5 w-5 rounded-bl-lg border-b border-l border-white/25" />
         <span className="pointer-events-none absolute right-4 bottom-4 h-5 w-5 rounded-br-lg border-b border-r border-white/25" />
 
-        <div className="relative z-10 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.22em] text-slate-400">
-          <span>Student ID</span>
-          <span className="flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-            Verified
-          </span>
-        </div>
-
         <div className="relative z-10 mt-8 flex justify-center">
           <div className="relative flex h-32 w-32 items-center justify-center">
             <motion.span
@@ -310,16 +302,12 @@ function PlatformCard({ platform, url, accent, accentRgb }: {
       </div>
 
       <div className="relative z-10 mt-10">
-        <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-slate-500">
-          {meta.cta}
-        </div>
         <div className="mt-1 flex items-baseline gap-2">
           <h3 className="text-xl font-bold tracking-tight text-white">{meta.label}</h3>
           <span className="truncate font-mono text-xs text-slate-400">
             {platform === "portfolio" ? getLinkHost(url) : `@${getLinkHandle(url)}`}
           </span>
         </div>
-        <p className="mt-2 font-sans text-sm leading-relaxed text-slate-400">{meta.blurb}</p>
       </div>
     </a>
   );
@@ -490,21 +478,6 @@ export default function StudentProfile({ student, stats }: { student: Student; s
 
         <section className="mt-10 grid items-center gap-14 lg:mt-14 lg:grid-cols-[1.1fr_0.9fr] lg:gap-10">
           <div>
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.05 }}
-              className="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.2em]"
-              style={{
-                borderColor: `rgba(${accentRgb}, 0.3)`,
-                backgroundColor: `rgba(${accentRgb}, 0.08)`,
-                color: accent,
-              }}
-            >
-              <UserRound className="h-3.5 w-3.5" />
-              Profile · CSE &apos;27
-            </motion.div>
-
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -523,17 +496,6 @@ export default function StudentProfile({ student, stats }: { student: Student; s
             >
               {student.role ?? "CSE · Batch 2027"}
             </motion.p>
-
-            {student.tagline && (
-              <motion.p
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6, delay: 0.28 }}
-                className="mt-6 max-w-xl font-sans text-base leading-relaxed text-slate-300 sm:text-lg"
-              >
-                {student.tagline}
-              </motion.p>
-            )}
 
             {student.bio && (
               <motion.p
@@ -646,10 +608,6 @@ export default function StudentProfile({ student, stats }: { student: Student; s
         <section className="mt-20">
           <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.22em]" style={{ color: accent }}>
-                <span className="h-1.5 w-1.5 rounded-full" style={{ backgroundColor: accent }} />
-                Presence
-              </div>
               <h2 className="mt-2 text-2xl font-extrabold tracking-tight text-white sm:text-3xl">
                 Where the work lives
               </h2>
@@ -698,10 +656,7 @@ export default function StudentProfile({ student, stats }: { student: Student; s
                   </span>
                   <div>
                     <h3 className="text-lg font-bold text-white">No public profiles listed</h3>
-                    <p className="mt-1 max-w-md font-sans text-sm leading-relaxed text-slate-400">
-                      This engineer keeps their work off public platforms. Ask the placement desk for a
-                      direct introduction.
-                    </p>
+                    <p className="mt-1 max-w-md font-sans text-sm leading-relaxed text-slate-400">This engineer keeps their work off public platforms.</p>
                   </div>
                 </div>
                 <Link
@@ -717,9 +672,6 @@ export default function StudentProfile({ student, stats }: { student: Student; s
         </section>
 
         <div className="mt-20 flex flex-col items-center gap-4 border-t border-white/[0.06] pt-10 text-center">
-          <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-slate-500">
-            More from the collective
-          </p>
           <Link
             href="/students"
             className="group inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.03] px-5 py-2.5 font-mono text-xs tracking-wider text-slate-300 transition-all hover:border-white/25 hover:text-white"

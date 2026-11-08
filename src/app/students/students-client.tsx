@@ -168,11 +168,6 @@ export default function StudentsClient({ stats: STATS }: { stats: StudentStats }
             The 2027 roster.
           </h1>
 
-          <p className="mt-4 max-w-[62ch] text-[15px] leading-relaxed text-slate-400">
-            Computer Science students at GCE Srirangam. Every public portfolio, repository, and
-            coding profile they chose to share sits in one list.
-          </p>
-
           <div className="mt-6 flex flex-wrap items-center gap-x-7 gap-y-2 text-[13px] text-slate-300">
             <span>
               <span className="font-mono font-semibold tabular-nums text-white">
@@ -196,7 +191,6 @@ export default function StudentsClient({ stats: STATS }: { stats: StudentStats }
         </header>
 
         <div className="mt-6 mb-2 flex flex-wrap items-center justify-between gap-3">
-          <span className="text-xs font-medium text-slate-400">Sort by</span>
           <div
             role="group"
             aria-label="Sort roster"
@@ -228,17 +222,11 @@ export default function StudentsClient({ stats: STATS }: { stats: StudentStats }
           </ul>
         ) : (
           <div className="border-y border-white/[0.06] px-6 py-16 text-center">
-            <p className="text-sm text-slate-400">
-              No profiles are published yet. Check back after the next collection pass.
-            </p>
+            <p className="text-sm text-slate-400">No profiles are published yet.</p>
           </div>
         )}
 
         <div className="mt-10 flex flex-col items-start justify-between gap-5 sm:flex-row sm:items-center">
-          <p className="max-w-[46ch] text-xs leading-relaxed text-slate-400">
-            GitHub counts are all-time. LeetCode counts are accepted solutions. Links open in a new
-            tab.
-          </p>
           <Link
             href="/recruit"
             className="group inline-flex items-center gap-3 rounded-full border border-white/15 bg-white/[0.03] py-1.5 pr-1.5 pl-5 text-[13px] font-semibold text-slate-100 transition-colors hover:border-emerald-400/50 hover:bg-emerald-500/10 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
