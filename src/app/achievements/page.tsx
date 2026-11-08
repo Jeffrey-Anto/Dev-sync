@@ -8,8 +8,6 @@ import {
   Award,
   ShieldCheck,
   Briefcase,
-  Layers,
-  Sparkles,
   ArrowRight,
   Brain,
   Code2,
@@ -213,9 +211,6 @@ function InteractiveSummaryCard({ item, index }: { item: SummaryCardItem; index:
             <h4 className="text-sm sm:text-base font-bold text-white group-hover:text-slate-100 transition-colors">
               {item.name}
             </h4>
-            <span className="text-xs font-mono text-slate-400">
-              Department of CSE · Achievements
-            </span>
           </div>
         </div>
 
@@ -273,16 +268,6 @@ export default function AchievementsPage() {
           {/* Ambient Header Glow Halo */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[450px] h-[140px] bg-gradient-to-r from-amber-500/20 via-pink-500/25 to-cyan-500/20 rounded-full blur-[90px] pointer-events-none -z-10" />
 
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/15 via-pink-500/10 to-indigo-500/15 border border-amber-500/30 text-xs font-mono text-amber-300 mb-5 shadow-lg backdrop-blur-md"
-          >
-            <Trophy className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
-            <span className="font-bold tracking-wider">COHORT MERIT &amp; TECHNICAL EXCELLENCE</span>
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, scale: 0.95, y: 15 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -295,15 +280,6 @@ export default function AchievementsPage() {
             </span>
           </motion.h1>
 
-          <motion.p
-            initial={{ opacity: 0, y: 15 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.25, duration: 0.6 }}
-            className="text-sm sm:text-base text-slate-300 mt-5 font-sans font-normal leading-relaxed max-w-2xl mx-auto"
-          >
-            Verified competitive symposium championships, national hackathon podiums, industry skill certifications,
-            and deployed campus software solutions by our CSE cohort.
-          </motion.p>
         </div>
 
         {/* Key Aggregate Highlight Cards */}
@@ -325,9 +301,6 @@ export default function AchievementsPage() {
                 <div className="p-3 rounded-2xl bg-purple-500/10 text-purple-400 w-fit">
                   <ShieldCheck className="w-6 h-6" />
                 </div>
-                <span className="text-[10px] font-mono text-purple-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-purple-950/70 px-2 py-0.5 rounded-md border border-purple-500/30">
-                  <ZoomIn className="w-3 h-3" /> Photo
-                </span>
               </div>
               <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">Top 100</div>
               <div className="text-sm font-semibold text-purple-300 mt-1">Niral Thiruvizha 3.0</div>
@@ -353,9 +326,6 @@ export default function AchievementsPage() {
                 <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-400 w-fit">
                   <Trophy className="w-6 h-6" />
                 </div>
-                <span className="text-[10px] font-mono text-amber-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-amber-950/70 px-2 py-0.5 rounded-md border border-amber-500/30">
-                  <ZoomIn className="w-3 h-3" /> Photo
-                </span>
               </div>
               <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">2x</div>
               <div className="text-sm font-semibold text-amber-300 mt-1">Overall Champions</div>
@@ -386,9 +356,6 @@ export default function AchievementsPage() {
                 <div className="p-3 rounded-2xl bg-emerald-500/10 text-emerald-400 w-fit">
                   <Award className="w-6 h-6" />
                 </div>
-                <span className="text-[10px] font-mono text-emerald-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-emerald-950/70 px-2 py-0.5 rounded-md border border-emerald-500/30">
-                  <ZoomIn className="w-3 h-3" /> Photo
-                </span>
               </div>
               <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">1st Prize</div>
               <div className="text-sm font-semibold text-emerald-300 mt-1">Cipher Lab AI Hackathon</div>
@@ -419,9 +386,6 @@ export default function AchievementsPage() {
                 <div className="p-3 rounded-2xl bg-cyan-500/10 text-cyan-400 w-fit">
                   <Briefcase className="w-6 h-6" />
                 </div>
-                <span className="text-[10px] font-mono text-cyan-300 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-cyan-950/70 px-2 py-0.5 rounded-md border border-cyan-500/30">
-                  <ZoomIn className="w-3 h-3" /> Photo
-                </span>
               </div>
               <div className="text-3xl sm:text-4xl font-extrabold font-mono text-white">100%</div>
               <div className="text-sm font-semibold text-cyan-300 mt-1">Internship Achievement</div>
@@ -434,16 +398,9 @@ export default function AchievementsPage() {
         <section className="mb-20">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-8">
             <div>
-              <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-indigo-400 mb-1">
-                <Sparkles className="w-4 h-4" />
-                <span>VERIFIED TRACK RECORD</span>
-              </div>
               <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
                 Chronological Competition &amp; Rigor Milestones
               </h2>
-              <p className="text-xs sm:text-sm text-slate-400 mt-1 font-sans">
-                Timeline demonstrating technical competition achievements, upskilling, and deployed campus solutions.
-              </p>
             </div>
           </div>
 
@@ -517,11 +474,6 @@ export default function AchievementsPage() {
 
         {/* Certification & Program Portfolio with Interactive Spotlight Cards */}
         <section className="rounded-3xl bg-[#0b0e17]/80 border border-white/10 p-8 sm:p-10 backdrop-blur-xl mb-16 shadow-2xl">
-          <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-indigo-400 mb-2">
-            <Layers className="w-4 h-4" />
-            <span>INDUSTRY PROGRAMS &amp; UPSKILLING</span>
-          </div>
-
           <h2 className="text-2xl font-extrabold text-white mb-6">
             Key Upskilling &amp; Competition Summary
           </h2>
@@ -613,9 +565,6 @@ export default function AchievementsPage() {
                     />
                   </div>
 
-                  <div className="px-6 py-2.5 sm:py-3 border-t border-white/10 bg-slate-950/95 flex items-center justify-end text-[11px] font-mono text-slate-500 flex-shrink-0">
-                    <span>PRESS ESC OR CLICK OUTSIDE TO CLOSE</span>
-                  </div>
                 </motion.div>
               </div>
             )}
