@@ -101,7 +101,6 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
         <WebDevSpiderCard
           project={project}
           domain={domain}
-          index={index}
           isHovered={isHovered}
           spotlightPos={spotlightPos}
         />
@@ -137,7 +136,6 @@ const ProjectCard = forwardRef<HTMLDivElement, ProjectCardProps>(function Projec
       <DarkCard
         project={project}
         domain={domain}
-        index={index}
         isHovered={isHovered}
         spotlightPos={spotlightPos}
       />
@@ -186,10 +184,6 @@ function UiUxCard({
         {/* Ripple rings */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 rounded-full border-2 border-[#C48858]/30" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full border border-[#D4A57A]/25" />
-        {/* POUR label on overlay */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 font-doodle text-xs font-black text-[#C48858]/80 whitespace-nowrap tracking-wider">
-          ☕ BEING POURED…
-        </div>
       </div>
 
       {/* Header Row */}
@@ -197,9 +191,6 @@ function UiUxCard({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-[#FF00AA]" />
-            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-slate-700">
-              ARTIFACT #{index + 1}
-            </span>
           </div>
           <div className="w-8 h-8 rounded-full flex items-center justify-center bg-yellow-300 border-2 border-black text-black group-hover:bg-pink-400 group-hover:rotate-45 transition-all">
             <ArrowUpRight className="w-4 h-4" />
@@ -223,20 +214,17 @@ function UiUxCard({
                   <Activity className="w-3 h-3 text-pink-600 animate-pulse" />
                   VERIFIED ARCHITECTURE
                 </span>
-                <span className="text-slate-800">PRODUCTION GRADE</span>
               </>
             )}
           </div>
-          <div className="font-mono text-xs font-bold text-black bg-white/80 px-2 py-1 rounded-lg border border-black inline-block self-start shadow-[2px_2px_0_#000]">
-            {project.metrics?.[0] ? (
+          {project.metrics?.[0] && (
+            <div className="font-mono text-xs font-bold text-black bg-white/80 px-2 py-1 rounded-lg border border-black inline-block self-start shadow-[2px_2px_0_#000]">
               <div className="flex items-center gap-2">
                 <span className="text-slate-700 font-normal">{project.metrics[0].label}:</span>
                 <span style={{ color: "#D80075" }}>{project.metrics[0].value}</span>
               </div>
-            ) : (
-              <span>100% Cohort Tested</span>
-            )}
-          </div>
+            </div>
+          )}
           <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
         </div>
       </div>
@@ -263,8 +251,7 @@ function UiUxCard({
             </span>
           ))}
         </div>
-        <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-mono font-bold text-slate-900">
-          <span>Click to inspect telemetry</span>
+        <div className="mt-4 pt-3 flex items-center justify-end text-[11px] font-mono font-bold text-slate-900">
           <span style={{ color: "#0033FF" }}>Deep Dive →</span>
         </div>
       </div>
@@ -276,13 +263,11 @@ function UiUxCard({
 function DarkCard({
   project,
   domain,
-  index,
   isHovered,
   spotlightPos,
 }: {
   project: Project;
   domain: Domain;
-  index: number;
   isHovered: boolean;
   spotlightPos: { x: number; y: number };
 }) {
@@ -299,9 +284,6 @@ function DarkCard({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full" style={{ backgroundColor: domain.colorTheme.primary }} />
-            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-slate-400">
-              ARTIFACT #{index + 1}
-            </span>
           </div>
           <div className="w-8 h-8 rounded-full flex items-center justify-center bg-slate-900/80 border border-white/10 text-slate-400 group-hover:text-white group-hover:border-white/30 transition-all">
             <ArrowUpRight className="w-4 h-4" />
@@ -329,20 +311,17 @@ function DarkCard({
                   <Activity className="w-3 h-3 text-emerald-400 animate-pulse" />
                   VERIFIED ARCHITECTURE
                 </span>
-                <span className="text-slate-500">PRODUCTION GRADE</span>
               </>
             )}
           </div>
-          <div className="font-mono text-xs font-bold text-white/90">
-            {project.metrics?.[0] ? (
+          {project.metrics?.[0] && (
+            <div className="font-mono text-xs font-bold text-white/90">
               <div className="flex items-center gap-2">
                 <span className="text-slate-400 font-normal">{project.metrics[0].label}:</span>
                 <span style={{ color: domain.colorTheme.secondary }}>{project.metrics[0].value}</span>
               </div>
-            ) : (
-              <span>100% Cohort Tested</span>
-            )}
-          </div>
+            </div>
+          )}
           <div className="absolute inset-0 tech-grid-bg opacity-30 pointer-events-none" />
         </div>
       </div>
@@ -367,8 +346,7 @@ function DarkCard({
             </span>
           ))}
         </div>
-        <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-white transition-colors">
-          <span>Click to inspect telemetry</span>
+        <div className="mt-4 pt-3 flex items-center justify-end text-[11px] font-mono text-slate-400 group-hover:text-white transition-colors">
           <span style={{ color: domain.colorTheme.secondary }}>Deep Dive →</span>
         </div>
       </div>
@@ -380,13 +358,11 @@ function DarkCard({
 function WebDevSpiderCard({
   project,
   domain,
-  index,
   isHovered,
   spotlightPos,
 }: {
   project: Project;
   domain: Domain;
-  index: number;
   isHovered: boolean;
   spotlightPos: { x: number; y: number };
 }) {
@@ -531,11 +507,6 @@ function WebDevSpiderCard({
             <span className="text-3xl -rotate-45 select-none filter drop-shadow-[0_0_12px_#ef4444]">🕷️</span>
           </div>
 
-          {/* Chrysalis Telemetry Pill */}
-          <div className="px-4 py-1.5 rounded-full bg-black/95 border border-cyan-400/70 text-[10px] font-mono font-black text-cyan-200 shadow-[0_0_20px_rgba(56,189,248,0.5)] tracking-wider uppercase whitespace-nowrap flex items-center gap-2">
-            <span className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444] animate-ping" />
-            <span>SILK CHRYSALIS #{index + 1}</span>
-          </div>
         </div>
 
         {/* Organic Jagged Seam Glow Line with Web Spiders */}
@@ -572,9 +543,6 @@ function WebDevSpiderCard({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500 shadow-[0_0_8px_#ef4444]" />
-            <span className="text-[11px] font-mono uppercase tracking-wider font-bold text-red-300/80">
-              PROJECT #{index + 1}
-            </span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -598,7 +566,6 @@ function WebDevSpiderCard({
                   <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
                   DEMO / RESERVED SLOT
                 </span>
-                <span className="text-amber-400 font-mono text-[9px] px-1.5 py-0.5 rounded bg-amber-500/10 border border-amber-500/30">PENDING SUBMISSION</span>
               </>
             ) : (
               <>
@@ -606,19 +573,16 @@ function WebDevSpiderCard({
                   <Activity className="w-3 h-3 text-red-400" />
                   SYSTEM ARCHITECTURE
                 </span>
-                <span className="text-cyan-400/90 font-mono">CORE MODULE</span>
               </>
             )}
           </div>
 
           <div className="font-mono text-xs font-bold text-white bg-black/60 px-2.5 py-1 rounded-lg border border-red-500/30 inline-block self-start shadow-[0_0_12px_rgba(239,68,68,0.2)]">
-            {project.metrics?.[0] ? (
+            {project.metrics?.[0] && (
               <div className="flex items-center gap-2">
                 <span className="text-slate-400 font-normal">{project.metrics[0].label}:</span>
                 <span className="text-cyan-300 font-bold">{project.metrics[0].value}</span>
               </div>
-            ) : (
-              <span className="text-red-300">Production Build</span>
             )}
           </div>
 
@@ -649,8 +613,7 @@ function WebDevSpiderCard({
             </span>
           ))}
         </div>
-        <div className="mt-4 pt-3 flex items-center justify-between text-[11px] font-mono text-slate-400 group-hover:text-white transition-colors">
-          <span className="text-slate-400 group-hover:text-red-300 transition-colors">Inspect Web Telemetry</span>
+        <div className="mt-4 pt-3 flex items-center justify-end text-[11px] font-mono text-slate-400 group-hover:text-white transition-colors">
           <span className="text-cyan-400 font-bold group-hover:translate-x-0.5 transition-transform">Spider-Deep Dive →</span>
         </div>
       </div>

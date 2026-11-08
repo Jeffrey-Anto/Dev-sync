@@ -15,7 +15,6 @@ import {
   Terminal,
   Sparkles,
   Palette,
-  Coffee,
   Lock,
 } from "lucide-react";
 import { Project, Domain } from "@/data/domains";
@@ -134,9 +133,6 @@ function UiUxDetailModal({
             <span className="handdrawn-box bg-[#FF00AA] text-white font-doodle font-black text-[11px] sm:text-xs px-2.5 sm:px-3.5 py-0.5 sm:py-1 shadow-[2px_2px_0_#000]">
               {domain.name}
             </span>
-            <span className="handdrawn-box-alt bg-[#FFE600] text-black font-mono text-[11px] sm:text-xs font-black px-2.5 sm:px-3 py-0.5 sm:py-1 shadow-[2px_2px_0_#000]">
-              SPEC #{project.id.toUpperCase()}
-            </span>
             {project.isDemo ? (
               <span className="handdrawn-box-alt bg-amber-300 text-black font-mono text-[11px] sm:text-xs font-black px-2.5 sm:px-3 py-0.5 sm:py-1 shadow-[2px_2px_0_#000] border-2 border-black">
                 DEMO SPEC
@@ -146,10 +142,6 @@ function UiUxDetailModal({
                 VERIFIED REAL
               </span>
             )}
-            <span className="hidden sm:inline-flex items-center gap-1 handdrawn-btn bg-[#00E5FF] text-black font-doodle font-bold text-xs px-2.5 py-0.5 shadow-[2px_2px_0_#000]">
-              <Coffee className="w-3.5 h-3.5 text-black" />
-              <span>FRESHLY POURED</span>
-            </span>
           </div>
 
           <h2 className="text-2xl sm:text-4xl lg:text-5xl font-black text-black font-doodle tracking-tight leading-tight [text-shadow:_2px_2px_0_#FFE600]">
@@ -291,10 +283,6 @@ function UiUxDetailModal({
 
       {/* Footer CTAs (Repo & Live Demo) */}
       <div className="relative z-10 flex flex-wrap items-center justify-between gap-4 pt-6 border-t-4 border-black">
-        <div className="text-xs font-doodle font-bold text-slate-700">
-          COLLECTIVE CS // UI/UX DESIGN COHORT · VERIFIED CAMPUS TALENT
-        </div>
-
         <div className="flex items-center gap-3">
           {project.isPrivate ? (
             <div className="handdrawn-btn bg-slate-100 text-slate-800 font-doodle font-bold text-sm px-4 py-2 border-2 border-black flex items-center gap-2">
@@ -395,10 +383,7 @@ function DarkDetailModal({
             >
               {project.categoryBadge || domain.name}
             </span>
-            <span className="text-xs font-mono text-slate-500">
-              PROJECT_ID: {(project.displayId || project.id).toUpperCase()}
-            </span>
-            {project.isDemo ? (
+            <span className="text-xs font-mono text-slate-500" />            {project.isDemo ? (
               <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 font-bold border border-amber-500/30 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
                 DEMO SPEC

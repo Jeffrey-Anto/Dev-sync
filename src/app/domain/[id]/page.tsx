@@ -172,9 +172,7 @@ export default function DomainDetailPage({ params }: PageProps) {
               className={`text-center font-bold ${
                 isUiUx ? "font-doodle text-2xl text-black" : "font-mono text-sm text-cyan-400"
               }`}
-            >
-              RETURNING TO DOMAIN MATRIX...
-            </motion.div>
+            />
           </motion.div>
         )}
       </AnimatePresence>
@@ -233,29 +231,6 @@ export default function DomainDetailPage({ params }: PageProps) {
           {/* Breadcrumb Indicator & Font Dropdown */}
           <div className="flex items-center gap-2 sm:gap-3">
             {!isUiUx && <FontSelector className="hidden md:inline-block" />}
-            <div
-              className={`flex items-center gap-2 sm:gap-3 ${
-                isUiUx ? "font-doodle text-xs sm:text-sm text-black" : "text-[11px] sm:text-xs font-mono text-slate-400"
-              }`}
-            >
-              <span className="hidden sm:inline">COLLECTIVE.CSE</span>
-              <span className={`hidden sm:inline ${isUiUx ? "text-black font-black text-sm font-doodle" : "text-slate-600"}`}>
-                {isUiUx ? "\\" : "/"}
-              </span>
-              <div
-                className={`flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1 ${
-                  isUiUx
-                    ? "handdrawn-box bg-[#FF00AA] text-white font-bold"
-                    : "rounded-lg bg-slate-900/80 border border-white/10"
-                }`}
-              >
-                <span
-                  className={`w-1.5 sm:w-2 h-1.5 sm:h-2 rounded-full ${isUiUx ? "bg-white" : "animate-pulse"}`}
-                  style={{ backgroundColor: !isUiUx ? domain.colorTheme.primary : undefined }}
-                />
-                <span className="font-semibold truncate max-w-[120px] sm:max-w-none">{domain.name}</span>
-              </div>
-            </div>
           </div>
         </div>
       </header>
@@ -278,16 +253,6 @@ export default function DomainDetailPage({ params }: PageProps) {
           >
             {domain.name}
           </h1>
-
-          <p
-            className={`max-w-3xl leading-relaxed mb-6 sm:mb-8 ${
-              isUiUx
-                ? "font-doodle text-base sm:text-2xl text-black font-black drop-shadow-[0_0_16px_rgba(255,255,255,1)] [text-shadow:_0_0_8px_#ffffff,_0_0_16px_#ffffff,_0_0_24px_#ffffff]"
-                : "text-sm sm:text-xl text-slate-200 font-sans font-normal drop-shadow-[0_1px_10px_rgba(0,0,0,0.85)]"
-            }`}
-          >
-            {domain.tagline}
-          </p>
 
           {/* Aggregate Telemetry Metrics for this Domain */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4">
@@ -372,30 +337,7 @@ export default function DomainDetailPage({ params }: PageProps) {
                   ? `Production Systems (${verifiedCount}) & Demo Specs (${demoCount})`
                   : `Verified Production Systems (${domainProjects.length})`}
               </h2>
-              <p
-                className={`mt-1 ${
-                  isUiUx
-                    ? "font-doodle text-base sm:text-lg text-black font-black drop-shadow-[0_0_12px_rgba(255,255,255,1)] [text-shadow:_0_0_6px_#ffffff,_0_0_12px_#ffffff]"
-                    : "text-xs sm:text-sm text-slate-400 font-mono"
-                }`}
-              >
-                Click any system architecture tile to inspect problem statements, benchmarked outcomes, and live source.
-              </p>
             </div>
-            <span
-              className={`hidden sm:inline ${
-                isUiUx
-                  ? "handdrawn-btn bg-[#FFE600] text-black font-doodle font-bold text-sm px-4 py-1"
-                  : "text-xs font-mono px-3 py-1 rounded-full border"
-              }`}
-              style={{
-                borderColor: !isUiUx ? `rgba(${domain.colorTheme.rgb}, 0.4)` : undefined,
-                color: !isUiUx ? domain.colorTheme.secondary : undefined,
-                backgroundColor: !isUiUx ? `rgba(${domain.colorTheme.rgb}, 0.12)` : undefined,
-              }}
-            >
-              {demoCount > 0 ? `${verifiedCount} VERIFIED · ${demoCount} DEMO SPEC` : "100% PRODUCTION READY"}
-            </span>
           </div>
 
           {/* If UI/UX domain, GSAP-driven Coffee Pour Animation orchestrates card entries */}
@@ -448,10 +390,6 @@ export default function DomainDetailPage({ params }: PageProps) {
           >
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
               <div className="lg:col-span-7 space-y-4">
-                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-xs font-mono text-amber-300">
-                  <Smartphone className="w-3.5 h-3.5" />
-                  <span>NATIVE RUNTIME ENVIRONMENT</span>
-                </div>
                 <h3 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                   Mobile Architecture & Live Performance Telemetry
                 </h3>
@@ -479,7 +417,7 @@ export default function DomainDetailPage({ params }: PageProps) {
                     className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-xs font-mono text-emerald-300 hover:text-white hover:bg-emerald-500/25 transition-all cursor-pointer shadow-sm hover:scale-105 active:scale-95"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
-                    <span>Replay Landscape Boot Animation 📱</span>
+                    <span>Replay Landscape Boot Animation</span>
                   </button>
                 </div>
               </div>
@@ -576,7 +514,7 @@ export default function DomainDetailPage({ params }: PageProps) {
             : "border-t border-white/10 text-xs font-mono text-slate-500 bg-[#050608]"
         }`}
       >
-        <span>COLLECTIVE.CSE // BATCH OF 2026 · VERIFIED CAMPUS TALENT</span>
+        <span>COLLECTIVE.CSE</span>
       </footer>
     </div>
   );
