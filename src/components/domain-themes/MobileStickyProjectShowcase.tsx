@@ -545,7 +545,10 @@ export default function MobileStickyProjectShowcase({
 
   // Smooth scroll tracking to detect which card is centered in viewport
   useEffect(() => {
-    const handleScroll = () => {
+    let scrollFrame: number | null = null;
+
+    const updateActiveCard = () => {
+      scrollFrame = null;
       const centerY = window.innerHeight * 0.5;
 
       let closestIdx = 0;
@@ -566,9 +569,17 @@ export default function MobileStickyProjectShowcase({
       setActiveProjectIndex(closestIdx);
     };
 
+    // Measure the cards at most once per frame instead of on every scroll event.
+    const handleScroll = () => {
+      if (scrollFrame === null) scrollFrame = requestAnimationFrame(updateActiveCard);
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    updateActiveCard();
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollFrame !== null) cancelAnimationFrame(scrollFrame);
+    };
   }, [projects]);
 
   const activeProject = projects[activeProjectIndex] || projects[0];

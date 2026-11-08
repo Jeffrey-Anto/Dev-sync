@@ -62,9 +62,18 @@ export default function DomainDetailPage({ params }: PageProps) {
 
   // Auto-hide top bar on enter, scroll down, reveal on scroll up or top hover
   useEffect(() => {
+    // Only notify React when visibility actually flips; these handlers fire
+    // on every scroll and mousemove event.
+    let headerVisible = true;
+    const setHeader = (visible: boolean) => {
+      if (visible === headerVisible) return;
+      headerVisible = visible;
+      setIsHeaderVisible(visible);
+    };
+
     // Auto-hide shortly after entering the page
     const autoHideTimer = setTimeout(() => {
-      setIsHeaderVisible(false);
+      setHeader(false);
     }, 1600);
 
     const handleScroll = () => {
@@ -73,10 +82,10 @@ export default function DomainDetailPage({ params }: PageProps) {
 
       if (delta > 6) {
         // Scrolling down -> hide top bar
-        setIsHeaderVisible(false);
+        setHeader(false);
       } else if (delta < -6) {
         // Scrolling up -> reveal top bar
-        setIsHeaderVisible(true);
+        setHeader(true);
       }
 
       lastScrollY.current = currentScrollY;
@@ -85,7 +94,7 @@ export default function DomainDetailPage({ params }: PageProps) {
     const handleMouseMove = (e: MouseEvent) => {
       // Hovering near the top edge reveals top bar
       if (e.clientY <= 35) {
-        setIsHeaderVisible(true);
+        setHeader(true);
       }
     };
 

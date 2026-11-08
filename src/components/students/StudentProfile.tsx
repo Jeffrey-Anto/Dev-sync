@@ -71,7 +71,7 @@ function IdentityCard({ student, accent, accentRgb }: { student: Student; accent
 
   const available = PLATFORM_ORDER.filter((key) => student.links[key]);
   const [avatarFailed, setAvatarFailed] = useState(false);
-  const avatarUrl = getGitHubAvatar(student);
+  const avatarUrl = getGitHubAvatar(student, 288);
 
   const handleMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (reduce) return;

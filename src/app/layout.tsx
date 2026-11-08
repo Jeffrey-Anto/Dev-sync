@@ -36,17 +36,22 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+/* Groups 2-4 only apply after the user picks them in FontSelector, so they
+   are not preloaded on every page; the browser fetches them on first use. */
+
 /* Font Group 2: Cyber-Futuristic (Space Grotesk + DM Sans + Space Mono) */
 const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const spaceMono = Space_Mono({
@@ -54,6 +59,7 @@ const spaceMono = Space_Mono({
   subsets: ["latin"],
   weight: ["400", "700"],
   display: "swap",
+  preload: false,
 });
 
 /* Font Group 3: Modern Editorial (Sora + Manrope + IBM Plex Mono) */
@@ -61,12 +67,14 @@ const sora = Sora({
   variable: "--font-sora",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const manrope = Manrope({
   variable: "--font-manrope",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const ibmPlexMono = IBM_Plex_Mono({
@@ -74,6 +82,7 @@ const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
   display: "swap",
+  preload: false,
 });
 
 /* Baseline Font Group 4: Geist */
@@ -81,12 +90,14 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
   display: "swap",
+  preload: false,
 });
 
 const fontVariables = [

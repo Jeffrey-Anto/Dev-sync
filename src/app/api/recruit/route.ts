@@ -22,6 +22,30 @@ interface RecruitRequestBody {
 // Target recipients specified by the user
 const TARGET_RECIPIENTS = ["jeffreyjat@gmail.com", "mukidvm@gmail.com"];
 
+// Reused across requests while the SMTP config is unchanged, instead of
+// building a new transporter for every inquiry.
+let cachedTransporter: {
+  key: string;
+  transporter: ReturnType<typeof nodemailer.createTransport>;
+} | null = null;
+
+function getTransporter(host: string, port: number, secure: boolean, user: string, pass: string) {
+  const key = [host, port, secure, user, pass].join("|");
+  if (cachedTransporter?.key !== key) {
+    cachedTransporter = {
+      key,
+      transporter: nodemailer.createTransport({
+        service: host.includes("gmail") ? "gmail" : undefined,
+        host,
+        port,
+        secure,
+        auth: { user, pass },
+      }),
+    };
+  }
+  return cachedTransporter.transporter;
+}
+
 export async function POST(request: Request) {
   try {
     const body: RecruitRequestBody = await request.json();
@@ -275,16 +299,7 @@ Reply directly to this email to contact ${contactRep} (${corporateEmail}).
 
     // If SMTP credentials are configured, send the live email
     if (smtpUser && smtpPass) {
-      const transporter = nodemailer.createTransport({
-        service: smtpHost.includes("gmail") ? "gmail" : undefined,
-        host: smtpHost,
-        port: smtpPort,
-        secure: smtpSecure,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass,
-        },
-      });
+      const transporter = getTransporter(smtpHost, smtpPort, smtpSecure, smtpUser, smtpPass);
 
       const mailOptions = {
         from: `"${contactRep} (via GCES Placement)" <${smtpUser}>`,

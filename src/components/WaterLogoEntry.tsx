@@ -63,21 +63,29 @@ export default function WaterLogoEntry({ onEnter, isEntered }: WaterLogoEntryPro
     }));
 
     let frame = 0;
+    let bgGrad: CanvasGradient | null = null;
+    let bgGradW = 0;
+    let bgGradH = 0;
     const animate = () => {
       frame++;
       ctx.clearRect(0, 0, width, height);
 
-      const bgGrad = ctx.createRadialGradient(
-        width / 2,
-        height / 2,
-        50,
-        width / 2,
-        height / 2,
-        Math.max(width, height) / 1.2
-      );
-      bgGrad.addColorStop(0, "rgba(14, 28, 54, 0.6)");
-      bgGrad.addColorStop(0.4, "rgba(6, 12, 22, 0.95)");
-      bgGrad.addColorStop(1, "#000000");
+      // The gradient only depends on the canvas size, so rebuild it on resize only.
+      if (!bgGrad || bgGradW !== width || bgGradH !== height) {
+        bgGrad = ctx.createRadialGradient(
+          width / 2,
+          height / 2,
+          50,
+          width / 2,
+          height / 2,
+          Math.max(width, height) / 1.2
+        );
+        bgGrad.addColorStop(0, "rgba(14, 28, 54, 0.6)");
+        bgGrad.addColorStop(0.4, "rgba(6, 12, 22, 0.95)");
+        bgGrad.addColorStop(1, "#000000");
+        bgGradW = width;
+        bgGradH = height;
+      }
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, width, height);
 

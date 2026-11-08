@@ -73,7 +73,7 @@ export const STUDENT_ACHIEVEMENTS: StudentAchievement[] = [
     institution: "GCE SRIRANGAM",
     accentColor: "#10B981",
     gradientTheme: "from-emerald-950/40 via-slate-900/60 to-black/80",
-    imageUrl: "/achievements/cipher-lab.png",
+    imageUrl: "/achievements/cipher-lab.jpg",
   },
   {
     id: "ach-4",
